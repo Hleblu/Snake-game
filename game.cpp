@@ -30,7 +30,7 @@ void Game::showBackground()
 }
 
 void Game::playSound(sf::SoundBuffer& buffer) {
-    sf::Sound someSound(buffer);
+    someSound.setBuffer(buffer);
     soundsArray.push_front(someSound);
     soundsArray.front().play();
     while (!soundsArray.empty() && soundsArray.back().getStatus() != sf::Sound::Status::Playing) soundsArray.pop_back();
@@ -89,7 +89,7 @@ void Game::Start(sf::RenderWindow& window)
     }
 }
 
-Game::Game() : apple(snake) {  
+Game::Game() : apple(snake), someSound(moveSoundBuffer) {  
     showBackground();
     eatSoundBuffer.loadFromFile("Resources/Sounds/sound_food.ogg");
     gameOverSoundBuffer.loadFromFile("Resources/Sounds/sound_gameover.ogg");

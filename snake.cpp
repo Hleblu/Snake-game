@@ -56,7 +56,7 @@ void Snake::move()
 
 void Snake::updateVertexArray()
 {
-    sf::VertexArray vertices(sf::Triangles, vertexGrid);
+    sf::VertexArray vertices(sf::PrimitiveType::Triangles, vertexGrid);
     sf::Color color = snakeColor;
     for (auto& i : segments) {
         float posX = i.x * size;

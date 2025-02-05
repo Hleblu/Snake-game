@@ -8,7 +8,7 @@ class Game
     sf::SoundBuffer eatSoundBuffer, gameOverSoundBuffer, moveSoundBuffer;
     sf::Clock clock;
     sf::VertexArray backgroundVertices;
-    sf::Sound someSound;
+    //sf::Sound someSound;
     std::deque<sf::Sound> soundsArray;
     Snake snake;
     Apple apple;

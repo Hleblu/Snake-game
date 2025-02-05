@@ -2,7 +2,7 @@
 
 void Game::showBackground()
 {
-    backgroundVertices.setPrimitiveType(sf::Triangles);
+    backgroundVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     backgroundVertices.resize(vertexGrid);
     for (int x = 0; x < gridX; ++x) {
         for (int y = 0; y < gridY; ++y) {
@@ -30,7 +30,7 @@ void Game::showBackground()
 }
 
 void Game::playSound(sf::SoundBuffer& buffer) {
-    someSound.setBuffer(buffer);
+    sf::Sound someSound(buffer);
     soundsArray.push_front(someSound);
     soundsArray.front().play();
     while (!soundsArray.empty() && soundsArray.back().getStatus() != sf::Sound::Status::Playing) soundsArray.pop_back();
@@ -43,22 +43,18 @@ void Game::Start(sf::RenderWindow& window)
         time = clock.restart().asSeconds(); // as described in the SFML article, returns time like clock.getElapsedTime().asSeconds(), ne tupi potim, Hlib;
         timer += time;
 
-        sf::Event event;
-        while (window.pollEvent(event))
+        while (const std::optional event = window.pollEvent())
         {
-            switch (event.type) {
-            case sf::Event::Closed : window.close(); break;
-            case sf::Event::KeyPressed:
-                switch (event.key.code)
+            if(event->is<sf::Event::Closed>()) window.close();
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+                switch (keyPressed->code)
                 {
-                case sf::Keyboard::Left: 
-                    if (snake.previousDirection != Snake::NONE) snake.nextDirection = Snake::LEFT; break;
-                case sf::Keyboard::Right: snake.nextDirection = Snake::RIGHT; break;
-                case sf::Keyboard::Up: snake.nextDirection = Snake::UP; break;
-                case sf::Keyboard::Down: snake.nextDirection = Snake::DOWN; break;
+                    case sf::Keyboard::Key::Left:
+                        if (snake.previousDirection != Snake::NONE) snake.nextDirection = Snake::LEFT; break;
+                    case sf::Keyboard::Key::Right: snake.nextDirection = Snake::RIGHT; break;
+                    case sf::Keyboard::Key::Up: snake.nextDirection = Snake::UP; break;
+                    case sf::Keyboard::Key::Down: snake.nextDirection = Snake::DOWN; break;
                 }
-            default: break;
-            }
         }
 
         if (snake.nextDirection != snake.direction && snake.nextDirection % 2 != snake.previousDirection % 2) {

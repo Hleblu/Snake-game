@@ -16,7 +16,7 @@ void Apple::genCords()
 
     if (snake->segmentsSet.count({ x,y }) > 0) { genCords(); return; }
     else if (x == snake->segments[0].x && y == snake->segments[0].y) { genCords(); return; }
-    else rect.setPosition(x * size, y * size);
+    else rect.setPosition({ x * size, y * size });
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const

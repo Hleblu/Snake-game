@@ -20,8 +20,8 @@ class Snake : public sf::Drawable
         }
     };
 
-    sf::Color snakeColor = { 41, 74, 242 };
-    sf::VertexArray snakeVertices;
+    sf::Color segmentColor = { 41, 74, 242 };
+    sf::VertexArray segmentsVertices;
     float colorDecrementStep;
     std::vector<Segment> segments;
     std::unordered_set<Segment, SegmentHash> segmentsSet;

@@ -62,7 +62,7 @@ bool Snake::canUpdateDirection()
 void Snake::updateVertexArray()
 {
     sf::VertexArray vertices(sf::PrimitiveType::Triangles, vertexGrid);
-    sf::Color color = snakeColor;
+    sf::Color color = segmentColor;
     for (auto& i : segments) {
         float posX = i.x * size;
         float posY = i.y * size;
@@ -84,10 +84,10 @@ void Snake::updateVertexArray()
 
         color.b -= colorDecrementStep;
     }
-    snakeVertices = vertices;
+    segmentsVertices = vertices;
 }
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(snakeVertices, states);
+    target.draw(segmentsVertices, states);
 }

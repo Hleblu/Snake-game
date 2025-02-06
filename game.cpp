@@ -1,6 +1,6 @@
 #include "game.h"
 
-void Game::showBackground()
+void Game::createBackground()
 {
     backgroundVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     backgroundVertices.resize(vertexGrid);
@@ -36,7 +36,7 @@ void Game::playSound(sf::SoundBuffer& buffer) {
     while (!soundsArray.empty() && soundsArray.back().getStatus() != sf::Sound::Status::Playing) soundsArray.pop_back();
 }
 
-void Game::Start(sf::RenderWindow& window)
+void Game::start(sf::RenderWindow& window)
 {
     while (window.isOpen())
     {
@@ -57,7 +57,7 @@ void Game::Start(sf::RenderWindow& window)
                 }
         }
 
-        if (snake.nextDirection != snake.direction && snake.nextDirection % 2 != snake.previousDirection % 2) {
+        if (snake.canUpdateDirection()) {
             snake.direction = snake.nextDirection;
             playSound(moveSoundBuffer);
         }
@@ -65,18 +65,17 @@ void Game::Start(sf::RenderWindow& window)
         if (timer >= delay) {
             timer = 0;
             snake.move();
-            if (snake.checkCollision()) {
+            if (snake.hasCollided()) {
                 playSound(gameOverSoundBuffer);
                 snake.setDefaults();
-                apple.genCords();
+                apple.generateNewPosition();
                 sf::sleep(sf::seconds(0.5));
                 soundsArray.clear();
                 return;
             }
             snake.updateVertexArray();
-            if (snake.segments[0].x == apple.x
-                && snake.segments[0].y == apple.y) {
-                apple.genCords();
+            if (apple.isEaten()) {
+                apple.generateNewPosition();
                 playSound(eatSoundBuffer);
                 snake.grow();
             }
@@ -90,8 +89,8 @@ void Game::Start(sf::RenderWindow& window)
 }
 
 Game::Game() : apple(snake), someSound(moveSoundBuffer) {  
-    showBackground();
-    eatSoundBuffer.loadFromFile("Resources/Sounds/sound_food.ogg");
-    gameOverSoundBuffer.loadFromFile("Resources/Sounds/sound_gameover.ogg");
-    moveSoundBuffer.loadFromFile("Resources/Sounds/sound_move.ogg");
+    createBackground();
+    if (!eatSoundBuffer.loadFromFile("Resources/Sounds/sound_food.ogg")) return;
+    if (!gameOverSoundBuffer.loadFromFile("Resources/Sounds/sound_gameover.ogg")) return;
+    if (!moveSoundBuffer.loadFromFile("Resources/Sounds/sound_move.ogg")) return;
 }

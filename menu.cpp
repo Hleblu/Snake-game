@@ -2,7 +2,7 @@
 
 Menu::Menu() : selectedItem(0), title(mainFont)
 {
-    mainFont.openFromFile("Resources/Tiny5-Regular.ttf");
+    if(!mainFont.openFromFile("Resources/Tiny5-Regular.ttf")) return;
 
     title.setFillColor(sf::Color::White);
     title.setOutlineThickness(2);

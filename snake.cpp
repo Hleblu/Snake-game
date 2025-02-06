@@ -18,7 +18,7 @@ void Snake::setDefaults()
     updateVertexArray();
 }
 
-bool Snake::checkCollision()
+bool Snake::hasCollided()
 {
     if (segmentsSet.count(segments[0]) > 0) return true;
 
@@ -52,6 +52,11 @@ void Snake::move()
     default: break;
     }
     previousDirection = direction;
+}
+
+bool Snake::canUpdateDirection()
+{
+    return (nextDirection != direction && nextDirection % 2 != previousDirection % 2) ? true : false;
 }
 
 void Snake::updateVertexArray()

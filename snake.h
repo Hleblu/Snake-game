@@ -35,9 +35,10 @@ class Snake : public sf::Drawable
 
     Snake();
     void setDefaults();
-    bool checkCollision();
+    bool hasCollided();
     void grow();
     void move();
+    bool canUpdateDirection();
     void updateVertexArray();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

@@ -20,8 +20,8 @@ class Snake : public sf::Drawable
         }
     };
 
-    sf::Color snakeColor = { 41, 74, 242 };
-    sf::VertexArray snakeVertices;
+    sf::Color segmentColor = { 41, 74, 242 };
+    sf::VertexArray segmentsVertices;
     float colorDecrementStep;
     std::vector<Segment> segments;
     std::unordered_set<Segment, SegmentHash> segmentsSet;
@@ -35,9 +35,10 @@ class Snake : public sf::Drawable
 
     Snake();
     void setDefaults();
-    bool checkCollision();
+    bool hasCollided();
     void grow();
     void move();
+    bool canUpdateDirection();
     void updateVertexArray();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

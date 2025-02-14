@@ -18,7 +18,7 @@ void Snake::setDefaults()
     updateVertexArray();
 }
 
-bool Snake::checkCollision()
+bool Snake::hasCollided()
 {
     if (segmentsSet.count(segments[0]) > 0) return true;
 
@@ -54,10 +54,15 @@ void Snake::move()
     previousDirection = direction;
 }
 
+bool Snake::canUpdateDirection()
+{
+    return (nextDirection != direction && nextDirection % 2 != previousDirection % 2) ? true : false;
+}
+
 void Snake::updateVertexArray()
 {
-    sf::VertexArray vertices(sf::Triangles, vertexGrid);
-    sf::Color color = snakeColor;
+    sf::VertexArray vertices(sf::PrimitiveType::Triangles, vertexGrid);
+    sf::Color color = segmentColor;
     for (auto& i : segments) {
         float posX = i.x * size;
         float posY = i.y * size;
@@ -79,10 +84,10 @@ void Snake::updateVertexArray()
 
         color.b -= colorDecrementStep;
     }
-    snakeVertices = vertices;
+    segmentsVertices = vertices;
 }
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(snakeVertices, states);
+    target.draw(segmentsVertices, states);
 }

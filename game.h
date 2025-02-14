@@ -14,8 +14,8 @@ class Game
     Apple apple;
     double time = 0, timer = 0, delay = 0.115;
     void playSound(sf::SoundBuffer& buffer);
-    void showBackground();
+    void createBackground();
 public:
-    void Start(sf::RenderWindow& window);
+    void start(sf::RenderWindow& window);
     Game();
 };

@@ -1,8 +1,8 @@
 #include "menu.h"
 
-Menu::Menu() : selectedItem(0)
+Menu::Menu() : selectedItem(0), title(mainFont)
 {
-    mainFont.loadFromFile("Resources/Tiny5-Regular.ttf");
+    if(!mainFont.openFromFile("Resources/Tiny5-Regular.ttf")) return;
 
     title.setFillColor(sf::Color::White);
     title.setOutlineThickness(2);
@@ -14,19 +14,18 @@ Menu::Menu() : selectedItem(0)
 void Menu::setTitle(const std::string& titleText)
 {
     title.setString(titleText);
-    title.setPosition(width / 10, height / 5);
+    title.setPosition({ width / 10, height / 5 });
 }
 
 void Menu::createItem(const std::string& label, std::function<void(sf::RenderWindow&)> action)
 {
-    sf::Text button;
-    button.setFont(mainFont);
+    sf::Text button(mainFont);
     button.setFillColor(sf::Color::White);
     button.setOutlineThickness(2);
     button.setOutlineColor(sf::Color::Black);
     button.setCharacterSize(fontSize);
     button.setString(label);
-    button.setPosition(width / 10, height / 3 + fontSize * items.size());
+    button.setPosition({ width / 10, height / 3 + fontSize * static_cast<float>(items.size()) });
     items.push_back({ button, action });
 }
 
@@ -41,19 +40,18 @@ void Menu::drawItems(sf::RenderWindow& window)
 void Menu::showMenu(sf::RenderWindow& window)
 {
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) window.close();
+        while (const std::optional event = window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) window.close();
 
             mousePos = sf::Mouse::getPosition(window);
 
             for (int i = 0; i < items.size();++i) {
-                if (items[i].button.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                if (items[i].button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
                     if (selectedItem != i) {
                         selectedItem = i;
                     }
                     items[selectedItem].button.setFillColor(sf::Color(172, 206, 94));
-                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                         items[selectedItem].action(window);
                     }
                     break;

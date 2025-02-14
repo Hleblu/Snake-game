@@ -9,10 +9,12 @@ class Apple : public sf::Drawable
 	sf::RectangleShape rect;
 	std::random_device rd;
 	std::mt19937 gen;
+	std::uniform_int_distribution<> distX, distY;
 	float x, y;
 
 	Apple(Snake& snake);
-	void genCords();
+	void generateNewPosition();
+	bool isEaten();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	friend class Game;

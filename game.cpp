@@ -1,8 +1,8 @@
 #include "game.h"
 
-void Game::showBackground()
+void Game::createBackground()
 {
-    backgroundVertices.setPrimitiveType(sf::Triangles);
+    backgroundVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     backgroundVertices.resize(vertexGrid);
     for (int x = 0; x < gridX; ++x) {
         for (int y = 0; y < gridY; ++y) {
@@ -36,32 +36,28 @@ void Game::playSound(sf::SoundBuffer& buffer) {
     while (!soundsArray.empty() && soundsArray.back().getStatus() != sf::Sound::Status::Playing) soundsArray.pop_back();
 }
 
-void Game::Start(sf::RenderWindow& window)
+void Game::start(sf::RenderWindow& window)
 {
     while (window.isOpen())
     {
         time = clock.restart().asSeconds(); // as described in the SFML article, returns time like clock.getElapsedTime().asSeconds(), ne tupi potim, Hlib;
         timer += time;
 
-        sf::Event event;
-        while (window.pollEvent(event))
+        while (const std::optional event = window.pollEvent())
         {
-            switch (event.type) {
-            case sf::Event::Closed : window.close(); break;
-            case sf::Event::KeyPressed:
-                switch (event.key.code)
+            if(event->is<sf::Event::Closed>()) window.close();
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+                switch (keyPressed->code)
                 {
-                case sf::Keyboard::Left: 
-                    if (snake.previousDirection != Snake::NONE) snake.nextDirection = Snake::LEFT; break;
-                case sf::Keyboard::Right: snake.nextDirection = Snake::RIGHT; break;
-                case sf::Keyboard::Up: snake.nextDirection = Snake::UP; break;
-                case sf::Keyboard::Down: snake.nextDirection = Snake::DOWN; break;
+                    case sf::Keyboard::Key::Left:
+                        if (snake.previousDirection != Snake::NONE) snake.nextDirection = Snake::LEFT; break;
+                    case sf::Keyboard::Key::Right: snake.nextDirection = Snake::RIGHT; break;
+                    case sf::Keyboard::Key::Up: snake.nextDirection = Snake::UP; break;
+                    case sf::Keyboard::Key::Down: snake.nextDirection = Snake::DOWN; break;
                 }
-            default: break;
-            }
         }
 
-        if (snake.nextDirection != snake.direction && snake.nextDirection % 2 != snake.previousDirection % 2) {
+        if (snake.canUpdateDirection()) {
             snake.direction = snake.nextDirection;
             playSound(moveSoundBuffer);
         }
@@ -69,18 +65,17 @@ void Game::Start(sf::RenderWindow& window)
         if (timer >= delay) {
             timer = 0;
             snake.move();
-            if (snake.checkCollision()) {
+            if (snake.hasCollided()) {
                 playSound(gameOverSoundBuffer);
                 snake.setDefaults();
-                apple.genCords();
+                apple.generateNewPosition();
                 sf::sleep(sf::seconds(0.5));
                 soundsArray.clear();
                 return;
             }
             snake.updateVertexArray();
-            if (snake.segments[0].x == apple.x
-                && snake.segments[0].y == apple.y) {
-                apple.genCords();
+            if (apple.isEaten()) {
+                apple.generateNewPosition();
                 playSound(eatSoundBuffer);
                 snake.grow();
             }
@@ -93,9 +88,9 @@ void Game::Start(sf::RenderWindow& window)
     }
 }
 
-Game::Game() : apple(snake) {  
-    showBackground();
-    eatSoundBuffer.loadFromFile("Resources/Sounds/sound_food.ogg");
-    gameOverSoundBuffer.loadFromFile("Resources/Sounds/sound_gameover.ogg");
-    moveSoundBuffer.loadFromFile("Resources/Sounds/sound_move.ogg");
+Game::Game() : apple(snake), someSound(moveSoundBuffer) {  
+    createBackground();
+    if (!eatSoundBuffer.loadFromFile("Resources/Sounds/sound_food.ogg")) return;
+    if (!gameOverSoundBuffer.loadFromFile("Resources/Sounds/sound_gameover.ogg")) return;
+    if (!moveSoundBuffer.loadFromFile("Resources/Sounds/sound_move.ogg")) return;
 }

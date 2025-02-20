@@ -3,8 +3,8 @@
 #include <SFML/Audio.hpp>
 
 const int size = 40;
-constexpr int width = 17 * size;
-constexpr int height = 15 * size;
-constexpr int gridX = width / size;
-constexpr int gridY = height / size;
+constexpr int gridX = 17;
+constexpr int gridY = 15;
+constexpr int width = gridX * size;
+constexpr int height = gridY * size;
 constexpr int vertexGrid = gridX * gridY * 6;

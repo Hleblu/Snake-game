@@ -1,7 +1,6 @@
 #pragma once
 #include "constants.h"
 #include "apple.h"
-#include <deque>
 
 class Game 
 {

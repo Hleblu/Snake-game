@@ -1,6 +1,6 @@
 #pragma once
 #include "constants.h"
-#include <vector>
+#include <deque>
 #include <unordered_set>
 
 class Snake : public sf::Drawable
@@ -23,7 +23,7 @@ class Snake : public sf::Drawable
     sf::Color segmentColor = { 41, 74, 242 };
     sf::VertexArray segmentsVertices;
     float colorDecrementStep;
-    std::vector<Segment> segments;
+    std::deque<Segment> segments;
     std::unordered_set<Segment, SegmentHash> segmentsSet;
     enum Direction {
         NONE = -1,
@@ -34,7 +34,7 @@ class Snake : public sf::Drawable
     } direction, previousDirection, nextDirection;
 
     Snake();
-    void setDefaults();
+    void restoreDefaultValues();
     bool hasCollided();
     void grow();
     void move();

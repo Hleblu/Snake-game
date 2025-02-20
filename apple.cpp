@@ -8,12 +8,14 @@ Apple::Apple(Snake& Snake) : snake(&Snake), rect(sf::Vector2f(size, size)), gen(
 
 void Apple::generateNewPosition()
 {
-    x = distX(gen);
-    y = distY(gen);
-
-    if (snake->segmentsSet.count({ x,y }) > 0 
-        || x == snake->segments[0].x && y == snake->segments[0].y) { generateNewPosition(); return; }
-    else rect.setPosition({ x * size, y * size });
+    if (gridX * gridY == snake->segments.size()) return;
+    snake->segmentsSet.insert(snake->segments[0]);
+    do {
+        x = distX(gen);
+        y = distY(gen);
+    } while (snake->segmentsSet.count({ x,y }) != 0);
+    snake->segmentsSet.erase(snake->segments[0]);
+    rect.setPosition({ x * size, y * size });
 }
 
 bool Apple::isEaten()

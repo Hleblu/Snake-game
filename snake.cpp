@@ -2,10 +2,10 @@
 
 Snake::Snake()
 {
-    setDefaults();
+    restoreDefaultValues();
 }
 
-void Snake::setDefaults()
+void Snake::restoreDefaultValues()
 {
     segments = {
         {gridX / 2, gridY / 2},
@@ -40,9 +40,8 @@ void Snake::move()
 
     segmentsSet.erase(segments.back());
     segmentsSet.insert(segments.front());
-    for (int i = segments.size() - 1; i > 0; --i) {
-        segments[i] = segments[i - 1];
-    }
+    segments.pop_back();
+    segments.push_front(segments.front());
 
     switch (direction) {
     case RIGHT: segments[0].x++; break;

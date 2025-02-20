@@ -67,7 +67,7 @@ void Game::start(sf::RenderWindow& window)
             snake.move();
             if (snake.hasCollided()) {
                 playSound(gameOverSoundBuffer);
-                snake.setDefaults();
+                snake.restoreDefaultValues();
                 apple.generateNewPosition();
                 sf::sleep(sf::seconds(0.5));
                 soundsArray.clear();

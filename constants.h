@@ -7,4 +7,4 @@ constexpr int gridX = 17;
 constexpr int gridY = 15;
 constexpr int width = gridX * size;
 constexpr int height = gridY * size;
-constexpr int vertexGrid = gridX * gridY * 6;
+constexpr int checkboardVerticesCount = gridX * gridY * 3 + 3;

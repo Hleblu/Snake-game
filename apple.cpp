@@ -20,7 +20,7 @@ void Apple::generateNewPosition()
 
 bool Apple::isEaten()
 {
-    return (x == snake->segments[0].x && y == snake->segments[0].y) ? true : false;
+    return x == snake->segments[0].x && y == snake->segments[0].y;
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const

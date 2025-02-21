@@ -3,14 +3,14 @@
 void Game::createBackground()
 {
     backgroundVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
-    backgroundVertices.resize(vertexGrid);
+    backgroundVertices.resize(checkboardVerticesCount);
     for (int x = 0; x < gridX; ++x) {
         for (int y = 0; y < gridY; ++y) {
-            if ((x + y) % 2 == 0) { 
+            if ((x ^ y) & 1) { 
                 float posX = x * size;
                 float posY = y * size;
 
-                sf::Vertex* triangles = &backgroundVertices[(x + y * gridX) * 6];
+                sf::Vertex* triangles = &backgroundVertices[(x + y * gridX) * 3];
                 triangles[0].position = sf::Vector2f(posX, posY);
                 triangles[1].position = sf::Vector2f(posX + size, posY);
                 triangles[2].position = sf::Vector2f(posX + size, posY + size);
@@ -18,12 +18,9 @@ void Game::createBackground()
                 triangles[4].position = sf::Vector2f(posX, posY + size);
                 triangles[5].position = sf::Vector2f(posX, posY);
 
-                triangles[0].color = sf::Color(172, 206, 94);
-                triangles[1].color = sf::Color(172, 206, 94);
-                triangles[2].color = sf::Color(172, 206, 94);
-                triangles[3].color = sf::Color(172, 206, 94);
-                triangles[4].color = sf::Color(172, 206, 94);
-                triangles[5].color = sf::Color(172, 206, 94);
+                for (int i = 0; i < 6; ++i) {
+                    triangles[i].color = sf::Color(172, 206, 94);
+                }
             }
         }
     }

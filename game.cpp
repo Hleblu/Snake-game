@@ -1,29 +1,11 @@
 #include "game.h"
 
-void Game::createBackground()
+void Game::initializeBackground()
 {
-    backgroundVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
-    backgroundVertices.resize(checkboardVerticesCount);
-    for (int x = 0; x < gridX; ++x) {
-        for (int y = 0; y < gridY; ++y) {
-            if ((x ^ y) & 1) { 
-                float posX = x * size;
-                float posY = y * size;
-
-                sf::Vertex* triangles = &backgroundVertices[(x + y * gridX) * 3];
-                triangles[0].position = sf::Vector2f(posX, posY);
-                triangles[1].position = sf::Vector2f(posX + size, posY);
-                triangles[2].position = sf::Vector2f(posX + size, posY + size);
-                triangles[3].position = sf::Vector2f(posX + size, posY + size);
-                triangles[4].position = sf::Vector2f(posX, posY + size);
-                triangles[5].position = sf::Vector2f(posX, posY);
-
-                for (int i = 0; i < 6; ++i) {
-                    triangles[i].color = sf::Color(172, 206, 94);
-                }
-            }
-        }
-    }
+	background.setSize({ width, height });
+    if (!checkboardShader.loadFromFile("checkered.frag", sf::Shader::Type::Fragment)) return;
+    checkboardShader.setUniform("gridSize", sf::Vector2f(gridX, gridY));
+    checkboardShader.setUniform("windowSize", sf::Vector2f(width, height));
 }
 
 void Game::playSound(sf::SoundBuffer& buffer) {
@@ -77,8 +59,8 @@ void Game::start(sf::RenderWindow& window)
                 snake.grow();
             }
         }
-        window.clear(sf::Color(114, 183, 106));
-        window.draw(backgroundVertices);
+        window.clear();
+        window.draw(background, &checkboardShader);
         window.draw(apple);
         window.draw(snake);
         window.display();
@@ -86,7 +68,7 @@ void Game::start(sf::RenderWindow& window)
 }
 
 Game::Game() : apple(snake), someSound(moveSoundBuffer) {  
-    createBackground();
+    initializeBackground();
     if (!eatSoundBuffer.loadFromFile("Resources/Sounds/sound_food.ogg")) return;
     if (!gameOverSoundBuffer.loadFromFile("Resources/Sounds/sound_gameover.ogg")) return;
     if (!moveSoundBuffer.loadFromFile("Resources/Sounds/sound_move.ogg")) return;

@@ -149,6 +149,9 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="snake.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="checkered.frag" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

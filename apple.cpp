@@ -1,5 +1,4 @@
 #include "apple.h"
-#include <iostream>
 
 Apple::Apple(Snake& Snake) : snake(&Snake), rect(sf::Vector2f(size, size)), gen(rd()), distX(0, gridX - 1), distY(0, gridY - 1) {
     generateNewPosition();

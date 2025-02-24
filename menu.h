@@ -15,7 +15,6 @@ class Menu
 	sf::Font mainFont;
 	sf::Text title;
 	int fontSize = width / 20 + height / 20;
-	int selectedItem;
 
 	void drawItems(sf::RenderWindow& window);
 public:

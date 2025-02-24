@@ -10,7 +10,7 @@ void Game::initializeBackground()
 
 void Game::playSound(sf::SoundBuffer& buffer) {
     someSound.setBuffer(buffer);
-    soundsArray.push_front(someSound);
+    soundsArray.emplace_front(std::move(someSound));
     soundsArray.front().play();
     while (!soundsArray.empty() && soundsArray.back().getStatus() != sf::Sound::Status::Playing) soundsArray.pop_back();
 }

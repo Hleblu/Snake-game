@@ -21,16 +21,14 @@ void Snake::restoreDefaultValues()
 
 bool Snake::hasCollided()
 {
-    if (segmentsSet.count(segments[0]) > 0) return true;
-
-    if (unsigned(segments[0].x) > gridX-1 || unsigned(segments[0].y) > gridY-1) return true;
-
-    return false;
+    return segmentsSet.count(segments[0]) > 0 
+        || unsigned(segments[0].x) > gridX - 1 
+        || unsigned(segments[0].y) > gridY - 1;
 }
 
 void Snake::grow()
 {
-    segments.push_back(segments.back());
+    segments.emplace_back(segments.back());
     colorDecrementStep = 242 / segments.size();
 }
 
@@ -41,7 +39,7 @@ void Snake::move()
     segmentsSet.erase(segments.back());
     segmentsSet.insert(segments.front());
     segments.pop_back();
-    segments.push_front(segments.front());
+    segments.emplace_front(segments.front());
 
     switch (direction) {
     case RIGHT: segments[0].x++; break;
@@ -55,7 +53,7 @@ void Snake::move()
 
 bool Snake::canUpdateDirection()
 {
-    return (nextDirection != direction && nextDirection % 2 != previousDirection % 2) ? true : false;
+    return nextDirection != direction && nextDirection % 2 != previousDirection % 2;
 }
 
 void Snake::updateVertexArray()

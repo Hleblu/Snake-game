@@ -1,6 +1,6 @@
 #include "menu.h"
 
-Menu::Menu() : selectedItem(0), title(mainFont)
+Menu::Menu() : title(mainFont)
 {
     if(!mainFont.openFromFile("Resources/Tiny5-Regular.ttf")) return;
 
@@ -43,20 +43,17 @@ void Menu::showMenu(sf::RenderWindow& window)
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) window.close();
 
-            mousePos = sf::Mouse::getPosition(window);
+            if(event->is<sf::Event::MouseMoved>()) mousePos = sf::Mouse::getPosition(window);
 
             for (int i = 0; i < items.size();++i) {
                 if (items[i].button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
-                    if (selectedItem != i) {
-                        selectedItem = i;
-                    }
-                    items[selectedItem].button.setFillColor(sf::Color(172, 206, 94));
+                    items[i].button.setFillColor(sf::Color(172, 206, 94));
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                        items[selectedItem].action(window);
+                        items[i].action(window);
                     }
                     break;
                 }
-                if (items[selectedItem].button.getFillColor() != sf::Color::White) items[selectedItem].button.setFillColor(sf::Color::White);
+                if (items[i].button.getFillColor() != sf::Color::White) items[i].button.setFillColor(sf::Color::White);
             }
         }
 

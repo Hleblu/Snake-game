@@ -2,21 +2,32 @@
 
 void Game::initializeBackground()
 {
-	background.setSize({ width, height });
+    sf::Shader checkboardShader;
     if (!checkboardShader.loadFromFile("checkered.frag", sf::Shader::Type::Fragment)) return;
     checkboardShader.setUniform("gridSize", sf::Vector2f(gridX, gridY));
-    checkboardShader.setUniform("windowSize", sf::Vector2f(width, height));
+    checkboardShader.setUniform("windowSize", sf::Vector2f(width/2, height/2));
+    sf::RenderTexture texture({ width/2, height/2 });
+    sf::RectangleShape someRectangle({ width/2, height/2 });
+    texture.clear();
+    texture.draw(someRectangle, &checkboardShader);
+    texture.display();
+    backgroundTexture = texture.getTexture();
 }
 
 void Game::playSound(sf::SoundBuffer& buffer) {
     someSound.setBuffer(buffer);
     soundsArray.emplace_front(std::move(someSound));
     soundsArray.front().play();
+}
+
+void Game::clearSoundsArray() {
     while (!soundsArray.empty() && soundsArray.back().getStatus() != sf::Sound::Status::Playing) soundsArray.pop_back();
 }
 
 void Game::start(sf::RenderWindow& window)
 {
+    static sf::Sprite background(backgroundTexture);
+    background.setScale({ 2,2 });
     while (window.isOpen())
     {
         time = clock.restart().asSeconds(); // as described in the SFML article, returns time like clock.getElapsedTime().asSeconds(), ne tupi potim, Hlib;
@@ -43,6 +54,7 @@ void Game::start(sf::RenderWindow& window)
 
         if (timer >= delay) {
             timer = 0;
+            clearSoundsArray();
             snake.move();
             if (snake.hasCollided()) {
                 playSound(gameOverSoundBuffer);
@@ -60,7 +72,7 @@ void Game::start(sf::RenderWindow& window)
             }
         }
         window.clear();
-        window.draw(background, &checkboardShader);
+        window.draw(background);
         window.draw(apple);
         window.draw(snake);
         window.display();

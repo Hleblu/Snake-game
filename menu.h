@@ -7,10 +7,12 @@ class Menu
 	struct menuItem {
 		sf::Text button;
 		std::function<void(sf::RenderWindow&)> action;
+
+		menuItem(sf::Text button, std::function<void(sf::RenderWindow&)> action) : button(button), action(action) {}
 	};
 
 	std::vector<menuItem> items;
-	std::vector<std::string> label;
+	std::string label;
 	sf::Vector2i mousePos;
 	sf::Font mainFont;
 	sf::Text title;

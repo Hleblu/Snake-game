@@ -26,7 +26,7 @@ void Menu::createItem(const std::string& label, std::function<void(sf::RenderWin
     button.setCharacterSize(fontSize);
     button.setString(label);
     button.setPosition({ width / 10, height / 3 + fontSize * static_cast<float>(items.size()) });
-    items.push_back({ button, action });
+    items.emplace_back(std::move(button), std::move(action));
 }
 
 void Menu::drawItems(sf::RenderWindow& window)

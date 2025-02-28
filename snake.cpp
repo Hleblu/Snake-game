@@ -3,6 +3,7 @@
 Snake::Snake()
 {
     segmentsVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
+    segmentsSet.reserve(gridX * gridY - 1);
     restoreDefaultValues();
 }
 

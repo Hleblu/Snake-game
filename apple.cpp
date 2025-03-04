@@ -19,7 +19,7 @@ void Apple::generateNewPosition()
 
 bool Apple::isEaten()
 {
-    return x == snake->segments[0].x && y == snake->segments[0].y;
+    return rect.getGlobalBounds().contains({snake->previousSegments[0].x * size, snake->previousSegments[0].y * size});
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const

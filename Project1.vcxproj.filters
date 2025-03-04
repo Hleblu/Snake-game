@@ -33,6 +33,21 @@
     <ClCompile Include="menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Resources\font.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\icon.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Sounds\sound_food.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Sounds\sound_gameover.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Sounds\sound_move.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h">

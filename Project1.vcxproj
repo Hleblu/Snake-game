@@ -140,6 +140,11 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="Resources\font.c" />
+    <ClCompile Include="Resources\icon.c" />
+    <ClCompile Include="Resources\Sounds\sound_food.c" />
+    <ClCompile Include="Resources\Sounds\sound_gameover.c" />
+    <ClCompile Include="Resources\Sounds\sound_move.c" />
     <ClCompile Include="snake.cpp" />
   </ItemGroup>
   <ItemGroup>

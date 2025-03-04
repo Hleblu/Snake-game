@@ -24,6 +24,7 @@ class Snake : public sf::Drawable
     sf::VertexArray segmentsVertices;
     float colorDecrementStep;
     std::deque<Segment> segments;
+    std::deque<Segment> previousSegments;
     std::unordered_set<Segment, SegmentHash> segmentsSet;
     enum Direction {
         NONE = -1,
@@ -39,7 +40,8 @@ class Snake : public sf::Drawable
     void grow();
     void move();
     bool canUpdateDirection();
-    void updateVertexArray();
+    void updateColors();
+    void updateVertexArray(float dt = 0);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     friend class Game;

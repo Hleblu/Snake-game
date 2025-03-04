@@ -14,9 +14,11 @@ void Snake::restoreDefaultValues()
         {gridX / 2 - 1, gridY / 2},
         {gridX / 2 - 2, gridY / 2}
     };
+    previousSegments = segments;
     segmentsSet = { segments[1], segments[2] };
     direction = NONE, previousDirection = NONE, nextDirection = NONE;
     colorDecrementStep = 242 / segments.size();
+    updateColors();
     updateVertexArray();
 }
 
@@ -30,13 +32,16 @@ bool Snake::hasCollided()
 void Snake::grow()
 {
     segments.emplace_back(segments.back());
+    previousSegments.emplace_back(previousSegments.back());
     colorDecrementStep = 242 / segments.size();
+    updateColors();
 }
 
 void Snake::move()
 {
     if (direction == NONE) return;
-
+    
+    previousSegments = segments;
     segmentsSet.erase(segments.back());
     segmentsSet.insert(segments.front());
     segments.pop_back();
@@ -57,23 +62,26 @@ bool Snake::canUpdateDirection()
     return nextDirection != direction && nextDirection % 2 != previousDirection % 2;
 }
 
-void Snake::updateVertexArray()
-{
+void Snake::updateColors() {
     if (segmentsVertices.getVertexCount() != segments.size() * 6) {
-		segmentsVertices.resize(segments.size() * 6);
+        segmentsVertices.resize(segments.size() * 6);
 
         sf::Color color = segmentColor;
         for (int i = 0; i < segments.size(); ++i) {
             sf::Vertex* triangles = &segmentsVertices[i * 6];
-			for (int j = 0; j < 6; ++j) {
-				triangles[j].color = color;
-			}
+            for (int j = 0; j < 6; ++j) {
+                triangles[j].color = color;
+            }
             color.b -= colorDecrementStep;
         }
     }
+}
+
+void Snake::updateVertexArray(float dt)
+{
     for (int i = 0; i < segments.size(); ++i) {
-        float posX = segments[i].x * size;
-        float posY = segments[i].y * size;
+        float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * size;
+        float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * size;
 
         sf::Vertex* triangles = &segmentsVertices[i * 6];
         triangles[0].position = sf::Vector2f(posX, posY);

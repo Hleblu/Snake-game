@@ -2,13 +2,17 @@
 
 Menu::Menu() : title(mainFont)
 {
-    if(!mainFont.openFromFile("Resources/Tiny5-Regular.ttf")) return;
+    if(!mainFont.openFromMemory(Tiny5_Regular_ttf, Tiny5_Regular_ttf_len)) return;
 
     title.setFillColor(sf::Color::White);
     title.setOutlineThickness(2);
     title.setOutlineColor(sf::Color::Black);
     title.setCharacterSize(width / 8);
     title.setFont(mainFont);
+}
+
+void Menu::reserveSpace(int size) {
+    items.reserve(size);
 }
 
 void Menu::setTitle(const std::string& titleText)

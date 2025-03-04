@@ -9,10 +9,11 @@ int main()
     window.setVerticalSyncEnabled(true);
 
     sf::Image icon;
-    if(!icon.loadFromFile("Resources/Snake.png")) return -1;
+    if(!icon.loadFromMemory(snake_png, snake_png_len)) return -1;
     window.setIcon({ icon.getSize().x, icon.getSize().y }, icon.getPixelsPtr());
 
     Menu menu;
+    menu.reserveSpace(3);
     menu.setTitle("SNAKE GAME");
     menu.createItem("Start", [&game, &window](sf::RenderWindow&) { game.start(window); });
     menu.createItem("Exit", [&window](sf::RenderWindow&) { window.close(); });

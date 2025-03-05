@@ -1,6 +1,9 @@
 #pragma once
 #include "constants.h"
 #include "apple.h"
+#include "Resources/Sounds/sound_food.c"
+#include "Resources/Sounds/sound_move.c"
+#include "Resources/Sounds/sound_gameover.c"
 
 class Game 
 {
@@ -11,7 +14,9 @@ class Game
 	sf::Texture backgroundTexture;
     Snake snake;
     Apple apple;
+    sf::Color mainColor, secondColor;
     double time = 0, timer = 0, delay = 0.115, animationTimer = 0;
+
     bool isGameOver = false;
     void playSound(sf::SoundBuffer& buffer);
 	void clearSoundsArray();

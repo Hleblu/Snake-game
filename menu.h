@@ -1,6 +1,7 @@
 #pragma once
 #include "constants.h"
 #include <functional>
+#include "Resources/font.c"
 
 class Menu 
 {
@@ -17,6 +18,7 @@ class Menu
 	sf::Font mainFont;
 	sf::Text title;
 	int fontSize = width / 20 + height / 20;
+	sf::Color mainColor, secondColor;
 
 	void drawItems(sf::RenderWindow& window);
 public:

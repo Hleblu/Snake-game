@@ -9,6 +9,9 @@ Menu::Menu() : title(mainFont)
     title.setOutlineColor(sf::Color::Black);
     title.setCharacterSize(width / 8);
     title.setFont(mainFont);
+
+    mainColor = { 114, 183, 106 };
+    secondColor = { 172, 206, 94 };
 }
 
 void Menu::reserveSpace(int size) {
@@ -30,6 +33,7 @@ void Menu::createItem(const std::string& label, std::function<void(sf::RenderWin
     button.setCharacterSize(fontSize);
     button.setString(label);
     button.setPosition({ width / 10, height / 3 + fontSize * static_cast<float>(items.size()) });
+
     items.emplace_back(std::move(button), std::move(action));
 }
 
@@ -51,7 +55,7 @@ void Menu::showMenu(sf::RenderWindow& window)
 
             for (auto& item : items) {
                 if (item.button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
-                    if (item.button.getFillColor() == sf::Color::White) item.button.setFillColor(sf::Color(172, 206, 94));
+                    if (item.button.getFillColor() == sf::Color::White) item.button.setFillColor(secondColor);
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                         item.action(window);
                     }
@@ -61,7 +65,7 @@ void Menu::showMenu(sf::RenderWindow& window)
             }
         }
 
-        window.clear(sf::Color(114, 183, 106));
+        window.clear(mainColor);
         drawItems(window);
         window.display();
     }

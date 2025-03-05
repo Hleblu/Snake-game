@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "game.h"
+#include "Resources/icon.c"
 
 int main()
 {

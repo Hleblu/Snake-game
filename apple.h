@@ -10,6 +10,7 @@ class Apple : public sf::Drawable
 	std::random_device rd;
 	std::mt19937 gen;
 	std::uniform_int_distribution<> distX, distY;
+	sf::Color color;
 	float x, y;
 
 	Apple(Snake& snake);

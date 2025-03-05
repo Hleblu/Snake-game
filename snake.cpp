@@ -16,9 +16,11 @@ void Snake::restoreDefaultValues()
     };
     previousSegments = segments;
     segmentsSet = { segments[0], segments[1], segments[2] };
+
     direction = NONE, previousDirection = NONE, nextDirection = NONE;
-    colorDecrementStep = 242 / segments.size();
+    colorDecrementStep = segmentColor.b / segments.size();
     firstMove = true;
+
     updateColors();
     updateVertexArray();
 }
@@ -34,7 +36,7 @@ void Snake::grow()
 {
     segments.emplace_back(segments.back());
     previousSegments.emplace_back(previousSegments.back());
-    colorDecrementStep = 242 / segments.size();
+    colorDecrementStep = segmentColor.b / segments.size();
     updateColors();
 }
 
@@ -56,6 +58,7 @@ void Snake::move()
     case DOWN: segments[0].y++; break;
     default: break;
     }
+
     segmentsSet.insert(segments.front());
     previousDirection = direction;
 }

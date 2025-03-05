@@ -6,23 +6,30 @@ void Game::initializeBackground()
     if (!checkboardShader.loadFromMemory(R"(
         uniform vec2 gridSize;
         uniform vec2 windowSize;
+        uniform vec3 fColor;
+        uniform vec3 sColor;
 
         void main() {
             vec2 cell = floor(gl_FragCoord.xy * gridSize / windowSize);
             float checker = mod(cell.x + cell.y, 2.0);
 
-            vec3 finalColor = mix(vec3(0.675, 0.808, 0.369), vec3(0.447, 0.718, 0.416), checker);
+            vec3 finalColor = mix(fColor, sColor, checker);
 
             gl_FragColor = vec4(finalColor, 1.0);
         }   
 )", sf::Shader::Type::Fragment)) return;
     checkboardShader.setUniform("gridSize", sf::Vector2f(gridX, gridY));
-    checkboardShader.setUniform("windowSize", sf::Vector2f(width/2, height/2));
+    checkboardShader.setUniform("windowSize", sf::Vector2f(width / 2, height / 2));
+    checkboardShader.setUniform("fColor", sf::Vector3f(mainColor.r / 255.0f, mainColor.g / 255.0f, mainColor.b / 255.0f));
+    checkboardShader.setUniform("sColor", sf::Vector3f(secondColor.r / 255.0f, secondColor.g / 255.0f, secondColor.b / 255.0f));
+
     sf::RenderTexture texture({ width/2, height/2 });
     sf::RectangleShape someRectangle({ width/2, height/2 });
+
     texture.clear();
     texture.draw(someRectangle, &checkboardShader);
     texture.display();
+
     backgroundTexture = texture.getTexture();
 }
 
@@ -50,7 +57,7 @@ void Game::start(sf::RenderWindow& window)
     background.setScale({ 2,2 });
     while (window.isOpen() && !isGameOver)
     {
-        time = clock.restart().asSeconds(); // as described in the SFML article, returns time like clock.getElapsedTime().asSeconds(), ne tupi potim, Hlib;
+        time = clock.restart().asSeconds();
         timer += time;
         animationTimer += time;
 
@@ -61,7 +68,7 @@ void Game::start(sf::RenderWindow& window)
                 switch (keyPressed->code)
                 {
                     case sf::Keyboard::Key::Left:
-                        if (snake.previousDirection != Snake::NONE) snake.nextDirection = Snake::LEFT; break;
+                        if (!snake.firstMove) snake.nextDirection = Snake::LEFT; break;
                     case sf::Keyboard::Key::Right: snake.nextDirection = Snake::RIGHT; break;
                     case sf::Keyboard::Key::Up: snake.nextDirection = Snake::UP; break;
                     case sf::Keyboard::Key::Down: snake.nextDirection = Snake::DOWN; break;
@@ -102,7 +109,11 @@ void Game::start(sf::RenderWindow& window)
 }
 
 Game::Game() : apple(snake), someSound(moveSoundBuffer) {  
+    mainColor = { 114, 183, 106 };
+    secondColor = { 172, 206, 94 };
+
     initializeBackground();
+
     if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len)) return;
     if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len)) return;
     if (!moveSoundBuffer.loadFromMemory(sound_move_ogg, sound_move_ogg_len)) return;

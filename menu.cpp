@@ -49,15 +49,15 @@ void Menu::showMenu(sf::RenderWindow& window)
 
             if(event->is<sf::Event::MouseMoved>()) mousePos = sf::Mouse::getPosition(window);
 
-            for (int i = 0; i < items.size();++i) {
-                if (items[i].button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
-                    items[i].button.setFillColor(sf::Color(172, 206, 94));
+            for (auto& item : items) {
+                if (item.button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
+                    if (item.button.getFillColor() == sf::Color::White) item.button.setFillColor(sf::Color(172, 206, 94));
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                        items[i].action(window);
+                        item.action(window);
                     }
                     break;
                 }
-                if (items[i].button.getFillColor() != sf::Color::White) items[i].button.setFillColor(sf::Color::White);
+                else if (item.button.getFillColor() != sf::Color::White) item.button.setFillColor(sf::Color::White);
             }
         }
 

@@ -25,7 +25,8 @@ class Snake : public sf::Drawable
     float colorDecrementStep;
     std::deque<Segment> segments;
     std::deque<Segment> previousSegments;
-    std::unordered_set<Segment, SegmentHash> segmentsSet;
+    std::unordered_multiset<Segment, SegmentHash> segmentsSet;
+    bool firstMove;
     enum Direction {
         NONE = -1,
         LEFT = 1,

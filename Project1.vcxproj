@@ -152,10 +152,17 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="snake.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="checkered.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\snake.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

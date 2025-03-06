@@ -3,7 +3,7 @@
 Snake::Snake()
 {
     segmentsVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
-    segmentsSet.reserve(gridX * gridY - 1);
+    segmentsSet.reserve(gridX * gridY);
     restoreDefaultValues();
 }
 
@@ -18,8 +18,10 @@ void Snake::restoreDefaultValues()
     segmentsSet = { segments[0], segments[1], segments[2] };
 
     direction = NONE, previousDirection = NONE, nextDirection = NONE;
-    colorDecrementStep = segmentColor.b / segments.size();
     firstMove = true;
+
+    segmentsVertices.clear();
+    segmentsVertices.resize(gridX * gridY);
 
     updateColors();
     updateVertexArray();
@@ -36,7 +38,6 @@ void Snake::grow()
 {
     segments.emplace_back(segments.back());
     previousSegments.emplace_back(previousSegments.back());
-    colorDecrementStep = segmentColor.b / segments.size();
     updateColors();
 }
 
@@ -69,17 +70,14 @@ bool Snake::canUpdateDirection()
 }
 
 void Snake::updateColors() {
-    if (segmentsVertices.getVertexCount() != segments.size() * 6) {
-        segmentsVertices.resize(segments.size() * 6);
-
-        sf::Color color = segmentColor;
-        for (int i = 0; i < segments.size(); ++i) {
-            sf::Vertex* triangles = &segmentsVertices[i * 6];
-            for (int j = 0; j < 6; ++j) {
-                triangles[j].color = color;
-            }
-            color.b -= colorDecrementStep;
+    colorDecrementStep = segmentColor.b / segments.size();
+    sf::Color color = segmentColor;
+    for (int i = 0; i < segments.size(); ++i) {
+        sf::Vertex* triangles = &segmentsVertices[i * 6];
+        for (int j = 0; j < 6; ++j) {
+            triangles[j].color = color;
         }
+        color.b -= colorDecrementStep;
     }
 }
 

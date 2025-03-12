@@ -15,7 +15,7 @@ class Game
     Snake snake;
     Apple apple;
     sf::Color mainColor, secondColor;
-    double time = 0, timer = 0, delay = 0.115, animationTimer = 0;
+    float time = 0, timer = 0, animationTimer = 0, delay = 0.115;
 
     bool isGameOver = false;
     void playSound(sf::SoundBuffer& buffer);
@@ -23,6 +23,7 @@ class Game
     void initializeBackground();
     void restoreDefaults();
 public:
+    void changeDelay(float d);
     void start(sf::RenderWindow& window);
     Game();
 };

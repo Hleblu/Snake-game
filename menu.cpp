@@ -37,6 +37,11 @@ void Menu::createItem(const std::string& label, std::function<void(sf::RenderWin
     items.emplace_back(std::move(button), std::move(action));
 }
 
+void Menu::changeText(const std::string& label, int index) 
+{
+    items[index].button.setString(label);
+}
+
 void Menu::drawItems(sf::RenderWindow& window)
 {
     window.draw(title);
@@ -56,8 +61,11 @@ void Menu::showMenu(sf::RenderWindow& window)
             for (auto& item : items) {
                 if (item.button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
                     if (item.button.getFillColor() == sf::Color::White) item.button.setFillColor(secondColor);
-                    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                        item.action(window);
+                    if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
+                    {
+                        if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+                            item.action(window);
+                        }
                     }
                     break;
                 }

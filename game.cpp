@@ -33,6 +33,11 @@ void Game::initializeBackground()
     backgroundTexture = texture.getTexture();
 }
 
+void Game::changeDelay(float d)
+{
+    delay = d;
+}
+
 void Game::playSound(sf::SoundBuffer& buffer) {
     someSound.setBuffer(buffer);
     soundsArray.emplace_front(std::move(someSound));

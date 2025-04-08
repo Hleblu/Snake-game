@@ -24,7 +24,7 @@ void Menu::setTitle(const std::string& titleText)
     title.setPosition({ width / 10, height / 5 });
 }
 
-void Menu::createItem(const std::string& label, std::function<void(sf::RenderWindow&)> action)
+void Menu::createItem(const std::string& label, std::function<void()> action)
 {
     sf::Text button(mainFont);
     button.setFillColor(sf::Color::White);
@@ -64,7 +64,7 @@ void Menu::showMenu(sf::RenderWindow& window)
                     if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
                     {
                         if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-                            item.action(window);
+                            item.action();
                         }
                     }
                     break;

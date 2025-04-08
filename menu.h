@@ -7,9 +7,9 @@ class Menu
 {
 	struct menuItem {
 		sf::Text button;
-		std::function<void(sf::RenderWindow&)> action;
+		std::function<void()> action;
 
-		menuItem(sf::Text button, std::function<void(sf::RenderWindow&)> action) : button(button), action(action) {}
+		menuItem(sf::Text button, std::function<void()> action) : button(button), action(action) {}
 	};
 
 	std::vector<menuItem> items;
@@ -24,7 +24,7 @@ class Menu
 public:
 	Menu();
 	void changeText(const std::string& label, int index);
-	void createItem(const std::string& label, std::function<void(sf::RenderWindow&)> action);
+	void createItem(const std::string& label, std::function<void()> action);
 	void setTitle(const std::string& title);
 	void showMenu(sf::RenderWindow& window);
 	void reserveSpace(int size);

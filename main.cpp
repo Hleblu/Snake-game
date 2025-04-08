@@ -20,7 +20,7 @@ int main()
     Game game;
     sf::RenderWindow window(sf::VideoMode({ width, height }), "Snake", sf::Style::Titlebar | sf::Style::Close);
     window.setKeyRepeatEnabled(false);
-    window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(true);
 
     sf::Image icon;
     if(!icon.loadFromMemory(snake_png, snake_png_len)) return -1;
@@ -29,9 +29,9 @@ int main()
     Menu menu;
     menu.reserveSpace(3);
     menu.setTitle("SNAKE GAME");
-    menu.createItem("Start", [&game, &window](sf::RenderWindow&) { game.start(window); });
-    menu.createItem("Speed: Standart", [&game, &menu](sf::RenderWindow&) { changeSpeed(game, menu); });
-    menu.createItem("Exit", [&window](sf::RenderWindow&) { window.close(); });
+    menu.createItem("Start", [&game, &window]() { game.start(window); });
+    menu.createItem("Speed: Standart", [&game, &menu]() { changeSpeed(game, menu); });
+    menu.createItem("Exit", [&window]() { window.close(); });
     menu.showMenu(window);
 
     return 0;

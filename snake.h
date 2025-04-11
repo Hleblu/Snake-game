@@ -22,7 +22,6 @@ class Snake : public sf::Drawable
     };
 
     sf::VertexArray segmentsVertices;
-    float colorDecrementStep;
     std::deque<Segment> segments;
     std::deque<Segment> previousSegments;
     std::unordered_multiset<Segment, SegmentHash> segmentsSet;
@@ -35,6 +34,7 @@ class Snake : public sf::Drawable
         DOWN
     } direction, previousDirection, nextDirection;
 	Configuration* config;
+	sf::Shader colorShader;
 
     Snake(Configuration& config);
     void restoreDefaultValues();
@@ -42,7 +42,6 @@ class Snake : public sf::Drawable
     void grow();
     void move();
     bool canUpdateDirection();
-    void updateColors();
     void updateVertexArray(float dt = 0);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

@@ -81,13 +81,13 @@ void Game::start(sf::RenderWindow& window)
             }
             snake.updateVertexArray();
             if (apple.isEaten()) {
-                currentDelay *= 0.99;
+                currentDelay *= 0.99f;
                 apple.generateNewPosition();
                 playSound(eatSoundBuffer);
                 snake.grow();
             }
         }
-        else if (animationTimer >= 0.0322) /* 31 fps */ {
+        else if (animationTimer >= 0.0322f) /* 31 fps */ {
             snake.updateVertexArray(timer / currentDelay); 
             animationTimer = 0;
         }
@@ -95,7 +95,7 @@ void Game::start(sf::RenderWindow& window)
         window.clear(config->secondColor);
         window.draw(background);
         window.draw(apple);
-        window.draw(snake);
+        window.draw(snake, &snake.colorShader);
         window.display();
     }
     restoreDefaults();

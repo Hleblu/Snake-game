@@ -161,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="checkered.frag" />
+    <None Include="snakeColor.frag" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

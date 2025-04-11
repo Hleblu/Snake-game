@@ -1,24 +1,27 @@
 #include "apple.h"
 
-Apple::Apple(Snake& Snake) : snake(&Snake), rect(sf::Vector2f(size, size)), gen(rd()), distX(0, gridX - 1), distY(0, gridY - 1) {
+Apple::Apple(Snake& Snake) : snake(&Snake), config(snake->config) {
+	rect = sf::RectangleShape(sf::Vector2f(config->size, config->size));
+	gen = std::mt19937(rd());
+	distX = std::uniform_int_distribution<>(0, config->rows - 1);
+	distY = std::uniform_int_distribution<>(0, config->columns - 1);
     generateNewPosition();
-    color = { 233, 67, 37 };
-    rect.setFillColor(color);
+    rect.setFillColor(sf::Color(config->appleColor));
 }
 
 void Apple::generateNewPosition()
 {
-    if (gridX * gridY == snake->segments.size()) return;
+    if (config->rows * config->columns == snake->segments.size()) return;
     do {
         x = distX(gen);
         y = distY(gen);
     } while (snake->segmentsSet.count({ x,y }) != 0);
-    rect.setPosition({ x * size, y * size });
+    rect.setPosition({ x * config->size, y * config->size });
 }
 
 bool Apple::isEaten()
 {
-    return rect.getGlobalBounds().contains({snake->previousSegments[0].x * size, snake->previousSegments[0].y * size});
+    return rect.getGlobalBounds().contains({snake->previousSegments[0].x * config->size, snake->previousSegments[0].y * config->size});
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const

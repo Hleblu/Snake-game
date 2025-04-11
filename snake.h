@@ -1,5 +1,6 @@
 #pragma once
-#include "constants.h"
+#include <SFML/Graphics.hpp>
+#include "configuration.h"
 #include <deque>
 #include <unordered_set>
 
@@ -20,7 +21,6 @@ class Snake : public sf::Drawable
         }
     };
 
-    sf::Color segmentColor = { 41, 74, 242 };
     sf::VertexArray segmentsVertices;
     float colorDecrementStep;
     std::deque<Segment> segments;
@@ -34,8 +34,9 @@ class Snake : public sf::Drawable
         RIGHT,
         DOWN
     } direction, previousDirection, nextDirection;
+	Configuration* config;
 
-    Snake();
+    Snake(Configuration& config);
     void restoreDefaultValues();
     bool hasCollided();
     void grow();

@@ -1,5 +1,6 @@
 #pragma once
-#include "constants.h"
+#include <SFML/Graphics.hpp>
+#include "configuration.h"
 #include "snake.h"
 #include <random>
 
@@ -10,8 +11,8 @@ class Apple : public sf::Drawable
 	std::random_device rd;
 	std::mt19937 gen;
 	std::uniform_int_distribution<> distX, distY;
-	sf::Color color;
 	float x, y;
+	Configuration* config;
 
 	Apple(Snake& snake);
 	void generateNewPosition();

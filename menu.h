@@ -1,5 +1,6 @@
 #pragma once
-#include "constants.h"
+#include <SFML/Graphics.hpp>
+#include "configuration.h"
 #include <functional>
 #include "Resources/font.c"
 
@@ -14,15 +15,14 @@ class Menu
 
 	std::vector<menuItem> items;
 	std::string label;
-	sf::Vector2i mousePos;
 	sf::Font mainFont;
 	sf::Text title;
-	int fontSize = width / 20 + height / 20;
-	sf::Color mainColor, secondColor;
+	unsigned int fontSize;
+	Configuration* config;
 
 	void drawItems(sf::RenderWindow& window);
 public:
-	Menu();
+	Menu(Configuration& config);
 	void changeText(const std::string& label, int index);
 	void createItem(const std::string& label, std::function<void()> action);
 	void setTitle(const std::string& title);

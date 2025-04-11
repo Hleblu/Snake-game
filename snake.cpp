@@ -1,18 +1,21 @@
 #include "snake.h"
 
-Snake::Snake()
+Snake::Snake(Configuration& config) : config(&config)
 {
     segmentsVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
-    segmentsSet.reserve(gridX * gridY);
+    segmentsSet.reserve(config.rows * config.columns);
     restoreDefaultValues();
 }
 
 void Snake::restoreDefaultValues()
 {
+    float centerX = config->rows / 2;
+    float centerY = config->columns / 2;
+
     segments = {
-        {gridX / 2, gridY / 2},
-        {gridX / 2 - 1, gridY / 2},
-        {gridX / 2 - 2, gridY / 2}
+        {centerX, centerY},
+        {centerX - 1, centerY},
+        {centerX - 2, centerY}
     };
     previousSegments = segments;
     segmentsSet = { segments[0], segments[1], segments[2] };
@@ -21,7 +24,7 @@ void Snake::restoreDefaultValues()
     firstMove = true;
 
     segmentsVertices.clear();
-    segmentsVertices.resize(gridX * gridY);
+    segmentsVertices.resize(config->rows * config->columns);
 
     updateColors();
     updateVertexArray();
@@ -30,8 +33,8 @@ void Snake::restoreDefaultValues()
 bool Snake::hasCollided()
 {
     return segmentsSet.count(segments[0]) > 1 
-        || unsigned(segments[0].x) > gridX - 1 
-        || unsigned(segments[0].y) > gridY - 1;
+        || unsigned(segments[0].x) > config->rows - 1 
+        || unsigned(segments[0].y) > config->columns - 1;
 }
 
 void Snake::grow()
@@ -70,8 +73,8 @@ bool Snake::canUpdateDirection()
 }
 
 void Snake::updateColors() {
-    colorDecrementStep = segmentColor.b / segments.size();
-    sf::Color color = segmentColor;
+    colorDecrementStep = 100 / segments.size();
+    sf::Color color = config->snakeColor;
     for (int i = 0; i < segments.size(); ++i) {
         sf::Vertex* triangles = &segmentsVertices[i * 6];
         for (int j = 0; j < 6; ++j) {
@@ -84,15 +87,15 @@ void Snake::updateColors() {
 void Snake::updateVertexArray(float dt)
 {
     for (int i = 0; i < segments.size(); ++i) {
-        float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * size;
-        float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * size;
+        float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * config->size;
+        float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * config->size;
 
         sf::Vertex* triangles = &segmentsVertices[i * 6];
         triangles[0].position = sf::Vector2f(posX, posY);
-        triangles[1].position = sf::Vector2f(posX + size, posY);
-        triangles[2].position = sf::Vector2f(posX + size, posY + size);
-        triangles[3].position = sf::Vector2f(posX + size, posY + size);
-        triangles[4].position = sf::Vector2f(posX, posY + size);
+        triangles[1].position = sf::Vector2f(posX + config->size, posY);
+        triangles[2].position = sf::Vector2f(posX + config->size, posY + config->size);
+        triangles[3].position = sf::Vector2f(posX + config->size, posY + config->size);
+        triangles[4].position = sf::Vector2f(posX, posY + config->size);
         triangles[5].position = sf::Vector2f(posX, posY);
     }
 }

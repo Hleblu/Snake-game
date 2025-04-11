@@ -4,38 +4,23 @@ void Game::initializeBackground()
 {
     sf::Shader checkboardShader;
     if (!checkboardShader.loadFromMemory(R"(
-        uniform vec2 gridSize;
-        uniform vec2 windowSize;
-        uniform vec3 fColor;
-        uniform vec3 sColor;
-
+        uniform float tileSize;
         void main() {
-            vec2 cell = floor(gl_FragCoord.xy * gridSize / windowSize);
-            float checker = mod(cell.x + cell.y, 2.0);
-
-            vec3 finalColor = mix(fColor, sColor, checker);
-
-            gl_FragColor = vec4(finalColor, 1.0);
-        }   
+            vec2 cell = floor(gl_FragCoord.xy / tileSize);
+            float alpha = 1.0 - mod(cell.x + cell.y, 2.0);
+            gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
+        }  
 )", sf::Shader::Type::Fragment)) return;
-    checkboardShader.setUniform("gridSize", sf::Vector2f(gridX, gridY));
-    checkboardShader.setUniform("windowSize", sf::Vector2f(width / 2, height / 2));
-    checkboardShader.setUniform("fColor", sf::Vector3f(mainColor.r / 255.0f, mainColor.g / 255.0f, mainColor.b / 255.0f));
-    checkboardShader.setUniform("sColor", sf::Vector3f(secondColor.r / 255.0f, secondColor.g / 255.0f, secondColor.b / 255.0f));
+    checkboardShader.setUniform("tileSize", static_cast<float>(config->size));
 
-    sf::RenderTexture texture({ width/2, height/2 });
-    sf::RectangleShape someRectangle({ width/2, height/2 });
+    sf::RenderTexture texture({ config->width, config->height });
+    sf::RectangleShape someRectangle({ static_cast<float>(config->width), static_cast<float>(config->height) });
 
-    texture.clear();
+    texture.clear(sf::Color(0, 0, 0, 0));
     texture.draw(someRectangle, &checkboardShader);
     texture.display();
 
     backgroundTexture = texture.getTexture();
-}
-
-void Game::changeDelay(float d)
-{
-    delay = d;
 }
 
 void Game::playSound(sf::SoundBuffer& buffer) {
@@ -58,8 +43,9 @@ void Game::restoreDefaults() {
 
 void Game::start(sf::RenderWindow& window)
 {
+    float time = 0, timer = 0, animationTimer = 0, currentDelay = config->delay;
     static sf::Sprite background(backgroundTexture);
-    background.setScale({ 2,2 });
+	background.setColor(config->mainColor);
     while (window.isOpen() && !isGameOver)
     {
         time = clock.restart().asSeconds();
@@ -85,7 +71,7 @@ void Game::start(sf::RenderWindow& window)
             playSound(moveSoundBuffer);
         }
 
-        if (timer >= delay) {
+        if (timer >= currentDelay) {
             timer = 0;
             clearSoundsArray();
             snake.move();
@@ -95,16 +81,18 @@ void Game::start(sf::RenderWindow& window)
             }
             snake.updateVertexArray();
             if (apple.isEaten()) {
+                currentDelay *= 0.99;
                 apple.generateNewPosition();
                 playSound(eatSoundBuffer);
                 snake.grow();
             }
         }
-        else if (animationTimer >= 0.0416) /* 24 fps */ {
-            snake.updateVertexArray(timer / delay); animationTimer = 0;
+        else if (animationTimer >= 0.0322) /* 31 fps */ {
+            snake.updateVertexArray(timer / currentDelay); 
+            animationTimer = 0;
         }
 
-        window.clear();
+        window.clear(config->secondColor);
         window.draw(background);
         window.draw(apple);
         window.draw(snake);
@@ -113,10 +101,7 @@ void Game::start(sf::RenderWindow& window)
     restoreDefaults();
 }
 
-Game::Game() : apple(snake), someSound(moveSoundBuffer) {  
-    mainColor = { 114, 183, 106 };
-    secondColor = { 172, 206, 94 };
-
+Game::Game(Configuration& config) : config(&config), snake(config), apple(snake), someSound(moveSoundBuffer) {
     initializeBackground();
 
     if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len)) return;

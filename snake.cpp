@@ -24,7 +24,7 @@ void Snake::restoreDefaultValues()
     firstMove = true;
 
     segmentsVertices.clear();
-    segmentsVertices.resize(config->rows * config->columns);
+    segmentsVertices.resize(config->rows * config->columns * 6);
 
     updateVertexArray();
 }

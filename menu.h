@@ -23,7 +23,6 @@ class Menu
 	void drawItems(sf::RenderWindow& window);
 public:
 	Menu();
-	void changeText(const std::string& label, int index);
 	void createItem(const std::string& label, std::function<void()> action);
 	void setTitle(const std::string& title);
 	void showMenu(sf::RenderWindow& window);

@@ -35,11 +35,6 @@ void Menu::createItem(const std::string& label, std::function<void()> action)
     items.emplace_back(std::move(button), std::move(action));
 }
 
-void Menu::changeText(const std::string& label, int index) 
-{
-    items[index].button.setString(label);
-}
-
 void Menu::drawItems(sf::RenderWindow& window)
 {
     window.draw(title);

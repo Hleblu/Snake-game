@@ -1,28 +1,5 @@
 #include "game.h"
 
-void Game::initializeBackground()
-{
-    sf::Shader checkboardShader;
-    if (!checkboardShader.loadFromMemory(R"(
-        uniform float tileSize;
-        void main() {
-            vec2 cell = floor(gl_FragCoord.xy / tileSize);
-            float alpha = 1.0 - mod(cell.x + cell.y, 2.0);
-            gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
-        }  
-)", sf::Shader::Type::Fragment)) return;
-    checkboardShader.setUniform("tileSize", static_cast<float>(config->size));
-
-    sf::RenderTexture texture({ config->width, config->height });
-    sf::RectangleShape someRectangle({ static_cast<float>(config->width), static_cast<float>(config->height) });
-
-    texture.clear(sf::Color(0, 0, 0, 0));
-    texture.draw(someRectangle, &checkboardShader);
-    texture.display();
-
-    backgroundTexture = texture.getTexture();
-}
-
 void Game::playSound(sf::SoundBuffer& buffer) {
     someSound.setBuffer(buffer);
     soundsArray.emplace_front(std::move(someSound));
@@ -36,7 +13,7 @@ void Game::clearSoundsArray() {
 void Game::restoreDefaults() {
     snake.restoreDefaultValues();
     apple.generateNewPosition();
-    sf::sleep(sf::seconds(0.5));
+    sf::sleep(sf::seconds(0.5f));
     soundsArray.clear();
     isGameOver = false;
 }
@@ -44,8 +21,10 @@ void Game::restoreDefaults() {
 void Game::start(sf::RenderWindow& window)
 {
     float time = 0, timer = 0, animationTimer = 0, currentDelay = config->delay;
-    static sf::Sprite background(backgroundTexture);
+    static sf::Sprite background(renderer->backgroundTexture);
 	background.setColor(config->mainColor);
+    renderer->gradientShader.setUniform("color", sf::Glsl::Vec4(config->snakeColor));
+
     while (window.isOpen() && !isGameOver)
     {
         time = clock.restart().asSeconds();
@@ -81,7 +60,7 @@ void Game::start(sf::RenderWindow& window)
             }
             snake.updateVertexArray();
             if (apple.isEaten()) {
-                currentDelay *= 0.99f;
+                currentDelay *= 0.995f;
                 apple.generateNewPosition();
                 playSound(eatSoundBuffer);
                 snake.grow();
@@ -95,14 +74,15 @@ void Game::start(sf::RenderWindow& window)
         window.clear(config->secondColor);
         window.draw(background);
         window.draw(apple);
-        window.draw(snake, &snake.colorShader);
+        window.draw(snake, &renderer->gradientShader);
         window.display();
     }
     restoreDefaults();
 }
 
-Game::Game(Configuration& config) : config(&config), snake(config), apple(snake), someSound(moveSoundBuffer) {
-    initializeBackground();
+Game::Game() : apple(snake), someSound(moveSoundBuffer) {
+	renderer->loadGradientShader();
+	renderer->createBackgroundTexture();
 
     if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len)) return;
     if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len)) return;

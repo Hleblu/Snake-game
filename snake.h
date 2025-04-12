@@ -33,10 +33,9 @@ class Snake : public sf::Drawable
         RIGHT,
         DOWN
     } direction, previousDirection, nextDirection;
-	Configuration* config;
-	sf::Shader colorShader;
+    Configuration* config = Configuration::getInstance();
 
-    Snake(Configuration& config);
+    Snake();
     void restoreDefaultValues();
     bool hasCollided();
     void grow();

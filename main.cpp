@@ -6,16 +6,16 @@
 int main()
 {
 	Configuration* config = Configuration::getInstance();
-    Game game(*config);
+    Game game;
     sf::RenderWindow window(sf::VideoMode({ config->width, config->height }), "Snake", sf::Style::Titlebar | sf::Style::Close);
     window.setKeyRepeatEnabled(false);
     window.setVerticalSyncEnabled(true);
-
+    
     sf::Image icon;
     if(!icon.loadFromMemory(snake_png, snake_png_len)) return -1;
     window.setIcon({ icon.getSize().x, icon.getSize().y }, icon.getPixelsPtr());
 
-    Menu menu(*config);
+    Menu menu;
     menu.reserveSpace(3);
     menu.setTitle("SNAKE GAME");
     menu.createItem("Start", [&game, &window]() { game.start(window); });

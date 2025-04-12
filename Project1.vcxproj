@@ -144,6 +144,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="Resources\font.c" />
     <ClCompile Include="Resources\icon.c" />
     <ClCompile Include="Resources\Sounds\sound_food.c" />
@@ -156,12 +157,13 @@
     <ClInclude Include="configuration.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="snake.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="checkered.frag" />
-    <None Include="snakeColor.frag" />
+    <None Include="gradient.frag" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

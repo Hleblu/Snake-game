@@ -1,6 +1,6 @@
 #include "apple.h"
 
-Apple::Apple(Snake& Snake) : snake(&Snake), config(snake->config) {
+Apple::Apple(Snake& Snake) : snake(&Snake) {
 	rect = sf::RectangleShape(sf::Vector2f(config->size, config->size));
 	gen = std::mt19937(rd());
 	distX = std::uniform_int_distribution<>(0, config->rows - 1);

@@ -18,11 +18,11 @@ class Menu
 	sf::Font mainFont;
 	sf::Text title;
 	unsigned int fontSize;
-	Configuration* config;
+	Configuration* config = Configuration::getInstance();
 
 	void drawItems(sf::RenderWindow& window);
 public:
-	Menu(Configuration& config);
+	Menu();
 	void changeText(const std::string& label, int index);
 	void createItem(const std::string& label, std::function<void()> action);
 	void setTitle(const std::string& title);

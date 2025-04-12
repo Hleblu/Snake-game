@@ -1,20 +1,9 @@
 #include "snake.h"
 
-Snake::Snake(Configuration& config) : config(&config)
+Snake::Snake()
 {
-	if(!colorShader.loadFromMemory(R"(
-        uniform vec4 color;
-
-        void main() {
-	        float position = gl_TexCoord[0].y;
-	        vec4 finalColor = mix(color, color * 0.7 , position);
-	        gl_FragColor = vec4(finalColor.r, finalColor.g, finalColor.b, 1.0);
-        }
-)", sf::Shader::Type::Fragment)) return;
-    colorShader.setUniform("color", sf::Glsl::Vec4(config.snakeColor));
-
     segmentsVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
-    segmentsSet.reserve(config.rows * config.columns);
+    segmentsSet.reserve(config->rows * config->columns);
     restoreDefaultValues();
 }
 

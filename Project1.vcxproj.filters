@@ -51,6 +51,9 @@
     <ClCompile Include="configuration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="snake.h">
@@ -71,10 +74,13 @@
     <ClInclude Include="configuration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="checkered.frag" />
-    <None Include="snakeColor.frag" />
+    <None Include="gradient.frag" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">

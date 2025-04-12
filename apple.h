@@ -12,7 +12,7 @@ class Apple : public sf::Drawable
 	std::mt19937 gen;
 	std::uniform_int_distribution<> distX, distY;
 	float x, y;
-	Configuration* config;
+	Configuration* config = Configuration::getInstance();
 
 	Apple(Snake& snake);
 	void generateNewPosition();

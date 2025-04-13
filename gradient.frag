@@ -1,7 +1,7 @@
-uniform vec4 color;
+uniform vec4 startColor;
+uniform vec4 endColor;
 
 void main() {
 	float position = gl_TexCoord[0].y;
-	vec4 finalColor = mix(color, color * 0.7 , position);
-	gl_FragColor = vec4(finalColor.r, finalColor.g, finalColor.b, 1.0);
+	gl_FragColor = mix(startColor, endColor, position);
 }

@@ -20,4 +20,5 @@ public:
 	sf::Color secondColor = { 172, 206, 94 };
 	sf::Color appleColor = { 233, 67, 37 };
 	sf::Color snakeColor = { 41, 74, 242 };
+	sf::Color snakeColorEnd = { 10, 45, 216 };
 };

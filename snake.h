@@ -41,7 +41,8 @@ class Snake : public sf::Drawable
     void grow();
     void move();
     bool canUpdateDirection();
-    void updateVertexArray(float dt = 0);
+    void updateVertices(float dt = 0);
+	void updateTexCoords();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     friend class Game;

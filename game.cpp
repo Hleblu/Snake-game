@@ -2,7 +2,7 @@
 
 void Game::playSound(sf::SoundBuffer& buffer) {
     someSound.setBuffer(buffer);
-    soundsArray.emplace_front(std::move(someSound));
+    soundsArray.push_front(someSound);
     soundsArray.front().play();
 }
 
@@ -20,16 +20,21 @@ void Game::restoreDefaults() {
 
 void Game::start(sf::RenderWindow& window)
 {
-    float time = 0, timer = 0, animationTimer = 0, currentDelay = config->delay;
+    float deltaTime, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;
+	float animationFrameTime = 1.0f / 45.0f; // 45 fps
+
     static sf::Sprite background(renderer->backgroundTexture);
+    background.setTextureRect({ { 0, 0 }, { static_cast<int>(config->width), static_cast<int>(config->height) } });
 	background.setColor(config->mainColor);
-    renderer->gradientShader.setUniform("color", sf::Glsl::Vec4(config->snakeColor));
+
+    renderer->gradientShader.setUniform("startColor", sf::Glsl::Vec4(config->snakeColor));
+	renderer->gradientShader.setUniform("endColor", sf::Glsl::Vec4(config->snakeColorEnd));
 
     while (window.isOpen() && !isGameOver)
     {
-        time = clock.restart().asSeconds();
-        timer += time;
-        animationTimer += time;
+        deltaTime = clock.restart().asSeconds();
+        gameUpdateAccumulator += deltaTime;
+        animationAccumulator += deltaTime;
 
         while (const std::optional event = window.pollEvent())
         {
@@ -50,15 +55,15 @@ void Game::start(sf::RenderWindow& window)
             playSound(moveSoundBuffer);
         }
 
-        if (timer >= currentDelay) {
-            timer = 0;
+        if (gameUpdateAccumulator >= currentDelay) {
+            gameUpdateAccumulator -= currentDelay;
             clearSoundsArray();
             snake.move();
             if (snake.hasCollided()) {
                 isGameOver = true;
                 playSound(gameOverSoundBuffer);
             }
-            snake.updateVertexArray();
+            snake.updateVertices();
             if (apple.isEaten()) {
                 currentDelay *= 0.995f;
                 apple.generateNewPosition();
@@ -66,9 +71,9 @@ void Game::start(sf::RenderWindow& window)
                 snake.grow();
             }
         }
-        else if (animationTimer >= 0.0322f) /* 31 fps */ {
-            snake.updateVertexArray(timer / currentDelay); 
-            animationTimer = 0;
+        else if (animationAccumulator >= animationFrameTime) /* 45 fps */ {
+            snake.updateVertices(gameUpdateAccumulator / currentDelay); 
+            animationAccumulator -= animationFrameTime;
         }
 
         window.clear(config->secondColor);

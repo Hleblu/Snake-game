@@ -26,7 +26,8 @@ void Snake::restoreDefaultValues()
     segmentsVertices.clear();
     segmentsVertices.resize(config->rows * config->columns * 6);
 
-    updateVertexArray();
+    updateVertices();
+	updateTexCoords();
 }
 
 bool Snake::hasCollided()
@@ -40,6 +41,7 @@ void Snake::grow()
 {
     segments.emplace_back(segments.back());
     previousSegments.emplace_back(previousSegments.back());
+	updateTexCoords();
 }
 
 void Snake::move()
@@ -70,27 +72,33 @@ bool Snake::canUpdateDirection()
     return nextDirection != direction && nextDirection % 2 != previousDirection % 2;
 }
 
-void Snake::updateVertexArray(float dt)
+void Snake::updateTexCoords()
+{
+	for (float i = 0; i < segments.size(); ++i) {
+        const float normalizedPosition = i / (segments.size() - 1);
+        sf::Vertex* triangles = &segmentsVertices[i * 6];
+        triangles[0].texCoords = { 0, normalizedPosition };
+        triangles[1].texCoords = { 1, normalizedPosition };
+        triangles[2].texCoords = triangles[0].texCoords;
+        triangles[3].texCoords = triangles[1].texCoords;
+        triangles[4].texCoords = triangles[0].texCoords;
+        triangles[5].texCoords = triangles[1].texCoords;
+	}
+}
+
+void Snake::updateVertices(float dt)
 {
     for (int i = 0; i < segments.size(); ++i) {
-		float normalizedPosition = static_cast<float>(i) / (segments.size() - 1);
-        float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * config->size;
-        float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * config->size;
+        const float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * config->size;
+        const float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * config->size;
 
         sf::Vertex* triangles = &segmentsVertices[i * 6];
-        triangles[0].position = sf::Vector2f(posX, posY);
-        triangles[1].position = sf::Vector2f(posX + config->size, posY);
-        triangles[2].position = sf::Vector2f(posX + config->size, posY + config->size);
-        triangles[3].position = sf::Vector2f(posX + config->size, posY + config->size);
-        triangles[4].position = sf::Vector2f(posX, posY + config->size);
-        triangles[5].position = sf::Vector2f(posX, posY);
-
-		triangles[0].texCoords = sf::Vector2f(0, normalizedPosition);
-        triangles[1].texCoords = sf::Vector2f(1, normalizedPosition);
-        triangles[2].texCoords = sf::Vector2f(0, normalizedPosition);
-        triangles[3].texCoords = sf::Vector2f(1, normalizedPosition);
-        triangles[4].texCoords = sf::Vector2f(0, normalizedPosition);
-        triangles[5].texCoords = sf::Vector2f(1, normalizedPosition);
+        triangles[0].position = { posX, posY };
+        triangles[1].position = { posX + config->size, posY };
+        triangles[2].position = { posX + config->size, posY + config->size };
+        triangles[3].position = triangles[2].position;
+        triangles[4].position = { posX, posY + config->size };
+        triangles[5].position = triangles[0].position;
     }
 }
 

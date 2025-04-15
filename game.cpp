@@ -20,10 +20,12 @@ void Game::restoreDefaults() {
 
 void Game::start(sf::RenderWindow& window)
 {
-    float deltaTime, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;
-	float animationFrameTime = 1.0f / 45.0f; // 45 fps
+    float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;
+	const float animationFrameTime = 1.0f / 45.0f; // 45 fps
+    clock.restart();
 
     static sf::Sprite background(renderer->backgroundTexture);
+    background.setScale({ static_cast<float>(config->size) / 4, static_cast<float>(config->size) / 4 });
     background.setTextureRect({ { 0, 0 }, { static_cast<int>(config->width), static_cast<int>(config->height) } });
 	background.setColor(config->mainColor);
 
@@ -71,7 +73,7 @@ void Game::start(sf::RenderWindow& window)
                 snake.grow();
             }
         }
-        else if (animationAccumulator >= animationFrameTime) /* 45 fps */ {
+        else if (animationAccumulator >= animationFrameTime) {
             snake.updateVertices(gameUpdateAccumulator / currentDelay); 
             animationAccumulator -= animationFrameTime;
         }

@@ -27,14 +27,12 @@ void Renderer::createBackgroundTexture()
 {
     sf::Shader checkboardShader;
     if (!checkboardShader.loadFromMemory(R"(
-        uniform float tileSize;
         void main() {
-            vec2 cell = floor(gl_FragCoord.xy / tileSize);
+            vec2 cell = floor(gl_FragCoord.xy / 4);
             float alpha = 1.0 - mod(cell.x + cell.y, 2.0);
             gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
         }  
 )", sf::Shader::Type::Fragment)) return;
-    checkboardShader.setUniform("tileSize", static_cast<float>(config->size));
 
     sf::RenderTexture texture({ config->size * 2, config->size * 2 });
     sf::RectangleShape someRectangle({ static_cast<float>(config->size) * 2.0f, static_cast<float>(config->size) * 2.0f });

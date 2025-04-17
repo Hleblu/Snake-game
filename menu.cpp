@@ -12,10 +12,6 @@ Menu::Menu() : title(mainFont)
     title.setFont(mainFont);
 }
 
-void Menu::reserveSpace(int size) {
-    items.reserve(size);
-}
-
 void Menu::setTitle(const std::string& titleText)
 {
     title.setString(titleText);

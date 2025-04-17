@@ -1,20 +1,26 @@
 #include "game.h"
 
 void Game::playSound(sf::SoundBuffer& buffer) {
-    someSound.setBuffer(buffer);
-    soundsArray.push_front(someSound);
-    soundsArray.front().play();
-}
+    for (auto& sound : soundsArray) {
+        if (sound.getStatus() == sf::Sound::Status::Stopped) {
+            sound.setBuffer(buffer);
+            sound.play();
+            return;
+        }
+    }
 
-void Game::clearSoundsArray() {
-    while (!soundsArray.empty() && soundsArray.back().getStatus() != sf::Sound::Status::Playing) soundsArray.pop_back();
+	auto oldestSound = std::min_element(soundsArray.begin(), soundsArray.end(), [](const sf::Sound& a, const sf::Sound& b) {
+		return a.getPlayingOffset() < b.getPlayingOffset();
+	});
+
+	oldestSound->setBuffer(buffer);
+    oldestSound->play();
 }
 
 void Game::restoreDefaults() {
     snake.restoreDefaultValues();
     apple.generateNewPosition();
     sf::sleep(sf::seconds(0.5f));
-    soundsArray.clear();
     isGameOver = false;
 }
 
@@ -59,7 +65,6 @@ void Game::start(sf::RenderWindow& window)
 
         if (gameUpdateAccumulator >= currentDelay) {
             gameUpdateAccumulator -= currentDelay;
-            clearSoundsArray();
             snake.move();
             if (snake.hasCollided()) {
                 isGameOver = true;
@@ -87,10 +92,11 @@ void Game::start(sf::RenderWindow& window)
     restoreDefaults();
 }
 
-Game::Game() : apple(snake), someSound(moveSoundBuffer) {
+Game::Game() : apple(snake) {
 	renderer->loadGradientShader();
 	renderer->createBackgroundTexture();
 
+    soundsArray.resize(5, sf::Sound(moveSoundBuffer));
     if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len)) return;
     if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len)) return;
     if (!moveSoundBuffer.loadFromMemory(sound_move_ogg, sound_move_ogg_len)) return;

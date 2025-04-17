@@ -26,5 +26,4 @@ public:
 	void createItem(const std::string& label, std::function<void()> action);
 	void setTitle(const std::string& title);
 	void showMenu(sf::RenderWindow& window);
-	void reserveSpace(int size);
 };

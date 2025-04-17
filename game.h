@@ -12,17 +12,16 @@
 class Game 
 {
     sf::SoundBuffer eatSoundBuffer, gameOverSoundBuffer, moveSoundBuffer;
+    std::vector<sf::Sound> soundsArray;
+    void playSound(sf::SoundBuffer& buffer);
+
     sf::Clock clock;
-    sf::Sound someSound;
-    std::deque<sf::Sound> soundsArray;
     Snake snake;
     Apple apple;
     Configuration* config = Configuration::getInstance();
 	Renderer* renderer = Renderer::getInstance();
     bool isGameOver = false;
 
-    void playSound(sf::SoundBuffer& buffer);
-	void clearSoundsArray();
     void restoreDefaults();
 public:
     void start(sf::RenderWindow& window);

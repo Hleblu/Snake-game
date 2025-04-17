@@ -16,7 +16,6 @@ int main()
     window.setIcon({ icon.getSize().x, icon.getSize().y }, icon.getPixelsPtr());
 
     Menu menu;
-    menu.reserveSpace(3);
     menu.setTitle("SNAKE GAME");
     menu.createItem("Start", [&game, &window]() { game.start(window); });
     menu.createItem("Exit", [&window]() { window.close(); });

@@ -16,12 +16,15 @@ void Apple::generateNewPosition()
         x = distX(gen);
         y = distY(gen);
     } while (snake->segmentsSet.count({ x,y }) != 0);
-    rect.setPosition({ x * config->size, y * config->size });
+    rect.setPosition({ static_cast<float>(x) * config->size, static_cast<float>(y) * config->size });
 }
 
 bool Apple::isEaten()
 {
-    return rect.getGlobalBounds().contains({snake->previousSegments[0].x * config->size, snake->previousSegments[0].y * config->size});
+    return rect.getGlobalBounds().contains({
+        static_cast<float>(snake->previousSegments[0].x) * config->size,
+        static_cast<float>(snake->previousSegments[0].y) * config->size
+        });
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const

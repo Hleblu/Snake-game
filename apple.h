@@ -11,7 +11,7 @@ class Apple : public sf::Drawable
 	std::random_device rd;
 	std::mt19937 gen;
 	std::uniform_int_distribution<> distX, distY;
-	float x, y;
+	short int x, y;
 	Configuration* config = Configuration::getInstance();
 
 	Apple(Snake& snake);

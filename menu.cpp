@@ -15,7 +15,7 @@ Menu::Menu() : title(mainFont)
 void Menu::setTitle(const std::string& titleText)
 {
     title.setString(titleText);
-    title.setPosition({ static_cast<float>(config->width) / 10.0f, static_cast<float>(config->height) / 6.0f });
+    title.setPosition({config->width / 10.0f, config->height / 6.0f });
 }
 
 void Menu::createItem(const std::string& label, std::function<void()> action)
@@ -26,7 +26,7 @@ void Menu::createItem(const std::string& label, std::function<void()> action)
     button.setOutlineColor(sf::Color::Black);
     button.setCharacterSize(fontSize);
     button.setString(label);
-    button.setPosition({ static_cast<float>(config->width) / 10.0f, title.getPosition().y + title.getCharacterSize() + fontSize * static_cast<float>(items.size())});
+    button.setPosition({ config->width / 10.0f, title.getPosition().y + title.getCharacterSize() + fontSize * items.size()});
 
     items.emplace_back(std::move(button), std::move(action));
 }

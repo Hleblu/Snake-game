@@ -7,7 +7,7 @@
 class Snake : public sf::Drawable
 {
     struct Segment {
-        float x, y;
+        short int x, y;
         bool operator==(const Segment& other) const {
             return x == other.x && y == other.y;
         }
@@ -15,8 +15,8 @@ class Snake : public sf::Drawable
 
     struct SegmentHash {
         std::size_t operator()(const Segment& seg) const {
-            std::size_t h1 = std::hash<float>{}(seg.x);
-            std::size_t h2 = std::hash<float>{}(seg.y);
+            std::size_t h1 = std::hash<short int>{}(seg.x);
+            std::size_t h2 = std::hash<short int>{}(seg.y);
             return h1 ^ (h2 << 1);
         }
     };

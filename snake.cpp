@@ -9,13 +9,13 @@ Snake::Snake()
 
 void Snake::restoreDefaultValues()
 {
-    float centerX = config->rows / 2;
-    float centerY = config->columns / 2;
+    short int centerX = config->rows / 2;
+    short int centerY = config->columns / 2;
 
     segments = {
         {centerX, centerY},
-        {centerX - 1, centerY},
-        {centerX - 2, centerY}
+        {static_cast<short>(centerX - 1), centerY},
+        {static_cast<short>(centerX - 2), centerY}
     };
     previousSegments = segments;
     segmentsSet = { segments[0], segments[1], segments[2] };
@@ -88,7 +88,7 @@ void Snake::updateTexCoords()
 
 void Snake::updateVertices(float dt)
 {
-    for (int i = 0; i < segments.size(); ++i) {
+    for (size_t i = 0; i < segments.size(); ++i) {
         const float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * config->size;
         const float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * config->size;
 

@@ -79,10 +79,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="checkered.frag" />
-    <None Include="gradient.frag" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="Resource.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>

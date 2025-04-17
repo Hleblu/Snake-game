@@ -162,10 +162,6 @@
     <ClInclude Include="snake.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="checkered.frag" />
-    <None Include="gradient.frag" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>

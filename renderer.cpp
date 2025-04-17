@@ -34,8 +34,8 @@ void Renderer::createBackgroundTexture()
         }  
 )", sf::Shader::Type::Fragment)) return;
 
-    sf::RenderTexture texture({ config->size * 2, config->size * 2 });
-    sf::RectangleShape someRectangle({ static_cast<float>(config->size) * 2.0f, static_cast<float>(config->size) * 2.0f });
+    sf::RenderTexture texture({ config->size * 2u, config->size * 2u });
+    sf::RectangleShape someRectangle({ config->size * 2.0f, config->size * 2.0f });
 
     texture.clear(sf::Color(0, 0, 0, 0));
     texture.draw(someRectangle, &checkboardShader);

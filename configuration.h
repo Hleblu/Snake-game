@@ -9,11 +9,11 @@ public:
 	Configuration(const Configuration&) = delete;
 	Configuration& operator=(const Configuration&) = delete;
 
-	unsigned int size = 40;
-	unsigned int rows = 17;
-	unsigned int columns = 15;
-	unsigned int width = 680;
-	unsigned int height = 600;
+	short unsigned int size = 40;
+	short unsigned int rows = 17;
+	short unsigned int columns = 15;
+	short unsigned int width = 680;
+	short unsigned int height = 600;
 
 	float delay = 0.115f;
 	sf::Color mainColor = {114, 183, 106};

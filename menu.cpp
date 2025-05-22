@@ -5,9 +5,9 @@ Menu::Menu() : title(mainFont)
     fontSize = config->width / 20u + config->height / 20u;
     if(!mainFont.openFromMemory(Tiny5_Regular_ttf, Tiny5_Regular_ttf_len)) return;
 
-    title.setFillColor(sf::Color::White);
-    title.setOutlineThickness(2);
-    title.setOutlineColor(sf::Color::Black);
+    title.setFillColor(config->textColor1);
+    title.setOutlineColor(config->textColor2);
+    title.setOutlineThickness(3.0f);
     title.setCharacterSize(config->width / 8u);
     title.setFont(mainFont);
 }
@@ -20,15 +20,13 @@ void Menu::setTitle(const std::string& titleText)
 
 void Menu::createItem(const std::string& label, std::function<void()> action)
 {
-    sf::Text button(mainFont);
-    button.setFillColor(sf::Color::White);
-    button.setOutlineThickness(2);
-    button.setOutlineColor(sf::Color::Black);
-    button.setCharacterSize(fontSize);
-    button.setString(label);
+    sf::Text button(mainFont, label, fontSize);
+    button.setFillColor(config->textColor1);
+    button.setOutlineColor(config->textColor2);
+    button.setOutlineThickness(2.5f);
     button.setPosition({ config->width / 10.0f, title.getPosition().y + title.getCharacterSize() + fontSize * items.size()});
 
-    items.emplace_back(std::move(button), std::move(action));
+    items.push_back({ button, action });
 }
 
 void Menu::drawItems(sf::RenderWindow& window)
@@ -50,7 +48,7 @@ void Menu::showMenu(sf::RenderWindow& window)
 
             for (auto& item : items) {
                 if (item.button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
-                    if (item.button.getFillColor() == sf::Color::White) item.button.setFillColor(config->secondColor);
+                    if (item.button.getFillColor() == config->textColor1) item.button.setFillColor(config->secondColor);
                     if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
                     {
                         if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
@@ -59,7 +57,7 @@ void Menu::showMenu(sf::RenderWindow& window)
                     }
                     break;
                 }
-                else if (item.button.getFillColor() != sf::Color::White) item.button.setFillColor(sf::Color::White);
+                else if (item.button.getFillColor() != config->textColor1) item.button.setFillColor(config->textColor1);
             }
         }
 

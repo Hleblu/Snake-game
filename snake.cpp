@@ -33,8 +33,8 @@ void Snake::restoreDefaultValues()
 bool Snake::hasCollided()
 {
     return segmentsSet.count(segments[0]) > 1 
-        || unsigned(segments[0].x) > config->rows - 1 
-        || unsigned(segments[0].y) > config->columns - 1;
+        || static_cast<unsigned>(segments[0].x) > config->rows - 1 
+        || static_cast<unsigned>(segments[0].y) > config->columns - 1;
 }
 
 void Snake::grow()
@@ -48,7 +48,10 @@ void Snake::move()
 {
     if (direction == NONE) return;
     
-    if (!firstMove) { previousSegments.pop_back(); previousSegments.emplace_front(segments.front()); }
+    if (!firstMove) { 
+        previousSegments.pop_back();
+        previousSegments.emplace_front(segments.front());
+    }
     firstMove = false;
 
     segmentsSet.erase(segments.back());
@@ -74,8 +77,8 @@ bool Snake::canUpdateDirection()
 
 void Snake::updateTexCoords()
 {
-	for (float i = 0; i < segments.size(); ++i) {
-        const float normalizedPosition = i / (segments.size() - 1);
+	for (size_t i = 0; i < segments.size(); ++i) {
+        const float normalizedPosition = static_cast<float>(i) / (segments.size() - 1);
         sf::Vertex* triangles = &segmentsVertices[i * 6];
         triangles[0].texCoords = { 0, normalizedPosition };
         triangles[1].texCoords = { 1, normalizedPosition };
@@ -91,13 +94,15 @@ void Snake::updateVertices(float dt)
     for (size_t i = 0; i < segments.size(); ++i) {
         const float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * config->size;
         const float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * config->size;
+		const float posXEnd = posX + config->size;
+		const float posYEnd = posY + config->size;
 
         sf::Vertex* triangles = &segmentsVertices[i * 6];
         triangles[0].position = { posX, posY };
-        triangles[1].position = { posX + config->size, posY };
-        triangles[2].position = { posX + config->size, posY + config->size };
+        triangles[1].position = { posXEnd, posY };
+        triangles[2].position = { posXEnd, posYEnd };
         triangles[3].position = triangles[2].position;
-        triangles[4].position = { posX, posY + config->size };
+        triangles[4].position = { posX, posYEnd };
         triangles[5].position = triangles[0].position;
     }
 }

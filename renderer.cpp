@@ -1,4 +1,4 @@
-#include "renderer.h"
+﻿#include "renderer.h"
 Renderer* Renderer::instance = nullptr;
 Renderer::Renderer() {}
 Renderer* Renderer::getInstance()
@@ -20,7 +20,7 @@ void Renderer::loadGradientShader()
 	        float position = gl_TexCoord[0].y;
 	        gl_FragColor = mix(startColor, endColor, position);
         }
-)", sf::Shader::Type::Fragment)) return;
+)", sf::Shader::Type::Fragment)) throw std::runtime_error("couldn't load gradient shader");
 }
 
 void Renderer::createBackgroundTexture()
@@ -28,14 +28,17 @@ void Renderer::createBackgroundTexture()
     sf::Shader checkboardShader;
     if (!checkboardShader.loadFromMemory(R"(
         void main() {
-            vec2 cell = floor(gl_FragCoord.xy / 4);
+            vec2 cell = floor(gl_FragCoord.xy);
             float alpha = 1.0 - mod(cell.x + cell.y, 2.0);
             gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
         }  
-)", sf::Shader::Type::Fragment)) return;
+)", sf::Shader::Type::Fragment)) {
+        throw std::runtime_error("couldn't load texture shader");
+        return;
+    }
 
-    sf::RenderTexture texture({ config->size * 2u, config->size * 2u });
-    sf::RectangleShape someRectangle({ config->size * 2.0f, config->size * 2.0f });
+    sf::RenderTexture texture({ 2u, 2u });
+    sf::RectangleShape someRectangle({ 2u, 2u });
 
     texture.clear(sf::Color(0, 0, 0, 0));
     texture.draw(someRectangle, &checkboardShader);

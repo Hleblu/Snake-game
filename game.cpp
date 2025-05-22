@@ -10,7 +10,7 @@ void Game::playSound(sf::SoundBuffer& buffer) {
     }
 
 	auto oldestSound = std::min_element(soundsArray.begin(), soundsArray.end(), [](const sf::Sound& a, const sf::Sound& b) {
-		return a.getPlayingOffset() < b.getPlayingOffset();
+		return a.getPlayingOffset() > b.getPlayingOffset();
 	});
 
 	oldestSound->setBuffer(buffer);
@@ -27,11 +27,10 @@ void Game::restoreDefaults() {
 void Game::start(sf::RenderWindow& window)
 {
     float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;
-	const float animationFrameTime = 1.0f / 45.0f; // 45 fps
-    clock.restart();
+	const float animationFrameTime = 1.0f / config->animationFrameTime;
 
     static sf::Sprite background(renderer->backgroundTexture);
-    background.setScale({ static_cast<float>(config->size) / 4, static_cast<float>(config->size) / 4 });
+    background.setScale({ static_cast<float>(config->size), static_cast<float>(config->size)});
     background.setTextureRect({ { 0, 0 }, { static_cast<int>(config->width), static_cast<int>(config->height) } });
 	background.setColor(config->mainColor);
 
@@ -72,7 +71,7 @@ void Game::start(sf::RenderWindow& window)
             }
             snake.updateVertices();
             if (apple.isEaten()) {
-                currentDelay *= 0.995f;
+                currentDelay *= config->speedDecreaseStep;
                 apple.generateNewPosition();
                 playSound(eatSoundBuffer);
                 snake.grow();
@@ -96,8 +95,8 @@ Game::Game() : apple(snake) {
 	renderer->loadGradientShader();
 	renderer->createBackgroundTexture();
 
+    if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len)) throw std::runtime_error("couldn\'t load sound eat");
+    if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len)) throw std::runtime_error("couldn\'t load sound gameOver");
+    if (!moveSoundBuffer.loadFromMemory(sound_move_ogg, sound_move_ogg_len)) throw std::runtime_error("couldn\'t load sound move");
     soundsArray.resize(5, sf::Sound(moveSoundBuffer));
-    if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len)) return;
-    if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len)) return;
-    if (!moveSoundBuffer.loadFromMemory(sound_move_ogg, sound_move_ogg_len)) return;
 }

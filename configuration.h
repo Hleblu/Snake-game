@@ -15,10 +15,15 @@ public:
 	short unsigned int width = 680;
 	short unsigned int height = 600;
 
+	float animationFrameTime = 45.0f;
+	float speedDecreaseStep = 0.995f;
 	float delay = 0.115f;
-	sf::Color mainColor = {114, 183, 106};
+
+	sf::Color mainColor = { 114, 183, 106 };
 	sf::Color secondColor = { 172, 206, 94 };
 	sf::Color appleColor = { 233, 67, 37 };
 	sf::Color snakeColor = { 41, 74, 242 };
 	sf::Color snakeColorEnd = { 10, 45, 216 };
+	sf::Color textColor1 = { 255, 255, 255 };
+	sf::Color textColor2 = { 0, 0, 0 };
 };

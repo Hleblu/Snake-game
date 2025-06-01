@@ -17,6 +17,7 @@ class Apple : public sf::Drawable
 	Apple(Snake& snake);
 	void generateNewPosition();
 	bool isEaten();
+	void updateData();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	friend class Game;

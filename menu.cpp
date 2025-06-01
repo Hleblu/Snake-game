@@ -2,29 +2,35 @@
 
 Menu::Menu() : title(mainFont)
 {
-    fontSize = config->width / 20u + config->height / 20u;
+    fontSize = config->width * 0.05f + config->height * 0.05f;
     if(!mainFont.openFromMemory(Tiny5_Regular_ttf, Tiny5_Regular_ttf_len)) return;
 
+    const unsigned int titleFontSize = fontSize * 1.25f;
+    title.setCharacterSize(titleFontSize);
+    title.setOutlineThickness(titleFontSize * 0.055f);
     title.setFillColor(config->textColor1);
     title.setOutlineColor(config->textColor2);
-    title.setOutlineThickness(3.0f);
-    title.setCharacterSize(config->width / 8u);
     title.setFont(mainFont);
 }
 
 void Menu::setTitle(const std::string& titleText)
 {
     title.setString(titleText);
-    title.setPosition({config->width / 10.0f, config->height / 6.0f });
+    title.setPosition({config->width * 0.1f, config->height * 0.16f });
 }
 
 void Menu::createItem(const std::string& label, std::function<void()> action)
 {
+    const float spacing = fontSize * 0.5f;
+    const float startY = title.getPosition().y + title.getGlobalBounds().size.y;
+    const float posY = startY + spacing + fontSize * items.size();
+    const float posX = config->width * 0.1f;
+
     sf::Text button(mainFont, label, fontSize);
     button.setFillColor(config->textColor1);
     button.setOutlineColor(config->textColor2);
-    button.setOutlineThickness(2.5f);
-    button.setPosition({ config->width / 10.0f, title.getPosition().y + title.getCharacterSize() + fontSize * items.size()});
+    button.setOutlineThickness(fontSize * 0.055f);
+    button.setPosition({ posX, posY });
 
     items.push_back({ button, action });
 }
@@ -37,31 +43,43 @@ void Menu::drawItems(sf::RenderWindow& window)
     }
 }
 
+void Menu::setMenuActive(bool state) {
+    menuIsActive = state;
+}
+
+void Menu::setItemLabel(int index, const std::string& label) {
+    if (index < items.size()) {
+        items.at(index).setLabel(label);
+    }
+}
+
 void Menu::showMenu(sf::RenderWindow& window)
 {
-    sf::Vector2i mousePos;
-    while (window.isOpen()) {
+    menuIsActive = true;
+    sf::Vector2f mousePos;
+    while (window.isOpen() && menuIsActive) {
+        mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) window.close();
 
-            if(event->is<sf::Event::MouseMoved>()) mousePos = sf::Mouse::getPosition(window);
+            const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>();
+            const bool isClicked = mouseButtonPressed && mouseButtonPressed->button == sf::Mouse::Button::Left;
 
             for (auto& item : items) {
-                if (item.button.getGlobalBounds().contains({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) })) {
-                    if (item.button.getFillColor() == config->textColor1) item.button.setFillColor(config->secondColor);
-                    if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
-                    {
-                        if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-                            item.action();
-                        }
+                const bool isHovered = item.button.getGlobalBounds().contains({ mousePos.x, mousePos.y });
+
+                if (isHovered) {
+                    item.button.setFillColor(config->currentTheme.secondColor);
+
+                    if (isClicked) {
+                        item.action();
                     }
-                    break;
                 }
-                else if (item.button.getFillColor() != config->textColor1) item.button.setFillColor(config->textColor1);
+                else item.button.setFillColor(config->textColor1);
             }
         }
 
-        window.clear(config->mainColor);
+        window.clear(config->currentTheme.mainColor);
         drawItems(window);
         window.display();
     }

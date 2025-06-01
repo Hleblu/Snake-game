@@ -3,10 +3,16 @@
 Apple::Apple(Snake& Snake) : snake(&Snake) {
 	rect = sf::RectangleShape(sf::Vector2f(config->size, config->size));
 	gen = std::mt19937(rd());
-	distX = std::uniform_int_distribution<>(0, config->rows - 1);
-	distY = std::uniform_int_distribution<>(0, config->columns - 1);
+    updateData();
     generateNewPosition();
-    rect.setFillColor(sf::Color(config->appleColor));
+}
+
+void Apple::updateData() {
+    distX = std::uniform_int_distribution<>(0, config->rows - 1);
+    distY = std::uniform_int_distribution<>(0, config->columns - 1);
+
+    rect.setFillColor(sf::Color(config->currentTheme.appleColor));
+    rect.setSize(sf::Vector2f(config->size, config->size));
 }
 
 void Apple::generateNewPosition()

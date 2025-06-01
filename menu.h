@@ -6,18 +6,22 @@
 
 class Menu 
 {
-	struct menuItem {
+	struct MenuItem {
 		sf::Text button;
 		std::function<void()> action;
 
-		menuItem(sf::Text button, std::function<void()> action) : button(button), action(action) {}
+		MenuItem(sf::Text button, std::function<void()> action) : button(button), action(action) {}
+		void setLabel(const std::string& label) {
+			button.setString(label);
+		}
 	};
 
-	std::vector<menuItem> items;
+	std::vector<MenuItem> items;
 	std::string label;
 	sf::Font mainFont;
 	sf::Text title;
 	unsigned int fontSize;
+	bool menuIsActive = false;
 	Configuration* config = Configuration::getInstance();
 
 	void drawItems(sf::RenderWindow& window);
@@ -26,4 +30,6 @@ public:
 	void createItem(const std::string& label, std::function<void()> action);
 	void setTitle(const std::string& title);
 	void showMenu(sf::RenderWindow& window);
+	void setMenuActive(bool state);
+	void setItemLabel(int index, const std::string& label);
 };

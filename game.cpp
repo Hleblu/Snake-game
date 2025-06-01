@@ -20,23 +20,26 @@ void Game::playSound(sf::SoundBuffer& buffer) {
 void Game::restoreDefaults() {
     snake.restoreDefaultValues();
     apple.generateNewPosition();
-    sf::sleep(sf::seconds(0.5f));
     isGameOver = false;
 }
 
 void Game::start(sf::RenderWindow& window)
 {
+    apple.updateData();
+    restoreDefaults();
+
     float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;
 	const float animationFrameTime = 1.0f / config->animationFrameTime;
 
     static sf::Sprite background(renderer->backgroundTexture);
     background.setScale({ static_cast<float>(config->size), static_cast<float>(config->size)});
     background.setTextureRect({ { 0, 0 }, { static_cast<int>(config->width), static_cast<int>(config->height) } });
-	background.setColor(config->mainColor);
+	background.setColor(config->currentTheme.mainColor);
 
-    renderer->gradientShader.setUniform("startColor", sf::Glsl::Vec4(config->snakeColor));
-	renderer->gradientShader.setUniform("endColor", sf::Glsl::Vec4(config->snakeColorEnd));
+    renderer->gradientShader.setUniform("startColor", sf::Glsl::Vec4(config->currentTheme.snakeColor));
+	renderer->gradientShader.setUniform("endColor", sf::Glsl::Vec4(config->currentTheme.snakeColorEnd));
 
+    clock.restart();
     while (window.isOpen() && !isGameOver)
     {
         deltaTime = clock.restart().asSeconds();
@@ -82,13 +85,13 @@ void Game::start(sf::RenderWindow& window)
             animationAccumulator -= animationFrameTime;
         }
 
-        window.clear(config->secondColor);
+        window.clear(config->currentTheme.secondColor);
         window.draw(background);
         window.draw(apple);
         window.draw(snake, &renderer->gradientShader);
         window.display();
     }
-    restoreDefaults();
+    sf::sleep(sf::seconds(0.5f));
 }
 
 Game::Game() : apple(snake) {

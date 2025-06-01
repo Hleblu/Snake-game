@@ -17,19 +17,19 @@ void Apple::updateData() {
 
 void Apple::generateNewPosition()
 {
-    if (config->rows * config->columns == snake->segments.size()) return;
+    if (config->rows * config->columns == snake->getSegments().size()) return;
     do {
         x = distX(gen);
         y = distY(gen);
-    } while (snake->segmentsSet.count({ x,y }) != 0);
+    } while (snake->getSegmentsHash().count({ x, y }) != 0);
     rect.setPosition({ static_cast<float>(x) * config->size, static_cast<float>(y) * config->size });
 }
 
-bool Apple::isEaten()
+bool Apple::isEaten() const
 {
     return rect.getGlobalBounds().contains({
-        static_cast<float>(snake->previousSegments[0].x) * config->size,
-        static_cast<float>(snake->previousSegments[0].y) * config->size
+        static_cast<float>(snake->getPrevSegments()[0].x) * config->size,
+        static_cast<float>(snake->getPrevSegments()[0].y) * config->size
         });
 }
 

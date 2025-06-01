@@ -21,11 +21,15 @@ class Snake : public sf::Drawable
         }
     };
 
+    Configuration* config = Configuration::getInstance();
     sf::VertexArray segmentsVertices;
     std::deque<Segment> segments;
     std::deque<Segment> previousSegments;
     std::unordered_multiset<Segment, SegmentHash> segmentsSet;
-    bool firstMove;
+
+    void updateTexCoords();
+
+public:
     enum Direction {
         NONE = -1,
         LEFT = 1,
@@ -33,18 +37,17 @@ class Snake : public sf::Drawable
         RIGHT,
         DOWN
     } direction, previousDirection, nextDirection;
-    Configuration* config = Configuration::getInstance();
+    bool firstMove;
 
     Snake();
     void restoreDefaultValues();
-    bool hasCollided();
+    bool hasCollided() const;
     void grow();
     void move();
-    bool canUpdateDirection();
+    bool canUpdateDirection() const;
+    const std::deque<Segment>& getSegments() const;
+    const std::deque<Segment>& getPrevSegments() const;
+    const std::unordered_multiset<Segment, SegmentHash>& getSegmentsHash() const;
     void updateVertices(float dt = 0);
-	void updateTexCoords();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-    friend class Game;
-    friend class Apple;
 };

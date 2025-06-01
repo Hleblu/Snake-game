@@ -30,7 +30,7 @@ void Snake::restoreDefaultValues()
 	updateTexCoords();
 }
 
-bool Snake::hasCollided()
+bool Snake::hasCollided() const
 {
     return segmentsSet.count(segments[0]) > 1 
         || static_cast<unsigned>(segments[0].x) > config->rows - 1 
@@ -70,9 +70,24 @@ void Snake::move()
     previousDirection = direction;
 }
 
-bool Snake::canUpdateDirection()
+bool Snake::canUpdateDirection() const
 {
     return nextDirection != direction && nextDirection % 2 != previousDirection % 2;
+}
+
+const std::deque<Snake::Segment>& Snake::getSegments() const 
+{
+    return Snake::segments;
+}
+
+const std::deque<Snake::Segment>& Snake::getPrevSegments() const
+{
+    return Snake::previousSegments;
+}
+
+const std::unordered_multiset<Snake::Segment, Snake::SegmentHash>& Snake::getSegmentsHash() const
+{
+    return Snake::segmentsSet;
 }
 
 void Snake::updateTexCoords()

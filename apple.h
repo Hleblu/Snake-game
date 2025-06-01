@@ -6,6 +6,7 @@
 
 class Apple : public sf::Drawable
 {
+protected:
 	Snake* snake;
 	sf::RectangleShape rect;
 	std::random_device rd;
@@ -14,11 +15,10 @@ class Apple : public sf::Drawable
 	short int x, y;
 	Configuration* config = Configuration::getInstance();
 
+public:
 	Apple(Snake& snake);
 	void generateNewPosition();
-	bool isEaten();
+	bool isEaten() const;
 	void updateData();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-	friend class Game;
 };

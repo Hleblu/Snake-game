@@ -37,10 +37,12 @@ bool Snake::hasCollided() const
         || static_cast<unsigned>(segments[0].y) > config->columns - 1;
 }
 
-void Snake::grow()
+void Snake::grow(int size)
 {
-    segments.emplace_back(segments.back());
-    previousSegments.emplace_back(previousSegments.back());
+    for (int i = 0; i < size; ++i) {
+        segments.emplace_back(segments.back());
+        previousSegments.emplace_back(previousSegments.back());
+    }
 	updateTexCoords();
 }
 

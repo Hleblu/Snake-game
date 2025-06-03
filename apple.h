@@ -9,9 +9,6 @@ class Apple : public sf::Drawable
 protected:
 	Snake* snake;
 	sf::RectangleShape rect;
-	std::random_device rd;
-	std::mt19937 gen;
-	std::uniform_int_distribution<> distX, distY;
 	short int x, y;
 	Configuration* config = Configuration::getInstance();
 
@@ -19,6 +16,46 @@ public:
 	Apple(Snake& snake);
 	void generateNewPosition();
 	bool isEaten() const;
-	void updateData();
+	virtual void updateGrapicalData();
+	virtual void applyEffect();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	virtual ~Apple() {};
+};
+
+class BonusApple : public Apple
+{
+public:
+	BonusApple(Snake& snake);
+	void updateGrapicalData() override;
+	void applyEffect() override;
+};
+
+class HasteApple : public Apple
+{
+public:
+	HasteApple(Snake& snake);
+	void updateGrapicalData() override;
+	void applyEffect() override;
+};
+
+class AppleFactory
+{
+public:
+	static std::unique_ptr<Apple> createRandomApple(Snake& snake);
+};
+
+class RandomGenerator 
+{
+public:
+	static std::mt19937& getGenerator() {
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		return gen;
+	}
+
+	static int getInt(int min, int max) {
+		std::uniform_int_distribution<> dist(min, max);
+		return dist(getGenerator());
+	}
 };

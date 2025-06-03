@@ -19,32 +19,36 @@ void Game::playSound(sf::SoundBuffer& buffer) {
 
 void Game::restoreDefaults() {
     snake.restoreDefaultValues();
-    apple.generateNewPosition();
-    isGameOver = false;
+    apple = AppleFactory::createRandomApple(snake);
 }
 
 void Game::start(sf::RenderWindow& window)
 {
-    apple.updateData();
+    apple->updateGrapicalData();
     restoreDefaults();
 
     float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;
+    bool speedChanged = false;
 	const float animationFrameTime = 1.0f / config->animationFrameTime;
 
     static sf::Sprite background(renderer->backgroundTexture);
-    background.setScale({ static_cast<float>(config->size), static_cast<float>(config->size)});
+    background.setScale(sf::Vector2f(config->size, config->size));
     background.setTextureRect({ { 0, 0 }, { static_cast<int>(config->width), static_cast<int>(config->height) } });
 	background.setColor(config->currentTheme.mainColor);
 
     renderer->gradientShader.setUniform("startColor", sf::Glsl::Vec4(config->currentTheme.snakeColor));
 	renderer->gradientShader.setUniform("endColor", sf::Glsl::Vec4(config->currentTheme.snakeColorEnd));
 
+    bool isGameOver = false;
     clock.restart();
     while (window.isOpen() && !isGameOver)
     {
         deltaTime = clock.restart().asSeconds();
         gameUpdateAccumulator += deltaTime;
         animationAccumulator += deltaTime;
+
+        if (speedChanged)
+            currentDelay = config->delay * std::pow(config->delayDecreaseStep, snake.getSegments().size() - 3) * config->delayDecreaseBonus;
 
         while (const std::optional event = window.pollEvent())
         {
@@ -73,11 +77,12 @@ void Game::start(sf::RenderWindow& window)
                 playSound(gameOverSoundBuffer);
             }
             snake.updateVertices();
-            if (apple.isEaten()) {
-                currentDelay *= config->speedDecreaseStep;
-                apple.generateNewPosition();
+            if (apple->isEaten()) {
+                config->delayDecreaseBonus = 1.f;
+                speedChanged = true;
                 playSound(eatSoundBuffer);
-                snake.grow();
+                apple->applyEffect();
+                apple = AppleFactory::createRandomApple(snake);
             }
         }
         else if (animationAccumulator >= animationFrameTime) {
@@ -87,19 +92,22 @@ void Game::start(sf::RenderWindow& window)
 
         window.clear(config->currentTheme.secondColor);
         window.draw(background);
-        window.draw(apple);
+        window.draw(*apple);
         window.draw(snake, &renderer->gradientShader);
         window.display();
     }
     sf::sleep(sf::seconds(0.5f));
 }
 
-Game::Game() : apple(snake) {
+Game::Game() {
 	renderer->loadGradientShader();
 	renderer->createBackgroundTexture();
 
-    if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len)) throw std::runtime_error("couldn\'t load sound eat");
-    if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len)) throw std::runtime_error("couldn\'t load sound gameOver");
-    if (!moveSoundBuffer.loadFromMemory(sound_move_ogg, sound_move_ogg_len)) throw std::runtime_error("couldn\'t load sound move");
+    if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len))
+        throw std::runtime_error("couldn\'t load sound eat");
+    if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len))
+        throw std::runtime_error("couldn\'t load sound gameOver");
+    if (!moveSoundBuffer.loadFromMemory(sound_move_ogg, sound_move_ogg_len))
+        throw std::runtime_error("couldn\'t load sound move");
     soundsArray.resize(5, sf::Sound(moveSoundBuffer));
 }

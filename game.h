@@ -17,10 +17,9 @@ class Game
 
     sf::Clock clock;
     Snake snake;
-    Apple apple;
+    std::unique_ptr<Apple> apple = AppleFactory::createRandomApple(snake);
     Configuration* config = Configuration::getInstance();
 	Renderer* renderer = Renderer::getInstance();
-    bool isGameOver = false;
 
     void restoreDefaults();
 public:

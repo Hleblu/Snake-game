@@ -42,7 +42,7 @@ public:
     Snake();
     void restoreDefaultValues();
     bool hasCollided() const;
-    void grow();
+    void grow(int size = 1);
     void move();
     bool canUpdateDirection() const;
     const std::deque<Segment>& getSegments() const;

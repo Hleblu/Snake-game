@@ -3,7 +3,6 @@
 Snake::Snake()
 {
     segmentsVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
-    segmentsSet.reserve(config->rows * config->columns);
     restoreDefaultValues();
 }
 
@@ -22,6 +21,7 @@ void Snake::restoreDefaultValues()
 
     direction = NONE, previousDirection = NONE, nextDirection = NONE;
     firstMove = true;
+    hashDelay = 0;
 
     segmentsVertices.clear();
     segmentsVertices.resize(config->rows * config->columns * 6);

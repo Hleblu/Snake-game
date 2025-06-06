@@ -14,16 +14,16 @@ class Configuration
 		sf::Color snakeColorEnd;
 	};
 
-	Theme classicTheme = {
+	const Theme classicTheme = {
 		{114, 183, 106},
 		{172, 206, 94},
 		{233, 67, 37},
-		{212, 157, 25},
+		{247, 158, 2},
 		{41, 74, 242},
 		{10, 45, 216},
 	};
 
-	Theme classicSoftTheme = {
+	const Theme classicSoftTheme = {
 		{210, 228, 200},
 		{190, 210, 180},
 		{220, 60, 60},
@@ -32,7 +32,7 @@ class Configuration
 		{30, 90, 150}
 	};
 
-	Theme grayscaleTheme = {
+	const Theme grayscaleTheme = {
 		{230, 230, 230},
 		{200, 200, 200},
 		{180, 50, 50},
@@ -41,7 +41,7 @@ class Configuration
 		{40, 40, 40}
 	};
 
-	Theme pastelBlueTheme = {
+	const Theme pastelBlueTheme = {
 		{215, 225, 240},
 		{185, 205, 225},
 		{240, 100, 100},
@@ -50,7 +50,7 @@ class Configuration
 		{60, 120, 170}
 	};
 
-	Theme earthTheme = {
+	const Theme earthTheme = {
 		{222, 215, 195},
 		{200, 190, 170},
 		{180, 60, 45},
@@ -59,7 +59,7 @@ class Configuration
 		{70, 50, 30}
 	};
 
-	Theme forestTheme = {
+	const Theme forestTheme = {
 		{200, 220, 200},
 		{180, 200, 180},
 		{210, 80, 50},
@@ -68,7 +68,7 @@ class Configuration
 		{40, 90, 40}
 	};
 
-	Theme pastelPinkTheme = {
+	const Theme pastelPinkTheme = {
 		{245, 230, 235},
 		{230, 210, 215},
 		{255, 105, 130},
@@ -102,8 +102,16 @@ public:
 
 	std::vector<float> speedOptions = { 0.115f, 0.135f, 0.095f };
 
-	Theme currentTheme = classicTheme;
-	std::vector<Theme> themes = { classicTheme, classicSoftTheme, grayscaleTheme, pastelBlueTheme, earthTheme, forestTheme, pastelPinkTheme };
+	const Theme* currentTheme = &classicTheme;
+	std::vector<const Theme*> themes = { 
+		&classicTheme,
+		&classicSoftTheme,
+		&grayscaleTheme,
+		&pastelBlueTheme,
+		&earthTheme,
+		&forestTheme,
+		&pastelPinkTheme 
+	};
 
 	sf::Color textColor1 = {255, 255, 255};
 	sf::Color textColor2 = { 30, 30, 30 };

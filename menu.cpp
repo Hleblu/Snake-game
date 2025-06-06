@@ -69,7 +69,7 @@ void Menu::showMenu(sf::RenderWindow& window)
                 const bool isHovered = item.button.getGlobalBounds().contains({ mousePos.x, mousePos.y });
 
                 if (isHovered) {
-                    item.button.setFillColor(config->currentTheme.secondColor);
+                    item.button.setFillColor(config->currentTheme->secondColor);
 
                     if (isClicked) {
                         item.action();
@@ -79,7 +79,7 @@ void Menu::showMenu(sf::RenderWindow& window)
             }
         }
 
-        window.clear(config->currentTheme.mainColor);
+        window.clear(config->currentTheme->mainColor);
         drawItems(window);
         window.display();
     }

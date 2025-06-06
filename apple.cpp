@@ -5,7 +5,7 @@ Apple::Apple(Snake& Snake) : snake(&Snake) {
 }
 
 void Apple::updateGraphicalData() {
-    rect.setFillColor(sf::Color(config->currentTheme.appleColor));
+    rect.setFillColor(sf::Color(config->currentTheme->appleColor));
     rect.setSize(sf::Vector2f(config->size, config->size));
 }
 
@@ -39,7 +39,7 @@ void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const
 BonusApple::BonusApple(Snake& snake) : Apple(snake) {}
 
 void BonusApple::updateGraphicalData() {
-    rect.setFillColor(sf::Color(config->currentTheme.bonusAppleColor));
+    rect.setFillColor(sf::Color(config->currentTheme->bonusAppleColor));
     rect.setSize(sf::Vector2f(config->size, config->size));
 }
 
@@ -50,7 +50,7 @@ void BonusApple::applyEffect() {
 HasteApple::HasteApple(Snake& snake) : Apple(snake) {}
 
 void HasteApple::updateGraphicalData() {
-    rect.setFillColor(sf::Color(config->currentTheme.bonusAppleColor));
+    rect.setFillColor(sf::Color(config->currentTheme->bonusAppleColor));
     rect.setSize(sf::Vector2f(config->size, config->size));
 }
 

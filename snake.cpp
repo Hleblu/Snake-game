@@ -39,6 +39,7 @@ bool Snake::hasCollided() const
 
 void Snake::grow(int size)
 {
+    hashDelay += size;
     for (int i = 0; i < size; ++i) {
         segments.emplace_back(segments.back());
         previousSegments.emplace_back(previousSegments.back());
@@ -54,9 +55,12 @@ void Snake::move()
         previousSegments.pop_back();
         previousSegments.emplace_front(segments.front());
     }
-    firstMove = false;
+    else firstMove = false;
 
-    segmentsSet.erase(segments.back());
+    if (hashDelay == 0)
+        segmentsSet.erase(segments.back());
+    else hashDelay -= 1;
+    
     segments.pop_back();
     segments.emplace_front(segments.front());
 

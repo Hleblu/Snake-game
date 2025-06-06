@@ -16,7 +16,7 @@ public:
 	Apple(Snake& snake);
 	void generateNewPosition();
 	bool isEaten() const;
-	virtual void updateGrapicalData();
+	virtual void updateGraphicalData();
 	virtual void applyEffect();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -27,7 +27,7 @@ class BonusApple : public Apple
 {
 public:
 	BonusApple(Snake& snake);
-	void updateGrapicalData() override;
+	void updateGraphicalData() override;
 	void applyEffect() override;
 };
 
@@ -35,7 +35,7 @@ class HasteApple : public Apple
 {
 public:
 	HasteApple(Snake& snake);
-	void updateGrapicalData() override;
+	void updateGraphicalData() override;
 	void applyEffect() override;
 };
 

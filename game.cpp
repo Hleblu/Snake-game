@@ -24,7 +24,7 @@ void Game::restoreDefaults() {
 
 void Game::start(sf::RenderWindow& window)
 {
-    apple->updateGrapicalData();
+    apple->updateGraphicalData();
     restoreDefaults();
 
     float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;

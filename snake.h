@@ -26,6 +26,7 @@ class Snake : public sf::Drawable
     std::deque<Segment> segments;
     std::deque<Segment> previousSegments;
     std::unordered_multiset<Segment, SegmentHash> segmentsSet;
+    short int hashDelay = 0;
 
     void updateTexCoords();
 

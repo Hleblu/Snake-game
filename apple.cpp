@@ -4,7 +4,7 @@ Apple::Apple(Snake& Snake) : snake(&Snake) {
     generateNewPosition();
 }
 
-void Apple::updateGrapicalData() {
+void Apple::updateGraphicalData() {
     rect.setFillColor(sf::Color(config->currentTheme.appleColor));
     rect.setSize(sf::Vector2f(config->size, config->size));
 }
@@ -16,15 +16,15 @@ void Apple::generateNewPosition()
         x = RandomGenerator::getInt(0, config->rows - 1);
         y = RandomGenerator::getInt(0, config->columns - 1);
     } while (snake->getSegmentsHash().count({ x, y }) != 0);
-    rect.setPosition({ static_cast<float>(x) * config->size, static_cast<float>(y) * config->size });
+    rect.setPosition(sf::Vector2f(x * config->size, y * config->size));
 }
 
 bool Apple::isEaten() const
 {
-    return rect.getGlobalBounds().contains({
-        static_cast<float>(snake->getPrevSegments()[0].x) * config->size,
-        static_cast<float>(snake->getPrevSegments()[0].y) * config->size
-        });
+    return rect.getGlobalBounds().contains(sf::Vector2f(
+        snake->getPrevSegments()[0].x * config->size,
+        snake->getPrevSegments()[0].y * config->size)
+    );
 }
 
 void Apple::applyEffect() {
@@ -38,7 +38,7 @@ void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 BonusApple::BonusApple(Snake& snake) : Apple(snake) {}
 
-void BonusApple::updateGrapicalData() {
+void BonusApple::updateGraphicalData() {
     rect.setFillColor(sf::Color(config->currentTheme.bonusAppleColor));
     rect.setSize(sf::Vector2f(config->size, config->size));
 }
@@ -49,12 +49,13 @@ void BonusApple::applyEffect() {
 
 HasteApple::HasteApple(Snake& snake) : Apple(snake) {}
 
-void HasteApple::updateGrapicalData() {
+void HasteApple::updateGraphicalData() {
     rect.setFillColor(sf::Color(config->currentTheme.bonusAppleColor));
     rect.setSize(sf::Vector2f(config->size, config->size));
 }
 
 void HasteApple::applyEffect() {
+    snake->grow();
     config->delayDecreaseBonus = 0.8f;
 }
 
@@ -66,6 +67,6 @@ std::unique_ptr<Apple> AppleFactory::createRandomApple(Snake& snake) {
     else if (number <= 9) apple = std::make_unique<HasteApple>(snake);
     else apple = std::make_unique<BonusApple>(snake);
 
-    apple->updateGrapicalData();
+    apple->updateGraphicalData();
     return apple;
 }

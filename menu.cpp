@@ -43,11 +43,11 @@ void Menu::drawItems(sf::RenderWindow& window)
     }
 }
 
-void Menu::setMenuActive(bool state) {
+void Menu::setMenuActive(const bool state) {
     menuIsActive = state;
 }
 
-void Menu::setItemLabel(int index, const std::string& label) {
+void Menu::setItemLabel(const unsigned int index, const std::string& label) {
     if (index < items.size()) {
         items.at(index).setLabel(label);
     }
@@ -73,6 +73,7 @@ void Menu::showMenu(sf::RenderWindow& window)
 
                     if (isClicked) {
                         item.action();
+                        item.button.setFillColor(config->currentTheme->secondColor);
                     }
                 }
                 else item.button.setFillColor(config->textColor1);

@@ -54,7 +54,7 @@ public:
 		return gen;
 	}
 
-	static int getInt(int min, int max) {
+	static int getInt(const int min, const int max) {
 		std::uniform_int_distribution<> dist(min, max);
 		return dist(getGenerator());
 	}

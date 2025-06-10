@@ -60,7 +60,7 @@ void HasteApple::applyEffect() {
 }
 
 std::unique_ptr<Apple> AppleFactory::createRandomApple(Snake& snake) {
-    int number = RandomGenerator::getInt(1, 10);
+    const int number = RandomGenerator::getInt(1, 10);
     std::unique_ptr<Apple> apple;
 
     if (number <= 8) apple = std::make_unique<Apple>(snake);

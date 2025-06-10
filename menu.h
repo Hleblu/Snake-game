@@ -30,6 +30,6 @@ public:
 	void createItem(const std::string& label, std::function<void()> action);
 	void setTitle(const std::string& title);
 	void showMenu(sf::RenderWindow& window);
-	void setMenuActive(bool state);
-	void setItemLabel(int index, const std::string& label);
+	void setMenuActive(const bool state);
+	void setItemLabel(const unsigned int index, const std::string& label);
 };

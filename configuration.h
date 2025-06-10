@@ -90,20 +90,20 @@ public:
 	short unsigned int size = 40;
 	short unsigned int rows = 18;
 	short unsigned int columns = 15;
-	short unsigned int width = 720;
-	short unsigned int height = 600;
+	const short unsigned int width = 720;
+	const short unsigned int height = 600;
 
 	std::vector<short unsigned int> cellSizes = { 40, 60, 30 };
 
-	float animationFrameTime = 45.0f;
-	float delayDecreaseStep = 0.995f;
+	const float animationFrameTime = 45.0f;
+	const float delayDecreaseStep = 0.995f;
 	float delay = 0.115f;
 	float delayDecreaseBonus = 1.f;
 
 	std::vector<float> speedOptions = { 0.115f, 0.135f, 0.095f };
 
 	const Theme* currentTheme = &classicTheme;
-	std::vector<const Theme*> themes = { 
+	const std::vector<const Theme*> themes = { 
 		&classicTheme,
 		&classicSoftTheme,
 		&grayscaleTheme,
@@ -113,9 +113,9 @@ public:
 		&pastelPinkTheme 
 	};
 
-	sf::Color textColor1 = {255, 255, 255};
-	sf::Color textColor2 = { 30, 30, 30 };
+	const sf::Color textColor1 = {255, 255, 255};
+	const sf::Color textColor2 = { 30, 30, 30 };
 
-	std::vector<std::string> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
-	std::vector<std::string> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big"};
+	const std::vector<std::string> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
+	const std::vector<std::string> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big"};
 };

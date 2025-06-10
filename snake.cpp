@@ -8,8 +8,8 @@ Snake::Snake()
 
 void Snake::restoreDefaultValues()
 {
-    short int centerX = config->rows / 2;
-    short int centerY = config->columns / 2;
+    const short int centerX = config->rows / 2;
+    const short int centerY = config->columns / 2;
 
     segments = {
         {centerX, centerY},
@@ -37,7 +37,7 @@ bool Snake::hasCollided() const
         || static_cast<unsigned>(segments[0].y) > config->columns - 1;
 }
 
-void Snake::grow(int size)
+void Snake::grow(const int size)
 {
     hashDelay += size;
     for (int i = 0; i < size; ++i) {
@@ -110,7 +110,7 @@ void Snake::updateTexCoords()
 	}
 }
 
-void Snake::updateVertices(float dt)
+void Snake::updateVertices(const float dt)
 {
     for (size_t i = 0; i < segments.size(); ++i) {
         const float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * config->size;

@@ -43,12 +43,12 @@ public:
     Snake();
     void restoreDefaultValues();
     bool hasCollided() const;
-    void grow(int size = 1);
+    void grow(const int size = 1);
     void move();
     bool canUpdateDirection() const;
     const std::deque<Segment>& getSegments() const;
     const std::deque<Segment>& getPrevSegments() const;
     const std::unordered_multiset<Segment, SegmentHash>& getSegmentsHash() const;
-    void updateVertices(float dt = 0);
+    void updateVertices(const float dt = 0);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

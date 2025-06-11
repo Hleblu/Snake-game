@@ -1,0 +1,50 @@
+#include "obstacle.h"
+
+Obstacle::Obstacle() {
+    vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
+    restoreDefaultValues();
+};
+
+void Obstacle::generateNewPosition() {
+    if (collisionManager->numberOfOccupied() >= (config->rows * config->columns) / 2) return;
+
+    Cell coord;
+    const short int xMax = (config->rows - 1) / 2;
+    const short int yMax = (config->columns - 1) / 2;
+
+    do {
+        coord.x = RandomGenerator::getInt(0, xMax) * 2;
+        coord.y = RandomGenerator::getInt(0, yMax) * 2;
+    } while (collisionManager->isCellOccupied(coord));
+
+    collisionManager->setOccupied(coord, OBSTACLE);
+    coords.push_back(coord);
+    updateVertexArray();
+}
+
+void Obstacle::restoreDefaultValues()
+{
+    vertices.clear();
+    coords.clear();
+}
+
+void Obstacle::updateVertexArray() {
+    const Cell& coord = coords.back();
+    const float posX = coord.x * config->size;
+    const float posY = coord.y * config->size;
+    const float posXEnd = posX + config->size;
+    const float posYEnd = posY + config->size;
+    const auto color = config->currentTheme->obstacleColor;
+
+    vertices.append(sf::Vertex{ { posX, posY }, color });
+    vertices.append(sf::Vertex{ { posXEnd, posY }, color });
+    vertices.append(sf::Vertex{ { posXEnd, posYEnd }, color });
+    vertices.append(sf::Vertex{ { posXEnd, posYEnd }, color });
+    vertices.append(sf::Vertex{ { posX, posYEnd }, color });
+    vertices.append(sf::Vertex{ { posX, posY }, color });
+}
+
+void Obstacle::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    target.draw(vertices, states);
+}

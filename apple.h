@@ -2,22 +2,24 @@
 #include <SFML/Graphics.hpp>
 #include "configuration.h"
 #include "snake.h"
-#include <random>
+#include "collisionManager.h"
+#include "cell.h"
+#include "randomGenerator.h"
 
 class Apple : public sf::Drawable
 {
 protected:
-	Snake* snake;
 	sf::RectangleShape rect;
-	short int x, y;
+	Cell coords;
 	Configuration* config = Configuration::getInstance();
+	CollisionManager* collisionManager = CollisionManager::getInstance();
 
 public:
-	Apple(Snake& snake);
+	Apple();
 	void generateNewPosition();
 	bool isEaten() const;
 	virtual void updateGraphicalData();
-	virtual void applyEffect();
+	virtual void applyEffect(Snake& snake);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	virtual ~Apple() {};
@@ -26,36 +28,24 @@ public:
 class BonusApple : public Apple
 {
 public:
-	BonusApple(Snake& snake);
 	void updateGraphicalData() override;
-	void applyEffect() override;
+	void applyEffect(Snake& snake) override;
 };
 
-class HasteApple : public Apple
+class HasteApple : public BonusApple
 {
 public:
-	HasteApple(Snake& snake);
-	void updateGraphicalData() override;
-	void applyEffect() override;
+	void applyEffect(Snake& snake) override;
+};
+
+class SlownessApple : public BonusApple
+{
+public:
+	void applyEffect(Snake& snake) override;
 };
 
 class AppleFactory
 {
 public:
-	static std::unique_ptr<Apple> createRandomApple(Snake& snake);
-};
-
-class RandomGenerator 
-{
-public:
-	static std::mt19937& getGenerator() {
-		static std::random_device rd;
-		static std::mt19937 gen(rd());
-		return gen;
-	}
-
-	static int getInt(const int min, const int max) {
-		std::uniform_int_distribution<> dist(min, max);
-		return dist(getGenerator());
-	}
+	static std::unique_ptr<Apple> createRandomApple();
 };

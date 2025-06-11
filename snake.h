@@ -3,29 +3,16 @@
 #include "configuration.h"
 #include <deque>
 #include <unordered_set>
+#include "cell.h"
+#include "collisionManager.h"
 
 class Snake : public sf::Drawable
 {
-    struct Segment {
-        short int x, y;
-        bool operator==(const Segment& other) const {
-            return x == other.x && y == other.y;
-        }
-    };
-
-    struct SegmentHash {
-        std::size_t operator()(const Segment& seg) const {
-            std::size_t h1 = std::hash<short int>{}(seg.x);
-            std::size_t h2 = std::hash<short int>{}(seg.y);
-            return h1 ^ (h2 << 1);
-        }
-    };
-
     Configuration* config = Configuration::getInstance();
+    CollisionManager* collisionManager = CollisionManager::getInstance();
     sf::VertexArray segmentsVertices;
-    std::deque<Segment> segments;
-    std::deque<Segment> previousSegments;
-    std::unordered_multiset<Segment, SegmentHash> segmentsSet;
+    std::deque<Cell> segments;
+    std::deque<Cell> previousSegments;
     short int hashDelay;
 
     void updateTexCoords();
@@ -46,9 +33,7 @@ public:
     void grow(const int size = 1);
     void move();
     bool canUpdateDirection() const;
-    const std::deque<Segment>& getSegments() const;
-    const std::deque<Segment>& getPrevSegments() const;
-    const std::unordered_multiset<Segment, SegmentHash>& getSegmentsHash() const;
+    const std::deque<Cell>& getSegments() const;
     void updateVertices(const float dt = 0);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

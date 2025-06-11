@@ -140,10 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="apple.cpp" />
+    <ClCompile Include="collisionManager.cpp" />
     <ClCompile Include="configuration.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="Resources\font.c" />
     <ClCompile Include="Resources\icon.c" />
@@ -154,9 +156,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="apple.h" />
+    <ClInclude Include="cell.h" />
+    <ClInclude Include="collisionManager.h" />
     <ClInclude Include="configuration.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="obstacle.h" />
+    <ClInclude Include="randomGenerator.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="snake.h" />

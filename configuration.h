@@ -12,6 +12,7 @@ class Configuration
 		sf::Color bonusAppleColor;
 		sf::Color snakeColor;
 		sf::Color snakeColorEnd;
+		sf::Color obstacleColor;
 	};
 
 	const Theme classicTheme = {
@@ -21,6 +22,7 @@ class Configuration
 		{247, 158, 2},
 		{41, 74, 242},
 		{10, 45, 216},
+		{60, 60, 60}
 	};
 
 	const Theme classicSoftTheme = {
@@ -29,7 +31,8 @@ class Configuration
 		{220, 60, 60},
 		{255, 180, 70},
 		{60, 120, 180},      
-		{30, 90, 150}
+		{30, 90, 150},
+		{80, 80, 80}
 	};
 
 	const Theme grayscaleTheme = {
@@ -38,7 +41,8 @@ class Configuration
 		{180, 50, 50},
 		{220, 190, 100},
 		{80, 80, 80},
-		{40, 40, 40}
+		{40, 40, 40},
+		{30, 60, 100}
 	};
 
 	const Theme pastelBlueTheme = {
@@ -47,7 +51,8 @@ class Configuration
 		{240, 100, 100},
 		{255, 190, 110},
 		{90, 150, 200},
-		{60, 120, 170}
+		{60, 120, 170},
+		{70, 70, 90}
 	};
 
 	const Theme earthTheme = {
@@ -56,7 +61,8 @@ class Configuration
 		{180, 60, 45},
 		{240, 180, 90},
 		{110, 90, 60},
-		{70, 50, 30}
+		{70, 50, 30},
+		{40, 30, 20}
 	};
 
 	const Theme forestTheme = {
@@ -65,7 +71,8 @@ class Configuration
 		{210, 80, 50},
 		{255, 180, 60},
 		{60, 120, 60},
-		{40, 90, 40}
+		{40, 90, 40},
+		{20, 50, 20}
 	};
 
 	const Theme pastelPinkTheme = {
@@ -74,7 +81,8 @@ class Configuration
 		{255, 105, 130},
 		{255, 200, 100},
 		{200, 120, 160},
-		{150, 90, 130}
+		{150, 90, 130},
+		{90, 60, 80}
 	};
 
 public:
@@ -118,4 +126,8 @@ public:
 
 	const std::vector<std::string> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
 	const std::vector<std::string> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big"};
+
+	std::vector<bool> boolOptions = { true, false };
+	bool obstaclesEnabled = true;
+	const std::vector<std::string> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
 };

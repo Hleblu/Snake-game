@@ -18,8 +18,10 @@ void Game::playSound(sf::SoundBuffer& buffer) {
 }
 
 void Game::restoreDefaults() {
+    collisionManager->clearMap();
     snake.restoreDefaultValues();
-    apple = AppleFactory::createRandomApple(snake);
+    obstacle.restoreDefaultValues();
+    apple = AppleFactory::createRandomApple();
 }
 
 void Game::start(sf::RenderWindow& window)
@@ -83,9 +85,13 @@ void Game::start(sf::RenderWindow& window)
             if (apple->isEaten()) {
                 config->delayDecreaseBonus = 1.f;
                 speedChanged = true;
+
                 playSound(eatSoundBuffer);
-                apple->applyEffect();
-                apple = AppleFactory::createRandomApple(snake);
+                apple->applyEffect(snake);
+                apple = AppleFactory::createRandomApple();
+
+                if (config->obstaclesEnabled && (snake.getSegments().size() & 1) == 0)
+                    obstacle.generateNewPosition();
             }
         }
         else if (animationAccumulator >= animationFrameTime) {
@@ -96,6 +102,7 @@ void Game::start(sf::RenderWindow& window)
         window.clear(config->currentTheme->secondColor);
         window.draw(background);
         window.draw(*apple);
+        window.draw(obstacle);
         window.draw(snake, &renderer->gradientShader);
         window.display();
     }

@@ -30,17 +30,23 @@ int main()
             settings.setItemLabel(0, config->speedOptionsLabels[index]);
             });
 
-        settings.createItem("Change color theme", [&config]() {
-            static int index = 0;
-            config->cycleOptions(config->currentTheme, config->themes, index);
-            });
-
         settings.createItem("Field size: Default", [&config, &settings]() {
             static int index = 0;
             config->cycleOptions(config->size, config->cellSizes, index);
             config->rows = config->width / config->size;
             config->columns = config->height / config->size;
-            settings.setItemLabel(2, config->fieldSizeOptionsLabels[index]);
+            settings.setItemLabel(1, config->fieldSizeOptionsLabels[index]);
+            });
+
+        settings.createItem("Obstacles: Enabled", [&config, &settings]() {
+            static int index = 0;
+            config->cycleOptions(config->obstaclesEnabled, config->boolOptions, index);
+            settings.setItemLabel(2, config->obstaclesOptionsLabels[index]);
+            });
+
+        settings.createItem("Change color theme", [&config]() {
+            static int index = 0;
+            config->cycleOptions(config->currentTheme, config->themes, index);
             });
 
         settings.createItem("Go back", [&settings]() { settings.setMenuActive(false); });

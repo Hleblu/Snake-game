@@ -1,6 +1,6 @@
 #include "apple.h"
 
-Apple::Apple(Snake& Snake) : snake(&Snake) {
+Apple::Apple() {
     generateNewPosition();
 }
 
@@ -11,24 +11,27 @@ void Apple::updateGraphicalData() {
 
 void Apple::generateNewPosition()
 {
-    if (config->rows * config->columns == snake->getSegments().size()) return;
+    collisionManager->setFree(coords, APPLE);
+    if (config->rows * config->columns == collisionManager->numberOfOccupied()) return;
+
+    const short int xMax = config->rows - 1;
+    const short int yMax = config->columns - 1;
     do {
-        x = RandomGenerator::getInt(0, config->rows - 1);
-        y = RandomGenerator::getInt(0, config->columns - 1);
-    } while (snake->getSegmentsHash().count({ x, y }) != 0);
-    rect.setPosition(sf::Vector2f(x * config->size, y * config->size));
+        coords.x = RandomGenerator::getInt(0, xMax);
+        coords.y = RandomGenerator::getInt(0, yMax);
+    } while (collisionManager->isCellOccupied(coords));
+
+    rect.setPosition(sf::Vector2f(coords.x * config->size, coords.y * config->size));
+    collisionManager->setOccupied(coords, APPLE);
 }
 
 bool Apple::isEaten() const
 {
-    return rect.getGlobalBounds().contains(sf::Vector2f(
-        snake->getPrevSegments()[0].x * config->size,
-        snake->getPrevSegments()[0].y * config->size)
-    );
+    return collisionManager->checkCellType(coords, SNAKE_HEAD);
 }
 
-void Apple::applyEffect() {
-    snake->grow();
+void Apple::applyEffect(Snake& snake) {
+    snake.grow();
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -36,36 +39,33 @@ void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(rect, states);
 }
 
-BonusApple::BonusApple(Snake& snake) : Apple(snake) {}
-
 void BonusApple::updateGraphicalData() {
     rect.setFillColor(sf::Color(config->currentTheme->bonusAppleColor));
     rect.setSize(sf::Vector2f(config->size, config->size));
 }
 
-void BonusApple::applyEffect() {
-    snake->grow(2);
+void BonusApple::applyEffect(Snake& snake) {
+    snake.grow(2);
 }
 
-HasteApple::HasteApple(Snake& snake) : Apple(snake) {}
-
-void HasteApple::updateGraphicalData() {
-    rect.setFillColor(sf::Color(config->currentTheme->bonusAppleColor));
-    rect.setSize(sf::Vector2f(config->size, config->size));
-}
-
-void HasteApple::applyEffect() {
-    snake->grow();
+void HasteApple::applyEffect(Snake& snake) {
+    snake.grow();
     config->delayDecreaseBonus = 0.8f;
 }
 
-std::unique_ptr<Apple> AppleFactory::createRandomApple(Snake& snake) {
-    const int number = RandomGenerator::getInt(1, 10);
+void SlownessApple::applyEffect(Snake& snake) {
+    snake.grow();
+    config->delayDecreaseBonus = 1.2f;
+}
+
+std::unique_ptr<Apple> AppleFactory::createRandomApple() {
+    const int number = RandomGenerator::getInt(1, 30);
     std::unique_ptr<Apple> apple;
 
-    if (number <= 8) apple = std::make_unique<Apple>(snake);
-    else if (number <= 9) apple = std::make_unique<HasteApple>(snake);
-    else apple = std::make_unique<BonusApple>(snake);
+    if (number <= 27) apple = std::make_unique<Apple>();
+    else if (number <= 28) apple = std::make_unique<HasteApple>();
+    else if (number <= 29) apple = std::make_unique<BonusApple>();
+    else apple = std::make_unique<SlownessApple>();
 
     apple->updateGraphicalData();
     return apple;

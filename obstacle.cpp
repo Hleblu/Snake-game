@@ -6,16 +6,16 @@ Obstacle::Obstacle() {
 };
 
 void Obstacle::generateNewPosition() {
-    if (collisionManager->numberOfOccupied() >= (config->rows * config->columns) / 2) return;
+    if (collisionManager->numberOfOccupied() > 0.7f * (config->rows * config->columns)) return;
 
     Cell coord;
-    const short int xMax = (config->rows - 1) / 2;
-    const short int yMax = (config->columns - 1) / 2;
+    const short int xMax = config->rows - 2;
+    const short int yMax = config->columns - 2;
 
     do {
-        coord.x = RandomGenerator::getInt(0, xMax) * 2;
-        coord.y = RandomGenerator::getInt(0, yMax) * 2;
-    } while (collisionManager->isCellOccupied(coord));
+        coord.x = RandomGenerator::getInt(1, xMax);
+        coord.y = RandomGenerator::getInt(1, yMax);
+    } while (collisionManager->isCellOccupied(coord) || !collisionManager->isEmptyAround(coord));
 
     collisionManager->setOccupied(coord, OBSTACLE);
     coords.push_back(coord);

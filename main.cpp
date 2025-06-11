@@ -1,12 +1,15 @@
 #include "menu.h"
 #include "game.h"
 #include "configuration.h"
+#include "randomGenerator.h"
 #include "Resources/icon.c"
 #include <iostream>
 
 int main()
 {
     try {
+        RandomGenerator::seed(static_cast<uint64_t>(std::time(nullptr)));
+
         Configuration* config = Configuration::getInstance();
         Game game;
         sf::RenderWindow window(sf::VideoMode({ config->width, config->height }), "Snake", sf::Style::Titlebar | sf::Style::Close);

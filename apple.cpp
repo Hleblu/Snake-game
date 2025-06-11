@@ -12,7 +12,7 @@ void Apple::updateGraphicalData() {
 void Apple::generateNewPosition()
 {
     collisionManager->setFree(coords, APPLE);
-    if (config->rows * config->columns == collisionManager->numberOfOccupied()) return;
+    if (collisionManager->numberOfOccupied() >= config->rows * config->columns) return;
 
     const short int xMax = config->rows - 1;
     const short int yMax = config->columns - 1;

@@ -46,3 +46,21 @@ void CollisionManager::changeTypes(const Cell& cell, const ObjectType oldType, c
 int CollisionManager::numberOfOccupied() const {
 	return collisionMap.size();
 }
+
+bool CollisionManager::isEmptyAround(const Cell& cell, const ObjectType type) const {
+	for (const auto& dir : neighbourDirections) {
+		const Cell suspectedCell = { cell.x + dir.x, cell.y + dir.y };
+		if (checkCellType(suspectedCell, type))
+			return false;
+	}
+	return true;
+}
+
+bool CollisionManager::isEmptyAround(const Cell& cell) const {
+	for (const auto& dir : neighbourDirections) {
+		const Cell suspectedCell = { cell.x + dir.x, cell.y + dir.y };
+		if (isCellOccupied(suspectedCell))
+			return false;
+	}
+	return true;
+}

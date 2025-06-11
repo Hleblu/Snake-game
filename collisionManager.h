@@ -2,6 +2,7 @@
 #include "cell.h"
 #include <unordered_map>
 #include <unordered_set>
+#include <array>
 
 enum ObjectType
 {
@@ -16,6 +17,10 @@ class CollisionManager
 	CollisionManager();
 	static CollisionManager* instance;
 
+	const std::array<Cell, 8> neighbourDirections = { {
+			{0, 1}, {0, -1}, {1, 0}, {-1, 0},
+			{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+		} };
 	std::unordered_map < Cell, std::unordered_set<ObjectType>, CellHash > collisionMap;
 public:
 	static CollisionManager* getInstance();
@@ -29,4 +34,6 @@ public:
 	bool isCellOccupied(const Cell& cell) const;
 	bool checkCellType(const Cell& cell, const ObjectType type) const;
 	int numberOfOccupied() const;
+	bool isEmptyAround(const Cell& cell, const ObjectType type) const;
+	bool isEmptyAround(const Cell& cell) const;
 };

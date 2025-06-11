@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <array>
+
 class Configuration
 {
 	Configuration();
@@ -89,9 +91,9 @@ public:
 	static Configuration* getInstance();
 	Configuration(const Configuration&) = delete;
 	Configuration& operator=(const Configuration&) = delete;
-	template<class T> void cycleOptions(T& current, const std::vector<T>& options, int& index) {
-		if (options.empty()) return;
-		index = (index + 1) % options.size();
+	template<class T, std::size_t N> void cycleOptions(T& current, const std::array<T, N>& options, int& index) {
+		if (N == 0) return;
+		index = (index + 1) % N;
 		current = options[index];
 	}
 
@@ -101,17 +103,17 @@ public:
 	const short unsigned int width = 720;
 	const short unsigned int height = 600;
 
-	std::vector<short unsigned int> cellSizes = { 40, 60, 30 };
+	std::array<short unsigned int, 3> cellSizes = { 40, 60, 30 };
 
 	const float animationFrameTime = 45.0f;
 	const float delayDecreaseStep = 0.995f;
 	float delay = 0.115f;
 	float delayDecreaseBonus = 1.f;
 
-	std::vector<float> speedOptions = { 0.115f, 0.135f, 0.095f };
+	std::array<float, 3> speedOptions = { 0.115f, 0.135f, 0.095f };
 
 	const Theme* currentTheme = &classicTheme;
-	const std::vector<const Theme*> themes = { 
+	const std::array<const Theme*, 7> themes = { 
 		&classicTheme,
 		&classicSoftTheme,
 		&grayscaleTheme,
@@ -124,10 +126,10 @@ public:
 	const sf::Color textColor1 = {255, 255, 255};
 	const sf::Color textColor2 = { 30, 30, 30 };
 
-	const std::vector<std::string> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
-	const std::vector<std::string> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big"};
+	const std::array<std::string, 3> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
+	const std::array<std::string, 3> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big"};
 
-	std::vector<bool> boolOptions = { true, false };
+	const std::array<bool, 2> boolOptions = { true, false };
 	bool obstaclesEnabled = true;
-	const std::vector<std::string> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
+	const std::array<std::string, 2> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
 };

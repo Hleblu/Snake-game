@@ -6,15 +6,21 @@ Obstacle::Obstacle() {
 };
 
 void Obstacle::generateNewPosition() {
-    if (collisionManager->numberOfOccupied() > 0.7f * (config->rows * config->columns)) return;
+    if (collisionManager->numberOfOccupied() >= 0.7f * config->rows * config->columns) return;
 
     Cell coord;
     const short int xMax = config->rows - 2;
     const short int yMax = config->columns - 2;
+    short int attempts = 0; 
+    const short int maxAttempts = (config->rows * config->columns) / 10;
 
     do {
+        attempts += 1;
         coord.x = RandomGenerator::getInt(1, xMax);
         coord.y = RandomGenerator::getInt(1, yMax);
+
+        if (attempts >= maxAttempts)
+            return;
     } while (collisionManager->isCellOccupied(coord) || !collisionManager->isEmptyAround(coord));
 
     collisionManager->setOccupied(coord, OBSTACLE);

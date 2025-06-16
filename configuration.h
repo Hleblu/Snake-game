@@ -1,11 +1,10 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Color.hpp>
 #include <array>
 
 class Configuration
 {
 	Configuration();
-	static Configuration* instance;
 
 	struct Theme {
 		sf::Color mainColor;
@@ -88,7 +87,7 @@ class Configuration
 	};
 
 public:
-	static Configuration* getInstance();
+	static Configuration& getInstance();
 	Configuration(const Configuration&) = delete;
 	Configuration& operator=(const Configuration&) = delete;
 	template<class T, std::size_t N> void cycleOptions(T& current, const std::array<T, N>& options, int& index) {
@@ -97,13 +96,13 @@ public:
 		current = options[index];
 	}
 
-	short unsigned int size = 40;
-	short unsigned int rows = 18;
-	short unsigned int columns = 15;
-	const short unsigned int width = 720;
-	const short unsigned int height = 600;
+	std::uint16_t size = 40;
+	std::uint16_t rows = 18;
+	std::uint16_t columns = 15;
+	const std::uint16_t width = 720;
+	const std::uint16_t height = 600;
 
-	std::array<short unsigned int, 3> cellSizes = { 40, 60, 30 };
+	const std::array<std::uint16_t, 3> cellSizes = { 40, 60, 30 };
 
 	const float animationFrameTime = 45.0f;
 	const float delayDecreaseStep = 0.995f;
@@ -123,13 +122,15 @@ public:
 		&pastelPinkTheme 
 	};
 
-	const sf::Color textColor1 = {255, 255, 255};
+	const sf::Color textColor1 = { 255, 255, 255 };
 	const sf::Color textColor2 = { 30, 30, 30 };
-
-	const std::array<std::string, 3> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
-	const std::array<std::string, 3> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big"};
 
 	const std::array<bool, 2> boolOptions = { true, false };
 	bool obstaclesEnabled = true;
-	const std::array<std::string, 2> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
+
+	const std::array<const char*, 3> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
+	const std::array<const char*, 3> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big" };
+	const std::array<const char*, 2> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
 };
+
+inline Configuration& config = Configuration::getInstance();

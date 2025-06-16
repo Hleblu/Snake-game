@@ -9,8 +9,6 @@ class Obstacle : public sf::Drawable
 {
 	std::vector<Cell> coords;
 	sf::VertexArray vertices;
-	Configuration* config = Configuration::getInstance();
-	CollisionManager* collisionManager = CollisionManager::getInstance();
 
 	void updateVertexArray();
 public:

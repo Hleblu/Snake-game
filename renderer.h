@@ -4,10 +4,8 @@
 class Renderer
 {
 	Renderer();
-	static Renderer* instance;
-	Configuration* config = Configuration::getInstance();
 public:
-	static Renderer* getInstance();
+	static Renderer& getInstance();
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 
@@ -18,3 +16,4 @@ public:
 	sf::Texture backgroundTexture;
 };
 
+inline Renderer& renderer = Renderer::getInstance();

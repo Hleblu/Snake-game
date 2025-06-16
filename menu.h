@@ -22,7 +22,6 @@ class Menu
 	sf::Text title;
 	unsigned int fontSize;
 	bool menuIsActive = false;
-	Configuration* config = Configuration::getInstance();
 
 	void drawItems(sf::RenderWindow& window);
 public:

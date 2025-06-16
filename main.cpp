@@ -10,9 +10,8 @@ int main()
     try {
         RandomGenerator::seed(static_cast<uint64_t>(std::time(nullptr)));
 
-        Configuration* config = Configuration::getInstance();
         Game game;
-        sf::RenderWindow window(sf::VideoMode({ config->width, config->height }), "Snake", sf::Style::Titlebar | sf::Style::Close);
+        sf::RenderWindow window(sf::VideoMode({ config.width, config.height }), "Snake", sf::Style::Titlebar | sf::Style::Close);
         window.setKeyRepeatEnabled(false);
         window.setVerticalSyncEnabled(true);
 
@@ -27,29 +26,29 @@ int main()
         Menu settings;
         settings.setTitle("SETTINGS");
 
-        settings.createItem("Speed: Default", [&config, &settings]() {
+        settings.createItem("Speed: Default", [&settings]() {
             static int index = 0;
-            config->cycleOptions(config->delay, config->speedOptions, index);
-            settings.setItemLabel(0, config->speedOptionsLabels[index]);
+            config.cycleOptions(config.delay, config.speedOptions, index);
+            settings.setItemLabel(0, config.speedOptionsLabels[index]);
             });
 
-        settings.createItem("Field size: Default", [&config, &settings]() {
+        settings.createItem("Field size: Default", [&settings]() {
             static int index = 0;
-            config->cycleOptions(config->size, config->cellSizes, index);
-            config->rows = config->width / config->size;
-            config->columns = config->height / config->size;
-            settings.setItemLabel(1, config->fieldSizeOptionsLabels[index]);
+            config.cycleOptions(config.size, config.cellSizes, index);
+            config.rows = config.width / config.size;
+            config.columns = config.height / config.size;
+            settings.setItemLabel(1, config.fieldSizeOptionsLabels[index]);
             });
 
-        settings.createItem("Obstacles: Enabled", [&config, &settings]() {
+        settings.createItem("Obstacles: Enabled", [&settings]() {
             static int index = 0;
-            config->cycleOptions(config->obstaclesEnabled, config->boolOptions, index);
-            settings.setItemLabel(2, config->obstaclesOptionsLabels[index]);
+            config.cycleOptions(config.obstaclesEnabled, config.boolOptions, index);
+            settings.setItemLabel(2, config.obstaclesOptionsLabels[index]);
             });
 
-        settings.createItem("Change color theme", [&config]() {
+        settings.createItem("Change color theme", []() {
             static int index = 0;
-            config->cycleOptions(config->currentTheme, config->themes, index);
+            config.cycleOptions(config.currentTheme, config.themes, index);
             });
 
         settings.createItem("Go back", [&settings]() { settings.setMenuActive(false); });

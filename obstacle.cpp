@@ -6,13 +6,13 @@ Obstacle::Obstacle() {
 };
 
 void Obstacle::generateNewPosition() {
-    if (collisionManager->numberOfOccupied() >= 0.7f * config->rows * config->columns) return;
+    if (collisionManager.numberOfOccupied() >= 0.7f * config.rows * config.columns) return;
 
     Cell coord;
-    const short int xMax = config->rows - 2;
-    const short int yMax = config->columns - 2;
-    short int attempts = 0; 
-    const short int maxAttempts = (config->rows * config->columns) / 10;
+    const std::int16_t xMax = config.rows - 2;
+    const std::int16_t yMax = config.columns - 2;
+    std::int16_t attempts = 0;
+    const std::int16_t maxAttempts = (config.rows * config.columns) / 10;
 
     do {
         attempts += 1;
@@ -21,9 +21,9 @@ void Obstacle::generateNewPosition() {
 
         if (attempts >= maxAttempts)
             return;
-    } while (collisionManager->isCellOccupied(coord) || !collisionManager->isEmptyAround(coord));
+    } while (collisionManager.isCellOccupied(coord) || !collisionManager.isEmptyAround(coord));
 
-    collisionManager->setOccupied(coord, OBSTACLE);
+    collisionManager.setOccupied(coord, OBSTACLE);
     coords.push_back(coord);
     updateVertexArray();
 }
@@ -36,11 +36,11 @@ void Obstacle::restoreDefaultValues()
 
 void Obstacle::updateVertexArray() {
     const Cell& coord = coords.back();
-    const float posX = coord.x * config->size;
-    const float posY = coord.y * config->size;
-    const float posXEnd = posX + config->size;
-    const float posYEnd = posY + config->size;
-    const auto color = config->currentTheme->obstacleColor;
+    const float posX = coord.x * config.size;
+    const float posY = coord.y * config.size;
+    const float posXEnd = posX + config.size;
+    const float posYEnd = posY + config.size;
+    const auto color = config.currentTheme->obstacleColor;
 
     vertices.append(sf::Vertex{ { posX, posY }, color });
     vertices.append(sf::Vertex{ { posXEnd, posY }, color });

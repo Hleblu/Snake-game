@@ -11,8 +11,6 @@ class Apple : public sf::Drawable
 protected:
 	sf::RectangleShape rect;
 	Cell coords;
-	Configuration* config = Configuration::getInstance();
-	CollisionManager* collisionManager = CollisionManager::getInstance();
 
 public:
 	Apple();

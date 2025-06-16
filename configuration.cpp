@@ -1,9 +1,6 @@
 #include "configuration.h"
-Configuration* Configuration::instance = nullptr;
 Configuration::Configuration() {}
-Configuration* Configuration::getInstance() {
-	if (instance == nullptr) {
-		instance = new Configuration();
-	}
+Configuration& Configuration::getInstance() {
+	static Configuration instance;
 	return instance;
 }

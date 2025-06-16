@@ -15,7 +15,6 @@ enum ObjectType
 class CollisionManager
 {
 	CollisionManager();
-	static CollisionManager* instance;
 
 	const std::array<Cell, 8> neighbourDirections = { {
 			{0, 1}, {0, -1}, {1, 0}, {-1, 0},
@@ -23,7 +22,7 @@ class CollisionManager
 		} };
 	std::unordered_map < Cell, std::unordered_set<ObjectType>, CellHash > collisionMap;
 public:
-	static CollisionManager* getInstance();
+	static CollisionManager& getInstance();
 	CollisionManager(const CollisionManager&) = delete;
 	CollisionManager& operator=(const CollisionManager&) = delete;
 
@@ -33,7 +32,9 @@ public:
 	void clearMap();
 	bool isCellOccupied(const Cell& cell) const;
 	bool checkCellType(const Cell& cell, const ObjectType type) const;
-	int numberOfOccupied() const;
+	std::size_t numberOfOccupied() const;
 	bool isEmptyAround(const Cell& cell, const ObjectType type) const;
 	bool isEmptyAround(const Cell& cell) const;
 };
+
+inline CollisionManager& collisionManager = CollisionManager::getInstance();

@@ -18,7 +18,6 @@ void Game::playSound(sf::SoundBuffer& buffer) {
 }
 
 void Game::restoreDefaults() {
-    collisionManager->clearMap();
     snake.restoreDefaultValues();
     obstacle.restoreDefaultValues();
     apple = AppleFactory::createRandomApple();
@@ -29,17 +28,17 @@ void Game::start(sf::RenderWindow& window)
     apple->updateGraphicalData();
     restoreDefaults();
 
-    float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config->delay;
+    float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config.delay;
     bool speedChanged = false;
-	const float animationFrameTime = 1.0f / config->animationFrameTime;
+	const float animationFrameTime = 1.0f / config.animationFrameTime;
 
-    static sf::Sprite background(renderer->backgroundTexture);
-    background.setScale(sf::Vector2f(config->size, config->size));
-    background.setTextureRect({ { 0, 0 }, { static_cast<int>(config->width), static_cast<int>(config->height) } });
-	background.setColor(config->currentTheme->mainColor);
+    static sf::Sprite background(renderer.backgroundTexture);
+    background.setScale(sf::Vector2f(config.size, config.size));
+    background.setTextureRect({ { 0, 0 }, { static_cast<int>(config.width), static_cast<int>(config.height) } });
+	background.setColor(config.currentTheme->mainColor);
 
-    renderer->gradientShader.setUniform("startColor", sf::Glsl::Vec4(config->currentTheme->snakeColor));
-	renderer->gradientShader.setUniform("endColor", sf::Glsl::Vec4(config->currentTheme->snakeColorEnd));
+    renderer.gradientShader.setUniform("startColor", sf::Glsl::Vec4(config.currentTheme->snakeColor));
+	renderer.gradientShader.setUniform("endColor", sf::Glsl::Vec4(config.currentTheme->snakeColorEnd));
 
     bool isGameOver = false;
     clock.restart();
@@ -50,8 +49,8 @@ void Game::start(sf::RenderWindow& window)
         animationAccumulator += deltaTime;
 
         if (speedChanged) {
-            const float sizeBonus = std::pow(config->delayDecreaseStep, snake.getSegments().size() - 3);
-            currentDelay = config->delay * sizeBonus * config->delayDecreaseBonus;
+            const float sizeBonus = std::pow(config.delayDecreaseStep, snake.getSegments().size() - 3);
+            currentDelay = config.delay * sizeBonus * config.delayDecreaseBonus;
             speedChanged = false;
         }
 
@@ -83,14 +82,14 @@ void Game::start(sf::RenderWindow& window)
             }
             snake.updateVertices();
             if (apple->isEaten()) {
-                config->delayDecreaseBonus = 1.f;
+                config.delayDecreaseBonus = 1.f;
                 speedChanged = true;
 
                 playSound(eatSoundBuffer);
                 apple->applyEffect(snake);
                 apple = AppleFactory::createRandomApple();
 
-                if (config->obstaclesEnabled && (snake.getSegments().size() & 1) == 0)
+                if (config.obstaclesEnabled && (snake.getSegments().size() & 1) == 0)
                     obstacle.generateNewPosition();
             }
         }
@@ -99,19 +98,19 @@ void Game::start(sf::RenderWindow& window)
             animationAccumulator -= animationFrameTime;
         }
 
-        window.clear(config->currentTheme->secondColor);
+        window.clear(config.currentTheme->secondColor);
         window.draw(background);
         window.draw(*apple);
         window.draw(obstacle);
-        window.draw(snake, &renderer->gradientShader);
+        window.draw(snake, &renderer.gradientShader);
         window.display();
     }
     sf::sleep(sf::seconds(0.5f));
 }
 
 Game::Game() {
-	renderer->loadGradientShader();
-	renderer->createBackgroundTexture();
+	renderer.loadGradientShader();
+	renderer.createBackgroundTexture();
 
     if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len))
         throw std::runtime_error("couldn\'t load sound eat");

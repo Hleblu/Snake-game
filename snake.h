@@ -2,14 +2,11 @@
 #include <SFML/Graphics.hpp>
 #include "configuration.h"
 #include <deque>
-#include <unordered_set>
 #include "cell.h"
 #include "collisionManager.h"
 
 class Snake : public sf::Drawable
 {
-    Configuration* config = Configuration::getInstance();
-    CollisionManager* collisionManager = CollisionManager::getInstance();
     sf::VertexArray segmentsVertices;
     std::deque<Cell> segments;
     std::deque<Cell> previousSegments;

@@ -1,10 +1,7 @@
 #include "collisionManager.h"
-CollisionManager* CollisionManager::instance = nullptr;
 CollisionManager::CollisionManager() {}
-CollisionManager* CollisionManager::getInstance() {
-	if (instance == nullptr) {
-		instance = new CollisionManager();
-	}
+CollisionManager& CollisionManager::getInstance() {
+	static CollisionManager instance;
 	return instance;
 }
 
@@ -43,7 +40,7 @@ void CollisionManager::changeTypes(const Cell& cell, const ObjectType oldType, c
 	}
 }
 
-int CollisionManager::numberOfOccupied() const {
+std::size_t CollisionManager::numberOfOccupied() const {
 	return collisionMap.size();
 }
 

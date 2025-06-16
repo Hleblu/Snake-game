@@ -1,12 +1,8 @@
 ﻿#include "renderer.h"
-Renderer* Renderer::instance = nullptr;
 Renderer::Renderer() {}
-Renderer* Renderer::getInstance()
+Renderer& Renderer::getInstance()
 {
-	if (instance == nullptr)
-	{
-		instance = new Renderer();
-	}
+    static Renderer instance;
 	return instance;
 }
 

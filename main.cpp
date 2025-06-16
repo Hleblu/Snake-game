@@ -5,6 +5,13 @@
 #include "Resources/icon.c"
 #include <iostream>
 
+enum GameState {
+    GAME,
+    MENU,
+    SETTINGS,
+    EXIT
+} state, nextState;
+
 int main()
 {
     try {
@@ -21,7 +28,11 @@ int main()
 
         Menu menu;
         menu.setTitle("SNAKE GAME");
-        menu.createItem("Start", [&game, &window]() { game.start(window); });
+
+        menu.createItem("Start", [&menu]() { 
+            nextState = GameState::GAME;
+            menu.setMenuActive(false);
+            });
 
         Menu settings;
         settings.setTitle("SETTINGS");
@@ -51,11 +62,42 @@ int main()
             config.cycleOptions(config.currentTheme, config.themes, index);
             });
 
-        settings.createItem("Go back", [&settings]() { settings.setMenuActive(false); });
-        menu.createItem("Settings", [&settings, &window]() { settings.showMenu(window); });
+        settings.createItem("Go back", [&settings]() { 
+            nextState = GameState::MENU;
+            settings.setMenuActive(false); 
+            });
 
-        menu.createItem("Exit", [&menu]() { menu.setMenuActive(false); });
-        menu.showMenu(window);
+        menu.createItem("Settings", [&menu]() { 
+            nextState = GameState::SETTINGS;
+            menu.setMenuActive(false);
+            });
+
+        menu.createItem("Exit", [&menu]() { 
+            nextState = GameState::EXIT;
+            menu.setMenuActive(false); 
+            });
+
+        state = GameState::MENU;
+        nextState = state;
+        while (window.isOpen() && state != GameState::EXIT) {
+            switch (state) {
+                case GameState::MENU:
+                    menu.showMenu(window);
+                    state = nextState;
+                    break;
+                case GameState::SETTINGS:
+                    settings.showMenu(window);
+                    state = nextState;
+                    break;
+                case GameState::GAME:
+                    game.start(window);
+                    state = GameState::MENU;
+                    break;
+                default:
+                    state = GameState::EXIT;
+                    break;
+            }
+        }
     }
 
     catch (const std::exception& e){

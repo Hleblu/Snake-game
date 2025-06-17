@@ -20,12 +20,12 @@ void Game::playSound(sf::SoundBuffer& buffer) {
 void Game::restoreDefaults() {
     snake.restoreDefaultValues();
     obstacle.restoreDefaultValues();
+    apple->updateGraphicalData();
     apple = AppleFactory::createRandomApple();
 }
 
 void Game::start(sf::RenderWindow& window)
 {
-    apple->updateGraphicalData();
     restoreDefaults();
 
     float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config.delay;
@@ -65,6 +65,7 @@ void Game::start(sf::RenderWindow& window)
                     case sf::Keyboard::Key::Right: snake.nextDirection = Snake::RIGHT; break;
                     case sf::Keyboard::Key::Up: snake.nextDirection = Snake::UP; break;
                     case sf::Keyboard::Key::Down: snake.nextDirection = Snake::DOWN; break;
+                    case sf::Keyboard::Key::Escape: isGameOver = true; break;
                 }
         }
 
@@ -105,7 +106,8 @@ void Game::start(sf::RenderWindow& window)
         window.draw(snake, &renderer.gradientShader);
         window.display();
     }
-    sf::sleep(sf::seconds(0.5f));
+    if (snake.hasCollided())
+        sf::sleep(sf::seconds(0.5f));
 }
 
 Game::Game() {

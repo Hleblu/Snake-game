@@ -17,13 +17,13 @@ class Menu
 	};
 
 	std::vector<MenuItem> items;
-	std::string label;
 	sf::Font mainFont;
 	sf::Text title;
 	unsigned int fontSize;
 	bool menuIsActive = false;
 
 	void drawItems(sf::RenderWindow& window);
+	void resetHover();
 public:
 	Menu();
 	void createItem(const std::string& label, std::function<void()> action);

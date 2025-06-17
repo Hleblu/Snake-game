@@ -34,6 +34,16 @@ int main()
             menu.setMenuActive(false);
             });
 
+        menu.createItem("Settings", [&menu]() {
+            nextState = GameState::SETTINGS;
+            menu.setMenuActive(false);
+            });
+
+        menu.createItem("Exit", [&menu]() {
+            nextState = GameState::EXIT;
+            menu.setMenuActive(false);
+            });
+
         Menu settings;
         settings.setTitle("SETTINGS");
 
@@ -65,16 +75,6 @@ int main()
         settings.createItem("Go back", [&settings]() { 
             nextState = GameState::MENU;
             settings.setMenuActive(false); 
-            });
-
-        menu.createItem("Settings", [&menu]() { 
-            nextState = GameState::SETTINGS;
-            menu.setMenuActive(false);
-            });
-
-        menu.createItem("Exit", [&menu]() { 
-            nextState = GameState::EXIT;
-            menu.setMenuActive(false); 
             });
 
         state = GameState::MENU;

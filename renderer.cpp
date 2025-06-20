@@ -1,4 +1,6 @@
 ﻿#include "renderer.h"
+#include "configuration.h"
+
 Renderer::Renderer() {}
 Renderer& Renderer::getInstance()
 {

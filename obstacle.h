@@ -1,16 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "configuration.h"
-#include "collisionManager.h"
 #include "cell.h"
-#include "randomGenerator.h"
 
 class Obstacle : public sf::Drawable
 {
 	std::vector<Cell> coords;
 	sf::VertexArray vertices;
 
-	void updateVertexArray();
+	void updateVertices();
 public:
 	Obstacle();
 	void generateNewPosition();

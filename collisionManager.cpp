@@ -1,4 +1,5 @@
 #include "collisionManager.h"
+
 CollisionManager::CollisionManager() {}
 CollisionManager& CollisionManager::getInstance() {
 	static CollisionManager instance;

@@ -1,16 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "configuration.h"
 #include <deque>
 #include "cell.h"
-#include "collisionManager.h"
 
 class Snake : public sf::Drawable
 {
-    sf::VertexArray segmentsVertices;
+    sf::VertexArray vertices;
     std::deque<Cell> segments;
     std::deque<Cell> previousSegments;
-    short int hashDelay;
+    std::uint16_t hashDelay;
 
     void updateTexCoords();
 

@@ -1,4 +1,9 @@
 #include "game.h"
+#include "configuration.h"
+#include "renderer.h"
+#include "Resources/Sounds/sound_food.c"
+#include "Resources/Sounds/sound_move.c"
+#include "Resources/Sounds/sound_gameover.c"
 
 void Game::playSound(sf::SoundBuffer& buffer) {
     for (auto& sound : soundsArray) {
@@ -20,7 +25,6 @@ void Game::playSound(sf::SoundBuffer& buffer) {
 void Game::restoreDefaults() {
     snake.restoreDefaultValues();
     obstacle.restoreDefaultValues();
-    apple->updateGraphicalData();
     apple = AppleFactory::createRandomApple();
 }
 

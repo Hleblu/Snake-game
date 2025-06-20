@@ -3,7 +3,7 @@
 #include "configuration.h"
 #include "randomGenerator.h"
 #include "Resources/icon.c"
-#include <iostream>
+#include <cstdio>
 
 enum GameState {
     GAME,
@@ -101,6 +101,6 @@ int main()
     }
 
     catch (const std::exception& e){
-        std::cerr << "!!!!!:" << e.what();
+        fprintf(stderr, "!!!!!: %s\n", e.what());
     }
 }

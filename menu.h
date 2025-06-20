@@ -1,8 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "configuration.h"
 #include <functional>
-#include "Resources/font.c"
 
 class Menu 
 {

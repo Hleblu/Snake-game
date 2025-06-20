@@ -1,4 +1,7 @@
 #include "obstacle.h"
+#include "configuration.h"
+#include "collisionManager.h"
+#include "randomGenerator.h"
 
 Obstacle::Obstacle() {
     vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
@@ -25,7 +28,7 @@ void Obstacle::generateNewPosition() {
 
     collisionManager.setOccupied(coord, OBSTACLE);
     coords.push_back(coord);
-    updateVertexArray();
+    updateVertices();
 }
 
 void Obstacle::restoreDefaultValues()
@@ -34,7 +37,7 @@ void Obstacle::restoreDefaultValues()
     coords.clear();
 }
 
-void Obstacle::updateVertexArray() {
+void Obstacle::updateVertices() {
     const Cell& coord = coords.back();
     const float posX = coord.x * config.size;
     const float posY = coord.y * config.size;

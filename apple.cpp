@@ -1,4 +1,8 @@
 #include "apple.h"
+#include "configuration.h"
+#include "snake.h"
+#include "collisionManager.h"
+#include "randomGenerator.h"
 
 Apple::Apple() {
     generateNewPosition();

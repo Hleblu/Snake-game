@@ -1,8 +1,10 @@
 #include "snake.h"
+#include "collisionManager.h"
+#include "configuration.h"
 
 Snake::Snake()
 {
-    segmentsVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
+    vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     restoreDefaultValues();
 }
 
@@ -28,8 +30,8 @@ void Snake::restoreDefaultValues()
     firstMove = true;
     hashDelay = 0;
 
-    segmentsVertices.clear();
-    segmentsVertices.resize(config.rows * config.columns * 6);
+    vertices.clear();
+    vertices.resize(config.rows * config.columns * 6);
 
     updateVertices();
 	updateTexCoords();
@@ -97,7 +99,7 @@ void Snake::updateTexCoords()
 {
 	for (size_t i = 0; i < segments.size(); ++i) {
         const float normalizedPosition = static_cast<float>(i) / (segments.size() - 1);
-        sf::Vertex* triangles = &segmentsVertices[i * 6];
+        sf::Vertex* triangles = &vertices[i * 6];
         triangles[0].texCoords = { 0, normalizedPosition };
         triangles[1].texCoords = { 1, normalizedPosition };
         triangles[2].texCoords = triangles[0].texCoords;
@@ -115,7 +117,7 @@ void Snake::updateVertices(const float dt)
 		const float posXEnd = posX + config.size;
 		const float posYEnd = posY + config.size;
 
-        sf::Vertex* triangles = &segmentsVertices[i * 6];
+        sf::Vertex* triangles = &vertices[i * 6];
         triangles[0].position = { posX, posY };
         triangles[1].position = { posXEnd, posY };
         triangles[2].position = { posXEnd, posYEnd };
@@ -127,5 +129,5 @@ void Snake::updateVertices(const float dt)
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(segmentsVertices, states);
+    target.draw(vertices, states);
 }

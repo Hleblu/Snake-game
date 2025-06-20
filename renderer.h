@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "configuration.h"
+
 class Renderer
 {
 	Renderer();

@@ -1,10 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "configuration.h"
-#include "snake.h"
-#include "collisionManager.h"
 #include "cell.h"
-#include "randomGenerator.h"
+
+class Snake;
 
 class Apple : public sf::Drawable
 {

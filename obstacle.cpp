@@ -2,6 +2,7 @@
 #include "configuration.h"
 #include "collisionManager.h"
 #include "randomGenerator.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 Obstacle::Obstacle() {
     vertices.setPrimitiveType(sf::PrimitiveType::Triangles);

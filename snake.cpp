@@ -1,6 +1,7 @@
 #include "snake.h"
 #include "collisionManager.h"
 #include "configuration.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 Snake::Snake()
 {

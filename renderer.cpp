@@ -1,5 +1,7 @@
 ﻿#include "renderer.h"
 #include "configuration.h"
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 Renderer::Renderer() {}
 Renderer& Renderer::getInstance()

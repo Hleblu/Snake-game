@@ -3,6 +3,7 @@
 #include "snake.h"
 #include "collisionManager.h"
 #include "randomGenerator.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 Apple::Apple() {
     generateNewPosition();

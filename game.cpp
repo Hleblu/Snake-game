@@ -4,6 +4,8 @@
 #include "Resources/Sounds/sound_food.c"
 #include "Resources/Sounds/sound_move.c"
 #include "Resources/Sounds/sound_gameover.c"
+#include <SFML/System/Sleep.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 void Game::playSound(sf::SoundBuffer& buffer) {
     for (auto& sound : soundsArray) {

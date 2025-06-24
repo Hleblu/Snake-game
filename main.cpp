@@ -4,6 +4,7 @@
 #include "randomGenerator.h"
 #include "Resources/icon.c"
 #include <cstdio>
+#include <SFML/Graphics/Image.hpp>
 
 enum GameState {
     GAME,

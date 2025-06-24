@@ -1,5 +1,6 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 #include "cell.h"
 
 class Obstacle : public sf::Drawable

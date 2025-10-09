@@ -1,14 +1,14 @@
 #pragma once
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/Graphics/Drawable.hpp>
+#include "cell.hpp"
 #include <deque>
-#include "cell.h"
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 class Snake : public sf::Drawable
 {
     sf::VertexArray vertices;
     std::deque<Cell> segments;
-    std::deque<Cell> previousSegments;
+    std::deque<Cell> prevSegments;
     std::uint16_t hashDelay;
 
     void updateTexCoords();

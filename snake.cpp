@@ -1,6 +1,6 @@
-#include "snake.h"
-#include "collisionManager.h"
-#include "configuration.h"
+#include "collisionManager.hpp"
+#include "configuration.hpp"
+#include "snake.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 Snake::Snake()
@@ -11,8 +11,6 @@ Snake::Snake()
 
 void Snake::restoreDefaultValues()
 {
-    collisionManager.clearMap();
-
     const std::int16_t centerX = config.rows / 2;
     const std::int16_t centerY = config.columns / 2;
 
@@ -21,7 +19,7 @@ void Snake::restoreDefaultValues()
         {static_cast<std::int16_t>(centerX - 1), centerY},
         {static_cast<std::int16_t>(centerX - 2), centerY}
     };
-    previousSegments = segments;
+    prevSegments = segments;
 
     collisionManager.setOccupied(segments[0], SNAKE_HEAD);
     collisionManager.setOccupied(segments[1], SNAKE_TAIL);
@@ -40,10 +38,10 @@ void Snake::restoreDefaultValues()
 
 bool Snake::hasCollided() const
 {
-    return collisionManager.checkCellType(segments[0], SNAKE_TAIL)
-        || collisionManager.checkCellType(segments[0], OBSTACLE)
-        || segments[0].x < 0 || segments[0].x > config.rows - 1
-        || segments[0].y < 0 || segments[0].y > config.columns - 1;
+    const Cell& head = segments.front();
+    return collisionManager.checkCellType(head, SNAKE_TAIL)
+        || collisionManager.checkCellType(head, OBSTACLE)
+        || collisionManager.isOutOfBorders(head);
 }
 
 void Snake::grow(const int size)
@@ -51,7 +49,7 @@ void Snake::grow(const int size)
     hashDelay += size;
     for (int i = 0; i < size; ++i) {
         segments.emplace_back(segments.back());
-        previousSegments.emplace_back(previousSegments.back());
+        prevSegments.emplace_back(prevSegments.back());
     }
 	updateTexCoords();
 }
@@ -61,8 +59,8 @@ void Snake::move()
     if (direction == NONE) return;
     
     if (!firstMove) { 
-        previousSegments.pop_back();
-        previousSegments.emplace_front(segments.front());
+        prevSegments.pop_back();
+        prevSegments.emplace_front(segments.front());
     }
     else firstMove = false;
 
@@ -113,8 +111,8 @@ void Snake::updateTexCoords()
 void Snake::updateVertices(const float dt)
 {
     for (size_t i = 0; i < segments.size(); ++i) {
-        const float posX = (previousSegments[i].x + (segments[i].x - previousSegments[i].x) * dt) * config.size;
-        const float posY = (previousSegments[i].y + (segments[i].y - previousSegments[i].y) * dt) * config.size;
+        const float posX = (prevSegments[i].x + (segments[i].x - prevSegments[i].x) * dt) * config.size;
+        const float posY = (prevSegments[i].y + (segments[i].y - prevSegments[i].y) * dt) * config.size;
 		const float posXEnd = posX + config.size;
 		const float posYEnd = posY + config.size;
 

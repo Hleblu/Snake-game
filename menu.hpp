@@ -1,8 +1,8 @@
 #pragma once
-#include <SFML/Graphics/Text.hpp>
+#include <functional>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <functional>
+#include <SFML/Graphics/Text.hpp>
 
 class Menu 
 {

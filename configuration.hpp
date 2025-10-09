@@ -1,6 +1,6 @@
 #pragma once
-#include <SFML/Graphics/Color.hpp>
 #include <array>
+#include <SFML/Graphics/Color.hpp>
 
 class Configuration
 {
@@ -104,7 +104,6 @@ public:
 
 	const std::array<std::uint16_t, 3> cellSizes = { 40, 60, 30 };
 
-	const float animationFrameTime = 45.0f;
 	const float delayDecreaseStep = 0.995f;
 	float delay = 0.115f;
 	float delayDecreaseBonus = 1.f;

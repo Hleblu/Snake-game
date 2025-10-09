@@ -1,11 +1,12 @@
-#include "game.h"
-#include "configuration.h"
-#include "renderer.h"
+#include "collisionManager.hpp"
+#include "configuration.hpp"
+#include "game.hpp"
+#include "renderer.hpp"
 #include "Resources/Sounds/sound_food.c"
-#include "Resources/Sounds/sound_move.c"
 #include "Resources/Sounds/sound_gameover.c"
-#include <SFML/System/Sleep.hpp>
+#include "Resources/Sounds/sound_move.c"
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Sleep.hpp>
 
 void Game::playSound(sf::SoundBuffer& buffer) {
     for (auto& sound : soundsArray) {
@@ -25,6 +26,7 @@ void Game::playSound(sf::SoundBuffer& buffer) {
 }
 
 void Game::restoreDefaults() {
+    collisionManager.clearMap();
     snake.restoreDefaultValues();
     obstacle.restoreDefaultValues();
     apple = AppleFactory::createRandomApple();
@@ -34,9 +36,8 @@ void Game::start(sf::RenderWindow& window)
 {
     restoreDefaults();
 
-    float deltaTime = 0, gameUpdateAccumulator = 0, animationAccumulator = 0, currentDelay = config.delay;
+    float deltaTime = 0, gameUpdateAccumulator = 0, currentDelay = config.delay;
     bool speedChanged = false;
-	const float animationFrameTime = 1.0f / config.animationFrameTime;
 
     static sf::Sprite background(renderer.backgroundTexture);
     background.setScale(sf::Vector2f(config.size, config.size));
@@ -52,7 +53,6 @@ void Game::start(sf::RenderWindow& window)
     {
         deltaTime = clock.restart().asSeconds();
         gameUpdateAccumulator += deltaTime;
-        animationAccumulator += deltaTime;
 
         if (speedChanged) {
             const float sizeBonus = std::pow(config.delayDecreaseStep, snake.getSegments().size() - 3);
@@ -87,7 +87,7 @@ void Game::start(sf::RenderWindow& window)
                 isGameOver = true;
                 playSound(gameOverSoundBuffer);
             }
-            snake.updateVertices();
+
             if (apple->isEaten()) {
                 config.delayDecreaseBonus = 1.f;
                 speedChanged = true;
@@ -100,10 +100,8 @@ void Game::start(sf::RenderWindow& window)
                     obstacle.generateNewPosition();
             }
         }
-        else if (animationAccumulator >= animationFrameTime) {
-            snake.updateVertices(gameUpdateAccumulator / currentDelay); 
-            animationAccumulator -= animationFrameTime;
-        }
+
+        snake.updateVertices(gameUpdateAccumulator / currentDelay); 
 
         window.clear(config.currentTheme->secondColor);
         window.draw(background);

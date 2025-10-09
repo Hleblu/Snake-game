@@ -1,6 +1,6 @@
-#include "menu.h"
+#include "configuration.hpp"
+#include "menu.hpp"
 #include "Resources/font.c"
-#include "configuration.h"
 
 Menu::Menu() : title(mainFont)
 {

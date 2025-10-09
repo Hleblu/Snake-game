@@ -62,37 +62,37 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="snake.h">
+    <ClInclude Include="snake.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="apple.h">
+    <ClInclude Include="apple.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game.h">
+    <ClInclude Include="game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="menu.h">
+    <ClInclude Include="menu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="configuration.h">
+    <ClInclude Include="configuration.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renderer.h">
+    <ClInclude Include="renderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cell.h">
+    <ClInclude Include="cell.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="collisionManager.h">
+    <ClInclude Include="collisionManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="randomGenerator.h">
+    <ClInclude Include="randomGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="obstacle.h">
+    <ClInclude Include="obstacle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

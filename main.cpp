@@ -1,7 +1,7 @@
-#include "menu.h"
-#include "game.h"
-#include "configuration.h"
-#include "randomGenerator.h"
+#include "configuration.hpp"
+#include "game.hpp"
+#include "menu.hpp"
+#include "randomGenerator.hpp"
 #include "Resources/icon.c"
 #include <cstdio>
 #include <SFML/Graphics/Image.hpp>

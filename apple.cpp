@@ -1,8 +1,8 @@
-#include "apple.h"
-#include "configuration.h"
-#include "snake.h"
-#include "collisionManager.h"
-#include "randomGenerator.h"
+#include "apple.hpp"
+#include "collisionManager.hpp"
+#include "configuration.hpp"
+#include "randomGenerator.hpp"
+#include "snake.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 Apple::Apple() {

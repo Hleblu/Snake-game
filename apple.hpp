@@ -1,8 +1,8 @@
 #pragma once
+#include "cell.hpp"
+#include <memory>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <memory>
-#include "cell.h"
 
 class Snake;
 

@@ -1,7 +1,7 @@
-#include "obstacle.h"
-#include "configuration.h"
-#include "collisionManager.h"
-#include "randomGenerator.h"
+#include "collisionManager.hpp"
+#include "configuration.hpp"
+#include "obstacle.hpp"
+#include "randomGenerator.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 Obstacle::Obstacle() {

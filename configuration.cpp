@@ -1,4 +1,4 @@
-#include "configuration.h"
+#include "configuration.hpp"
 
 Configuration::Configuration() {}
 Configuration& Configuration::getInstance() {

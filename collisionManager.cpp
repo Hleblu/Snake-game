@@ -1,4 +1,5 @@
-#include "collisionManager.h"
+#include "collisionManager.hpp"
+#include "configuration.hpp"
 
 CollisionManager::CollisionManager() {}
 CollisionManager& CollisionManager::getInstance() {
@@ -61,4 +62,8 @@ bool CollisionManager::isEmptyAround(const Cell& cell) const {
 			return false;
 	}
 	return true;
+}
+
+bool CollisionManager::isOutOfBorders(const Cell& cell) const {
+	return cell.x < 0 || cell.x > config.rows - 1 || cell.y < 0 || cell.y > config.columns - 1;
 }

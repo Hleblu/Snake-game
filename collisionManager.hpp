@@ -1,8 +1,8 @@
 #pragma once
-#include "cell.h"
+#include "cell.hpp"
+#include <array>
 #include <unordered_map>
 #include <unordered_set>
-#include <array>
 
 enum ObjectType
 {
@@ -35,6 +35,7 @@ public:
 	std::size_t numberOfOccupied() const;
 	bool isEmptyAround(const Cell& cell, const ObjectType type) const;
 	bool isEmptyAround(const Cell& cell) const;
+	bool isOutOfBorders(const Cell& cell) const;
 };
 
 inline CollisionManager& collisionManager = CollisionManager::getInstance();

@@ -1,11 +1,11 @@
 #pragma once
-#include <SFML/Audio/SoundBuffer.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include "apple.hpp"
+#include "obstacle.hpp"
+#include "snake.hpp"
 #include <SFML/Audio/Sound.hpp>
-#include "snake.h"
-#include "obstacle.h"
-#include "apple.h"
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Clock.hpp>
 
 class Game 
 {

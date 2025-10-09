@@ -1,7 +1,7 @@
 #pragma once
-#include <SFML/Graphics/VertexArray.hpp>
+#include "cell.hpp"
 #include <SFML/Graphics/Drawable.hpp>
-#include "cell.h"
+#include <SFML/Graphics/VertexArray.hpp>
 
 class Obstacle : public sf::Drawable
 {

@@ -115,7 +115,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;opengl32.lib;gdi32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;winmm.lib;sfml-system-s-d.lib;sfml-window-s-d.lib;sfml-graphics-s-d.lib;sfml-audio-s-d.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetyped.lib;opengl32.lib;gdi32.lib;flacd.lib;vorbisencd.lib;vorbisfiled.lib;vorbisd.lib;oggd.lib;winmm.lib;sfml-system-s-d.lib;sfml-window-s-d.lib;sfml-graphics-s-d.lib;sfml-audio-s-d.lib;sfml-main-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,13 +146,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="obstacle.cpp" />
-    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="renderResources.cpp" />
     <ClCompile Include="Resources\font.c" />
     <ClCompile Include="Resources\icon.c" />
     <ClCompile Include="Resources\Sounds\sound_food.c" />
     <ClCompile Include="Resources\Sounds\sound_gameover.c" />
     <ClCompile Include="Resources\Sounds\sound_move.c" />
     <ClCompile Include="snake.cpp" />
+    <ClCompile Include="soundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="apple.hpp" />
@@ -163,9 +164,10 @@
     <ClInclude Include="menu.hpp" />
     <ClInclude Include="obstacle.hpp" />
     <ClInclude Include="randomGenerator.hpp" />
-    <ClInclude Include="renderer.hpp" />
+    <ClInclude Include="renderResources.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="snake.hpp" />
+    <ClInclude Include="soundManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

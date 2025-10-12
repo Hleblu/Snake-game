@@ -2,6 +2,9 @@
 #include "configuration.hpp"
 #include "snake.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include "randomGenerator.hpp"
+
+constexpr std::size_t TRIANGLE_VERTICES = 6;
 
 Snake::Snake()
 {
@@ -16,21 +19,21 @@ void Snake::restoreDefaultValues()
 
     segments = {
         {centerX, centerY},
-        {static_cast<std::int16_t>(centerX - 1), centerY},
-        {static_cast<std::int16_t>(centerX - 2), centerY}
+        {centerX - 1, centerY},
+        {centerX - 2, centerY}
     };
     prevSegments = segments;
 
-    collisionManager.setOccupied(segments[0], SNAKE_HEAD);
-    collisionManager.setOccupied(segments[1], SNAKE_TAIL);
-    collisionManager.setOccupied(segments[2], SNAKE_TAIL);
+    collisionManager.setOccupied(segments[0], ObjectType::SNAKE_HEAD);
+    collisionManager.setOccupied(segments[1], ObjectType::SNAKE_TAIL);
+    collisionManager.setOccupied(segments[2], ObjectType::SNAKE_TAIL);
 
-    direction = NONE, previousDirection = NONE, nextDirection = NONE;
+    direction = Direction::NONE, prevDirection = Direction::NONE, nextDirection = Direction::NONE;
     firstMove = true;
     hashDelay = 0;
 
     vertices.clear();
-    vertices.resize(config.rows * config.columns * 6);
+    vertices.resize(config.rows * config.columns * TRIANGLE_VERTICES);
 
     updateVertices();
 	updateTexCoords();
@@ -39,24 +42,23 @@ void Snake::restoreDefaultValues()
 bool Snake::hasCollided() const
 {
     const Cell& head = segments.front();
-    return collisionManager.checkCellType(head, SNAKE_TAIL)
-        || collisionManager.checkCellType(head, OBSTACLE)
+    return collisionManager.checkCellType(head, ObjectType::SNAKE_TAIL)
+        || collisionManager.checkCellType(head, ObjectType::OBSTACLE)
         || collisionManager.isOutOfBorders(head);
 }
 
 void Snake::grow(const int size)
 {
     hashDelay += size;
-    for (int i = 0; i < size; ++i) {
-        segments.emplace_back(segments.back());
-        prevSegments.emplace_back(prevSegments.back());
-    }
+    const size_t newSize = segments.size() + size;
+    segments.resize(newSize, segments.back());
+    prevSegments.resize(newSize, segments.back());
 	updateTexCoords();
 }
 
 void Snake::move()
 {
-    if (direction == NONE) return;
+    if (direction == Direction::NONE) return;
     
     if (!firstMove) { 
         prevSegments.pop_back();
@@ -65,28 +67,38 @@ void Snake::move()
     else firstMove = false;
 
     if (hashDelay == 0)
-        collisionManager.setFree(segments.back(), SNAKE_TAIL);
+        collisionManager.setFree(segments.back(), ObjectType::SNAKE_TAIL);
     else hashDelay -= 1;
     
     segments.pop_back();
     segments.emplace_front(segments.front());
-    collisionManager.changeTypes(segments.front(), SNAKE_HEAD, SNAKE_TAIL);
+    collisionManager.changeTypes(segments.front(), ObjectType::SNAKE_HEAD, ObjectType::SNAKE_TAIL);
 
     switch (direction) {
-        case RIGHT: segments[0].x++; break;
-        case LEFT: segments[0].x--; break;
-        case UP: segments[0].y--; break;
-        case DOWN: segments[0].y++; break;
-        default: break;
+        case Direction::RIGHT:
+            segments[0].x++;
+            break;
+        case Direction::LEFT:
+            segments[0].x--;
+            break;
+        case Direction::UP:
+            segments[0].y--;
+            break;
+        case Direction::DOWN:
+            segments[0].y++;
+            break;
+        default:
+            break;
     }
 
     collisionManager.setOccupied(segments.front(), ObjectType::SNAKE_HEAD);
-    previousDirection = direction;
+    prevDirection = direction;
 }
 
 bool Snake::canUpdateDirection() const
 {
-    return nextDirection != direction && nextDirection % 2 != previousDirection % 2;
+    return nextDirection != direction 
+        && static_cast<int>(nextDirection) % 2 != static_cast<int>(prevDirection) % 2;
 }
 
 const std::deque<Cell>& Snake::getSegments() const 
@@ -94,11 +106,16 @@ const std::deque<Cell>& Snake::getSegments() const
     return segments;
 }
 
+const size_t Snake::getSize() const
+{
+    return segments.size();
+}
+
 void Snake::updateTexCoords()
 {
 	for (size_t i = 0; i < segments.size(); ++i) {
         const float normalizedPosition = static_cast<float>(i) / (segments.size() - 1);
-        sf::Vertex* triangles = &vertices[i * 6];
+        sf::Vertex* triangles = &vertices[i * TRIANGLE_VERTICES];
         triangles[0].texCoords = { 0, normalizedPosition };
         triangles[1].texCoords = { 1, normalizedPosition };
         triangles[2].texCoords = triangles[0].texCoords;
@@ -116,7 +133,7 @@ void Snake::updateVertices(const float dt)
 		const float posXEnd = posX + config.size;
 		const float posYEnd = posY + config.size;
 
-        sf::Vertex* triangles = &vertices[i * 6];
+        sf::Vertex* triangles = &vertices[i * TRIANGLE_VERTICES];
         triangles[0].position = { posX, posY };
         triangles[1].position = { posXEnd, posY };
         triangles[2].position = { posXEnd, posYEnd };

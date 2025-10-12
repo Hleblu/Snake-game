@@ -14,14 +14,14 @@ class Snake : public sf::Drawable
     void updateTexCoords();
 
 public:
-    enum Direction {
+    bool firstMove;
+    enum class Direction {
         NONE = -1,
         LEFT = 1,
         UP,
         RIGHT,
         DOWN
-    } direction, previousDirection, nextDirection;
-    bool firstMove;
+    } direction, prevDirection, nextDirection;
 
     Snake();
     void restoreDefaultValues();
@@ -30,6 +30,7 @@ public:
     void move();
     bool canUpdateDirection() const;
     const std::deque<Cell>& getSegments() const;
+    const size_t getSize() const;
     void updateVertices(const float dt = 0);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

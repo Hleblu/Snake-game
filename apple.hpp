@@ -11,12 +11,15 @@ class Apple : public sf::Drawable
 protected:
 	sf::RectangleShape rect;
 	Cell coords;
+	float speedBonus;
+	sf::Color color;
 
 public:
 	Apple();
 	void generateNewPosition();
 	bool isEaten() const;
-	virtual void updateGraphicalData();
+	void updateGraphicalData();
+	virtual const float getSpeedBonus() const;
 	virtual void applyEffect(Snake& snake);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -26,19 +29,21 @@ public:
 class BonusApple : public Apple
 {
 public:
-	void updateGraphicalData() override;
+	BonusApple();
 	void applyEffect(Snake& snake) override;
 };
 
-class HasteApple : public BonusApple
+class HasteApple : public Apple
 {
 public:
+	HasteApple();
 	void applyEffect(Snake& snake) override;
 };
 
-class SlownessApple : public BonusApple
+class SlownessApple : public Apple
 {
 public:
+	SlownessApple();
 	void applyEffect(Snake& snake) override;
 };
 

@@ -27,7 +27,7 @@ void Obstacle::generateNewPosition() {
             return;
     } while (collisionManager.isCellOccupied(coord) || !collisionManager.isEmptyAround(coord));
 
-    collisionManager.setOccupied(coord, OBSTACLE);
+    collisionManager.setOccupied(coord, ObjectType::OBSTACLE);
     coords.push_back(coord);
     updateVertices();
 }

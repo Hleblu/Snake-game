@@ -1,65 +1,30 @@
 #include "collisionManager.hpp"
 #include "configuration.hpp"
 #include "game.hpp"
-#include "renderer.hpp"
+#include "renderResources.hpp"
 #include "Resources/Sounds/sound_food.c"
 #include "Resources/Sounds/sound_gameover.c"
 #include "Resources/Sounds/sound_move.c"
-#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Sleep.hpp>
 
-void Game::playSound(sf::SoundBuffer& buffer) {
-    for (auto& sound : soundsArray) {
-        if (sound.getStatus() == sf::Sound::Status::Stopped) {
-            sound.setBuffer(buffer);
-            sound.play();
-            return;
-        }
-    }
-
-	auto oldestSound = std::min_element(soundsArray.begin(), soundsArray.end(), [](const sf::Sound& a, const sf::Sound& b) {
-		return a.getPlayingOffset() > b.getPlayingOffset();
-	});
-
-	oldestSound->setBuffer(buffer);
-    oldestSound->play();
-}
-
-void Game::restoreDefaults() {
-    collisionManager.clearMap();
-    snake.restoreDefaultValues();
-    obstacle.restoreDefaultValues();
-    apple = AppleFactory::createRandomApple();
-}
+constexpr size_t soundBufferSize = 5;
+constexpr float gameOverDelay = 0.5f; // in seconds
 
 void Game::start(sf::RenderWindow& window)
 {
     restoreDefaults();
+    initVisuals();
 
-    float deltaTime = 0, gameUpdateAccumulator = 0, currentDelay = config.delay;
-    bool speedChanged = false;
+    float deltaTime = 0;
+    float gameUpdateAccumulator = 0;
+    float gameOverTimer = 0;
+    float currentDelay = config.delay;
 
-    static sf::Sprite background(renderer.backgroundTexture);
-    background.setScale(sf::Vector2f(config.size, config.size));
-    background.setTextureRect({ { 0, 0 }, { static_cast<int>(config.width), static_cast<int>(config.height) } });
-	background.setColor(config.currentTheme->mainColor);
+    const size_t snakeDefaultSize = snake.getSize();
 
-    renderer.gradientShader.setUniform("startColor", sf::Glsl::Vec4(config.currentTheme->snakeColor));
-	renderer.gradientShader.setUniform("endColor", sf::Glsl::Vec4(config.currentTheme->snakeColorEnd));
-
-    bool isGameOver = false;
     clock.restart();
-    while (window.isOpen() && !isGameOver)
+    while (window.isOpen() && state != State::EXIT)
     {
-        deltaTime = clock.restart().asSeconds();
-        gameUpdateAccumulator += deltaTime;
-
-        if (speedChanged) {
-            const float sizeBonus = std::pow(config.delayDecreaseStep, snake.getSegments().size() - 3);
-            currentDelay = config.delay * sizeBonus * config.delayDecreaseBonus;
-            speedChanged = false;
-        }
-
         while (const std::optional event = window.pollEvent())
         {
             if(event->is<sf::Event::Closed>()) window.close();
@@ -67,62 +32,106 @@ void Game::start(sf::RenderWindow& window)
                 switch (keyPressed->code)
                 {
                     case sf::Keyboard::Key::Left:
-                        if (!snake.firstMove) snake.nextDirection = Snake::LEFT; break;
-                    case sf::Keyboard::Key::Right: snake.nextDirection = Snake::RIGHT; break;
-                    case sf::Keyboard::Key::Up: snake.nextDirection = Snake::UP; break;
-                    case sf::Keyboard::Key::Down: snake.nextDirection = Snake::DOWN; break;
-                    case sf::Keyboard::Key::Escape: isGameOver = true; break;
+                        if (!snake.firstMove) // prevent gameover, since snake starts facaing righwards
+                            snake.nextDirection = Snake::Direction::LEFT;
+                        break;
+                    case sf::Keyboard::Key::Right:
+                        snake.nextDirection = Snake::Direction::RIGHT;
+                        break;
+                    case sf::Keyboard::Key::Up:
+                        snake.nextDirection = Snake::Direction::UP;
+                        break;
+                    case sf::Keyboard::Key::Down:
+                        snake.nextDirection = Snake::Direction::DOWN;
+                        break;
+                    case sf::Keyboard::Key::Escape:
+                        state = State::EXIT;
+                        break;
+                    case sf::Keyboard::Key::Space:
+                        state = (state == State::PLAY) ? State::PAUSE : State::PLAY;
+                        break;
                 }
         }
 
-        if (snake.canUpdateDirection()) {
-            snake.direction = snake.nextDirection;
-            playSound(moveSoundBuffer);
-        }
+        deltaTime = clock.restart().asSeconds();
+        if (state == State::PLAY) {
+            gameUpdateAccumulator += deltaTime;
 
-        if (gameUpdateAccumulator >= currentDelay) {
-            gameUpdateAccumulator -= currentDelay;
-            snake.move();
-            if (snake.hasCollided()) {
-                isGameOver = true;
-                playSound(gameOverSoundBuffer);
+            if (snake.canUpdateDirection()) {
+                snake.direction = snake.nextDirection;
+                sManager.playSound("move");
             }
 
-            if (apple->isEaten()) {
-                config.delayDecreaseBonus = 1.f;
-                speedChanged = true;
+            if (gameUpdateAccumulator >= currentDelay) {
 
-                playSound(eatSoundBuffer);
-                apple->applyEffect(snake);
-                apple = AppleFactory::createRandomApple();
+                gameUpdateAccumulator -= currentDelay;
 
-                if (config.obstaclesEnabled && (snake.getSegments().size() & 1) == 0)
-                    obstacle.generateNewPosition();
+                snake.move();
+
+                if (snake.hasCollided()) {
+                    state = State::GAMEOVER;
+                    sManager.playSound("gameover");
+                }
+
+                if (apple->isEaten()) {
+                    currentDelay = calculateSpeed(snakeDefaultSize);
+
+                    sManager.playSound("eat");
+                    apple->applyEffect(snake);
+                    apple = AppleFactory::createRandomApple();
+
+                    if (config.obstaclesEnabled && (snake.getSize() & 1) == 0)
+                        obstacle.generateNewPosition();
+                }
             }
         }
 
-        snake.updateVertices(gameUpdateAccumulator / currentDelay); 
+        snake.updateVertices(gameUpdateAccumulator / currentDelay);
 
         window.clear(config.currentTheme->secondColor);
         window.draw(background);
         window.draw(*apple);
         window.draw(obstacle);
-        window.draw(snake, &renderer.gradientShader);
+        window.draw(snake, &renderResources.gradientShader);
         window.display();
+
+        if (state == State::GAMEOVER) {
+            gameOverTimer += deltaTime;
+            if (gameOverTimer >= gameOverDelay) state = State::EXIT;
+        }
     }
-    if (snake.hasCollided())
-        sf::sleep(sf::seconds(0.5f));
 }
 
-Game::Game() {
-	renderer.loadGradientShader();
-	renderer.createBackgroundTexture();
+void Game::restoreDefaults() {
+    collisionManager.clearMap();
+    snake.restoreDefaultValues();
+    obstacle.restoreDefaultValues();
+    apple = AppleFactory::createRandomApple();
+    state = State::PLAY;
+}
 
-    if (!eatSoundBuffer.loadFromMemory(sound_food_ogg, sound_food_ogg_len))
-        throw std::runtime_error("couldn\'t load sound eat");
-    if (!gameOverSoundBuffer.loadFromMemory(sound_gameover_ogg, sound_gameover_ogg_len))
-        throw std::runtime_error("couldn\'t load sound gameOver");
-    if (!moveSoundBuffer.loadFromMemory(sound_move_ogg, sound_move_ogg_len))
-        throw std::runtime_error("couldn\'t load sound move");
-    soundsArray.resize(5, sf::Sound(moveSoundBuffer));
+float Game::calculateSpeed(const size_t& snakeDefaultSize)
+{
+    const size_t applesEaten = snake.getSize() - snakeDefaultSize;
+    const float sizeBonus = std::pow(config.delayDecreaseStep, applesEaten);
+    return config.delay * sizeBonus * apple->getSpeedBonus();
+}
+
+void Game::initVisuals()
+{
+    background.setScale(sf::Vector2f(config.size, config.size));
+    background.setTextureRect({ { 0, 0 }, { config.width, config.height } });
+    background.setColor(config.currentTheme->mainColor);
+
+    renderResources.gradientShader.setUniform("startColor", sf::Glsl::Vec4(config.currentTheme->snakeColor));
+    renderResources.gradientShader.setUniform("endColor", sf::Glsl::Vec4(config.currentTheme->snakeColorEnd));
+}
+
+Game::Game() : sManager(soundBufferSize), background(renderResources.backgroundTexture), state(State::PLAY) {
+	renderResources.loadGradientShader();
+	renderResources.createBackgroundTexture();
+
+    sManager.addSound("move", sound_move_ogg, sound_move_ogg_len);
+    sManager.addSound("eat", sound_food_ogg, sound_food_ogg_len);
+    sManager.addSound("gameover", sound_gameover_ogg, sound_gameover_ogg_len);
 }

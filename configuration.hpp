@@ -106,7 +106,6 @@ public:
 
 	const float delayDecreaseStep = 0.995f;
 	float delay = 0.115f;
-	float delayDecreaseBonus = 1.f;
 
 	std::array<float, 3> speedOptions = { 0.115f, 0.135f, 0.095f };
 

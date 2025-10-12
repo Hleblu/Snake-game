@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <SFML/Graphics/Image.hpp>
 
-enum GameState {
+enum State {
     GAME,
     MENU,
     SETTINGS,
@@ -19,7 +19,11 @@ int main()
         RandomGenerator::seed(static_cast<uint64_t>(std::time(nullptr)));
 
         Game game;
-        sf::RenderWindow window(sf::VideoMode({ config.width, config.height }), "Snake", sf::Style::Titlebar | sf::Style::Close);
+        sf::RenderWindow window(sf::VideoMode(
+            { config.width, config.height }),
+            "Snake",
+            sf::Style::Titlebar | sf::Style::Close
+        );
         window.setKeyRepeatEnabled(false);
         window.setVerticalSyncEnabled(true);
 
@@ -31,19 +35,19 @@ int main()
         menu.setTitle("SNAKE GAME");
 
         menu.createItem("Start", [&menu]() { 
-            nextState = GameState::GAME;
+            nextState = State::GAME;
             menu.setMenuActive(false);
-            });
+        });
 
         menu.createItem("Settings", [&menu]() {
-            nextState = GameState::SETTINGS;
+            nextState = State::SETTINGS;
             menu.setMenuActive(false);
-            });
+        });
 
         menu.createItem("Exit", [&menu]() {
-            nextState = GameState::EXIT;
+            nextState = State::EXIT;
             menu.setMenuActive(false);
-            });
+        });
 
         Menu settings;
         settings.setTitle("SETTINGS");
@@ -52,7 +56,7 @@ int main()
             static int index = 0;
             config.cycleOptions(config.delay, config.speedOptions, index);
             settings.setItemLabel(0, config.speedOptionsLabels[index]);
-            });
+        });
 
         settings.createItem("Field size: Default", [&settings]() {
             static int index = 0;
@@ -60,42 +64,42 @@ int main()
             config.rows = config.width / config.size;
             config.columns = config.height / config.size;
             settings.setItemLabel(1, config.fieldSizeOptionsLabels[index]);
-            });
+        });
 
         settings.createItem("Obstacles: Enabled", [&settings]() {
             static int index = 0;
             config.cycleOptions(config.obstaclesEnabled, config.boolOptions, index);
             settings.setItemLabel(2, config.obstaclesOptionsLabels[index]);
-            });
+        });
 
         settings.createItem("Change color theme", []() {
             static int index = 0;
             config.cycleOptions(config.currentTheme, config.themes, index);
-            });
+        });
 
         settings.createItem("Go back", [&settings]() { 
-            nextState = GameState::MENU;
+            nextState = State::MENU;
             settings.setMenuActive(false); 
-            });
+        });
 
-        state = GameState::MENU;
+        state = State::MENU;
         nextState = state;
-        while (window.isOpen() && state != GameState::EXIT) {
+        while (window.isOpen() && state != State::EXIT) {
             switch (state) {
-                case GameState::MENU:
+                case State::MENU:
                     menu.showMenu(window);
                     state = nextState;
                     break;
-                case GameState::SETTINGS:
+                case State::SETTINGS:
                     settings.showMenu(window);
                     state = nextState;
                     break;
-                case GameState::GAME:
+                case State::GAME:
                     game.start(window);
-                    state = GameState::MENU;
+                    state = State::MENU;
                     break;
                 default:
-                    state = GameState::EXIT;
+                    state = State::EXIT;
                     break;
             }
         }

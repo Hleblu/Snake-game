@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-enum ObjectType
+enum class ObjectType
 {
 	SNAKE_TAIL,
 	SNAKE_HEAD,

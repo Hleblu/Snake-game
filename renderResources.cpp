@@ -1,16 +1,16 @@
 ﻿#include "configuration.hpp"
-#include "renderer.hpp"
+#include "renderResources.hpp"
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 
-Renderer::Renderer() {}
-Renderer& Renderer::getInstance()
+RenderResources::RenderResources() {}
+RenderResources& RenderResources::getInstance()
 {
-    static Renderer instance;
+    static RenderResources instance;
 	return instance;
 }
 
-void Renderer::loadGradientShader()
+void RenderResources::loadGradientShader()
 {
 	if (!gradientShader.loadFromMemory(R"(
         uniform vec4 startColor;
@@ -23,7 +23,7 @@ void Renderer::loadGradientShader()
 )", sf::Shader::Type::Fragment)) throw std::runtime_error("couldn't load gradient shader");
 }
 
-void Renderer::createBackgroundTexture()
+void RenderResources::createBackgroundTexture()
 {
     sf::Shader checkboardShader;
     if (!checkboardShader.loadFromMemory(R"(

@@ -2,53 +2,68 @@
 #include "cell.hpp"
 #include <memory>
 #include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 class Snake;
 
+class IAppleEffect;
+
 class Apple : public sf::Drawable
 {
-protected:
-	sf::RectangleShape rect;
+	sf::Sprite sprite;
 	Cell coords;
-	float speedBonus;
-	sf::Color color;
+	std::unique_ptr<IAppleEffect> effect;
 
 public:
-	Apple();
+	Apple(std::unique_ptr<IAppleEffect> eff, sf::Texture& texture);
 	void generateNewPosition();
 	bool isEaten() const;
-	void updateGraphicalData();
-	virtual const float getSpeedBonus() const;
-	virtual void applyEffect(Snake& snake);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-	virtual ~Apple() {};
-};
-
-class BonusApple : public Apple
-{
-public:
-	BonusApple();
-	void applyEffect(Snake& snake) override;
-};
-
-class HasteApple : public Apple
-{
-public:
-	HasteApple();
-	void applyEffect(Snake& snake) override;
-};
-
-class SlownessApple : public Apple
-{
-public:
-	SlownessApple();
-	void applyEffect(Snake& snake) override;
+	float getSpeedBonus() const;
+	void applyEffect(Snake& snake) const;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 class AppleFactory
 {
 public:
-	static std::unique_ptr<Apple> createRandomApple();
+	static std::unique_ptr<Apple> createRandomApple(sf::Texture& texture);
+};
+
+class IAppleEffect
+{
+public:
+	virtual ~IAppleEffect() = default;
+	virtual void apply(Snake& snake) const = 0;
+	virtual float getSpeedBonus() const = 0;
+	virtual sf::IntRect getTextureRect() const = 0;
+};
+
+class BasicEffect : public IAppleEffect
+{
+	void apply(Snake& snake) const override;
+	float getSpeedBonus() const override;
+	sf::IntRect getTextureRect() const override;
+};
+
+class BonusEffect : public IAppleEffect
+{
+	void apply(Snake& snake) const override;
+	float getSpeedBonus() const override;
+	sf::IntRect getTextureRect() const override;
+};
+
+class HasteEffect : public IAppleEffect
+{
+	void apply(Snake& snake) const override;
+	float getSpeedBonus() const override;
+	sf::IntRect getTextureRect() const override;
+};
+
+class SlownessEffect : public IAppleEffect
+{
+	void apply(Snake& snake) const override;
+	float getSpeedBonus() const override;
+	sf::IntRect getTextureRect() const override;
 };

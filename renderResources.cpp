@@ -1,18 +1,11 @@
-﻿#include "configuration.hpp"
-#include "renderResources.hpp"
+﻿#include "renderResources.hpp"
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
+#include "Resources/appleTexture.hpp"
 
-RenderResources::RenderResources() {}
-RenderResources& RenderResources::getInstance()
+void RenderResources::loadSnakeShader()
 {
-    static RenderResources instance;
-	return instance;
-}
-
-void RenderResources::loadGradientShader()
-{
-	if (!gradientShader.loadFromMemory(R"(
+	if (!snakeShader.loadFromMemory(R"(
         uniform vec4 startColor;
         uniform vec4 endColor;
 
@@ -20,7 +13,8 @@ void RenderResources::loadGradientShader()
 	        float position = gl_TexCoord[0].y;
 	        gl_FragColor = mix(startColor, endColor, position);
         }
-)", sf::Shader::Type::Fragment)) throw std::runtime_error("couldn't load gradient shader");
+)", sf::Shader::Type::Fragment)) 
+        throw std::runtime_error("couldn't load gradient shader");
 }
 
 void RenderResources::createBackgroundTexture()
@@ -34,7 +28,6 @@ void RenderResources::createBackgroundTexture()
         }  
 )", sf::Shader::Type::Fragment)) {
         throw std::runtime_error("couldn't load texture shader");
-        return;
     }
 
     sf::RenderTexture texture({ 2u, 2u });
@@ -46,4 +39,45 @@ void RenderResources::createBackgroundTexture()
 
     backgroundTexture = texture.getTexture();
 	backgroundTexture.setRepeated(true);
+}
+
+void RenderResources::loadAppleTexture()
+{
+    if (!appleTexture.loadFromMemory(appleTextureAtlas, appleTextureAtlas_len))
+        throw std::runtime_error("couldn't load apple texture");
+}
+
+void RenderResources::loadFadeShader()
+{
+    if (!fadeShader.loadFromMemory(R"(
+        uniform float currentTime;
+        uniform float duration;
+
+        void main() {
+            float creationTime = gl_TexCoord[0].x;
+            vec4 baseColor = gl_Color;
+            
+            float age = currentTime - creationTime;
+
+            float alphaFactor = clamp(age / duration, 0.0, 1.0);
+            gl_FragColor = vec4(baseColor.rgb, baseColor.a * alphaFactor);
+        }
+)", sf::Shader::Type::Fragment))
+        throw std::runtime_error("couldn't load obstacle shader");
+}
+
+void RenderResources::loadSpriteFadeShader()
+{
+    if (!spriteFadeShader.loadFromMemory(R"(
+        uniform float animProgress;
+        uniform sampler2D texture;
+
+        void main() {
+            vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
+            pixel.a = pixel.a * animProgress;
+
+            gl_FragColor = pixel * gl_Color;
+        }
+)", sf::Shader::Type::Fragment)) 
+        throw std::runtime_error("couldn't load sprite fade shader");
 }

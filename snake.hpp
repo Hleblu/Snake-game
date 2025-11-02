@@ -6,30 +6,36 @@
 
 class Snake : public sf::Drawable
 {
-    sf::VertexArray vertices;
-    std::deque<Cell> segments;
-    std::deque<Cell> prevSegments;
-    std::uint16_t hashDelay;
-
-    void updateTexCoords();
-
 public:
-    bool firstMove;
     enum class Direction {
         NONE = -1,
         LEFT = 1,
         UP,
         RIGHT,
         DOWN
-    } direction, prevDirection, nextDirection;
+    };
+private:
+    sf::VertexArray vertices;
+    sf::VertexArray jointVertices;
+    std::deque<Cell> segments;
+    std::deque<Cell> prevSegments;
+    std::uint16_t tailCollisionDelay;
+    bool firstMove;
+    Direction direction, prevDirection, nextDirection;
 
+    void updateTexCoords();
+    void updateJointVertices();
+    bool canUpdateDirection() const;
+public:
     Snake();
+    sf::Vector2f getPositionInfront() const;
     void restoreDefaultValues();
     bool hasCollided() const;
+    bool firstTimeMoving() const;
     void grow(const int size = 1);
     void move();
-    bool canUpdateDirection() const;
-    const std::deque<Cell>& getSegments() const;
+    void setNextDirection(Direction dir);
+    bool updateDirection();
     const size_t getSize() const;
     void updateVertices(const float dt = 0);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

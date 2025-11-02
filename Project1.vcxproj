@@ -140,18 +140,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="apple.cpp" />
+    <ClCompile Include="cell.cpp" />
     <ClCompile Include="collisionManager.cpp" />
     <ClCompile Include="configuration.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="obstacle.cpp" />
+    <ClCompile Include="particleManager.cpp" />
     <ClCompile Include="renderResources.cpp" />
-    <ClCompile Include="Resources\font.c" />
-    <ClCompile Include="Resources\icon.c" />
-    <ClCompile Include="Resources\Sounds\sound_food.c" />
-    <ClCompile Include="Resources\Sounds\sound_gameover.c" />
-    <ClCompile Include="Resources\Sounds\sound_move.c" />
     <ClCompile Include="snake.cpp" />
     <ClCompile Include="soundManager.cpp" />
   </ItemGroup>
@@ -163,11 +160,19 @@
     <ClInclude Include="game.hpp" />
     <ClInclude Include="menu.hpp" />
     <ClInclude Include="obstacle.hpp" />
+    <ClInclude Include="particleManager.hpp" />
     <ClInclude Include="randomGenerator.hpp" />
     <ClInclude Include="renderResources.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Resources\appleTexture.hpp" />
+    <ClInclude Include="Resources\game_icon.hpp" />
+    <ClInclude Include="Resources\Sounds\sound_eat.hpp" />
+    <ClInclude Include="Resources\Sounds\sound_gameover.hpp" />
+    <ClInclude Include="Resources\Sounds\sound_move.hpp" />
+    <ClInclude Include="Resources\tiny5_regular.hpp" />
     <ClInclude Include="snake.hpp" />
     <ClInclude Include="soundManager.hpp" />
+    <ClInclude Include="state.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

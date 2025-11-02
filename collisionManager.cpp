@@ -65,5 +65,5 @@ bool CollisionManager::isEmptyAround(const Cell& cell) const {
 }
 
 bool CollisionManager::isOutOfBorders(const Cell& cell) const {
-	return cell.x < 0 || cell.x > config.rows - 1 || cell.y < 0 || cell.y > config.columns - 1;
+	return cell.x < 0 || cell.x > config.getRows() - 1 || cell.y < 0 || cell.y > config.getColumns() - 1;
 }

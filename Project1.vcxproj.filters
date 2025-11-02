@@ -36,12 +36,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\font.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\icon.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="apple.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -66,16 +60,13 @@
     <ClCompile Include="configuration.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\Sounds\sound_food.c">
-      <Filter>Resource Files\Sounds</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Sounds\sound_gameover.c">
-      <Filter>Resource Files\Sounds</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Sounds\sound_move.c">
-      <Filter>Resource Files\Sounds</Filter>
-    </ClCompile>
     <ClCompile Include="soundManager.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="particleManager.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="cell.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,9 +92,6 @@
     <ClInclude Include="collisionManager.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="cell.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="game.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -114,6 +102,33 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="soundManager.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="state.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Sounds\sound_eat.hpp">
+      <Filter>Resource Files\Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Sounds\sound_gameover.hpp">
+      <Filter>Resource Files\Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Sounds\sound_move.hpp">
+      <Filter>Resource Files\Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\game_icon.hpp">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\tiny5_regular.hpp">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\appleTexture.hpp">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="particleManager.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="cell.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>

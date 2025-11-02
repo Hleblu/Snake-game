@@ -4,17 +4,18 @@
 
 class RenderResources
 {
-	RenderResources();
 public:
-	static RenderResources& getInstance();
-	RenderResources(const RenderResources&) = delete;
-	RenderResources& operator=(const RenderResources&) = delete;
+	RenderResources() = default;
 
-	void loadGradientShader();
+	void loadSnakeShader();
 	void createBackgroundTexture();
+	void loadAppleTexture();
+	void loadFadeShader();
+	void loadSpriteFadeShader();
 
-	sf::Shader gradientShader;
+	sf::Shader snakeShader;
+	sf::Shader fadeShader;
+	sf::Shader spriteFadeShader;
 	sf::Texture backgroundTexture;
+	sf::Texture appleTexture;
 };
-
-inline RenderResources& renderResources = RenderResources::getInstance();

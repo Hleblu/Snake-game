@@ -43,6 +43,14 @@ public:
     static int getInt(const int min, const int max) {
         return static_cast<int>(next() % (max - min + 1)) + min;
     }
+
+    static float getFloat() {
+        return (next() >> (64 - 24)) * 5.9604644775390625e-8f;
+    }
+
+    static float getFloat(const float min, const float max) {
+        return getFloat() * (max - min) + min;
+    }
 };
 
 inline std::uint64_t RandomGenerator::s[4] = {

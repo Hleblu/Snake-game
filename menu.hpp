@@ -1,34 +1,43 @@
 #pragma once
+#include "state.h"
 #include <functional>
+#include <memory>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+class MenuItem : public sf::Drawable
+{
+	std::function<void(MenuItem&)> callback;
+	sf::Text text;
+	bool interactive = false;
+public:
+	MenuItem(const std::string& label, sf::Font& font, unsigned int fontSize);
+
+	void setLabel(const std::string& label);
+	void setColor(const sf::Color& color);
+	void setOutlineColor(const sf::Color& color);
+	void setCallback(std::function<void(MenuItem&)> newCallback);
+	bool checkBoundaries(const sf::Vector2f& position) const;
+	bool isInteractive() const;
+	void callFunction();
+	void setPosition(const sf::Vector2f& position);
+	float getSpacing() const;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+};
+
 class Menu 
 {
-	struct MenuItem {
-		sf::Text button;
-		std::function<void()> action;
+	std::vector<std::unique_ptr<MenuItem>> items;
+	State& currentState;
+	State thisState;
 
-		MenuItem(sf::Text button, std::function<void()> action) : button(button), action(action) {}
-		void setLabel(const std::string& label) {
-			button.setString(label);
-		}
-	};
-
-	std::vector<MenuItem> items;
-	sf::Font mainFont;
-	sf::Text title;
-	unsigned int fontSize;
-	bool menuIsActive = false;
-
-	void drawItems(sf::RenderWindow& window);
-	void resetHover();
+	void draw(sf::RenderWindow& window);
+	MenuItem* updateHover(const sf::Vector2f& mousePos);
 public:
-	Menu();
-	void createItem(const std::string& label, std::function<void()> action);
-	void setTitle(const std::string& title);
-	void showMenu(sf::RenderWindow& window);
-	void setMenuActive(const bool state);
-	void setItemLabel(const unsigned int index, const std::string& label);
+	Menu(State& curr, State self);
+	MenuItem& addItem(std::unique_ptr<MenuItem> item);
+	MenuItem& addItem(const std::string& label, sf::Font& font, unsigned int fontSize);
+	void build();
+	void show(sf::RenderWindow& window);
 };

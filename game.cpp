@@ -2,10 +2,10 @@
 #include "configuration.hpp"
 #include "game.hpp"
 #include "renderResources.hpp"
-#include "Resources/Sounds/sound_food.c"
-#include "Resources/Sounds/sound_gameover.c"
-#include "Resources/Sounds/sound_move.c"
-#include <SFML/System/Sleep.hpp>
+#include "randomGenerator.hpp"
+#include "Resources/Sounds/sound_eat.hpp"
+#include "Resources/Sounds/sound_gameover.hpp"
+#include "Resources/Sounds/sound_move.hpp"
 
 constexpr size_t soundBufferSize = 5;
 constexpr float gameOverDelay = 0.5f; // in seconds
@@ -18,7 +18,9 @@ void Game::start(sf::RenderWindow& window)
     float deltaTime = 0;
     float gameUpdateAccumulator = 0;
     float gameOverTimer = 0;
-    float currentDelay = config.delay;
+    float totalTime = 0;
+    float currentDelay = config.getStartDelay();
+    float appleSpawnTime = 0;
 
     const size_t snakeDefaultSize = snake.getSize();
 
@@ -32,33 +34,34 @@ void Game::start(sf::RenderWindow& window)
                 switch (keyPressed->code)
                 {
                     case sf::Keyboard::Key::Left:
-                        if (!snake.firstMove) // prevent gameover, since snake starts facaing righwards
-                            snake.nextDirection = Snake::Direction::LEFT;
+                        if (!snake.firstTimeMoving()) // prevent gameover, since snake starts facing righwards
+                            snake.setNextDirection(Snake::Direction::LEFT);
                         break;
                     case sf::Keyboard::Key::Right:
-                        snake.nextDirection = Snake::Direction::RIGHT;
+                        snake.setNextDirection(Snake::Direction::RIGHT);
                         break;
                     case sf::Keyboard::Key::Up:
-                        snake.nextDirection = Snake::Direction::UP;
+                        snake.setNextDirection(Snake::Direction::UP);
                         break;
                     case sf::Keyboard::Key::Down:
-                        snake.nextDirection = Snake::Direction::DOWN;
+                        snake.setNextDirection(Snake::Direction::DOWN);
                         break;
                     case sf::Keyboard::Key::Escape:
                         state = State::EXIT;
                         break;
                     case sf::Keyboard::Key::Space:
-                        state = (state == State::PLAY) ? State::PAUSE : State::PLAY;
+                        if (state != State::GAMEOVER)
+                            state = (state == State::PLAY) ? State::PAUSE : State::PLAY;
                         break;
                 }
         }
 
         deltaTime = clock.restart().asSeconds();
+        totalTime += deltaTime;
         if (state == State::PLAY) {
             gameUpdateAccumulator += deltaTime;
 
-            if (snake.canUpdateDirection()) {
-                snake.direction = snake.nextDirection;
+            if (snake.updateDirection()) {
                 sManager.playSound("move");
             }
 
@@ -76,29 +79,46 @@ void Game::start(sf::RenderWindow& window)
                 if (apple->isEaten()) {
                     currentDelay = calculateSpeed(snakeDefaultSize);
 
+                    const float minSpeed = config.getCellSize() * 1.f;
+                    const float maxSpeed = config.getCellSize() * 3.f;
+                    particles.emit(1500, snake.getPositionInfront(), config.getAppleColor(), minSpeed, maxSpeed);
+
                     sManager.playSound("eat");
                     apple->applyEffect(snake);
-                    apple = AppleFactory::createRandomApple();
+                    apple = AppleFactory::createRandomApple(renderResources.appleTexture);
+                    appleSpawnTime = totalTime;
 
-                    if (config.obstaclesEnabled && (snake.getSize() & 1) == 0)
-                        obstacle.generateNewPosition();
+                    if (config.areObstaclesEnabled() && (snake.getSize() & 1) == 0)
+                        obstacle.generateNewPosition(totalTime);
                 }
             }
         }
-
+;
+        const float appleAnimProgress = (totalTime - appleSpawnTime) / currentDelay;
+        renderResources.spriteFadeShader.setUniform("animProgress", appleAnimProgress);
+        renderResources.fadeShader.setUniform("currentTime", totalTime);
         snake.updateVertices(gameUpdateAccumulator / currentDelay);
+        particles.update(deltaTime);
 
-        window.clear(config.currentTheme->secondColor);
+        window.clear(config.getSecondColor());
+
         window.draw(background);
-        window.draw(*apple);
-        window.draw(obstacle);
-        window.draw(snake, &renderResources.gradientShader);
-        window.display();
+        window.draw(particles);
+        window.draw(*apple, &renderResources.spriteFadeShader);
+        window.draw(obstacle, &renderResources.fadeShader);
+        window.draw(snake, &renderResources.snakeShader);
 
         if (state == State::GAMEOVER) {
+            const float alpha = (1.f - (gameOverTimer / gameOverDelay)) * 115.f; // 115.f out of 255.f maximum alpha
+            sf::Color flashColor = sf::Color(255, 255, 255, alpha);
+            flashRect.setFillColor(flashColor);
+            window.draw(flashRect);
+
             gameOverTimer += deltaTime;
             if (gameOverTimer >= gameOverDelay) state = State::EXIT;
         }
+
+        window.display();
     }
 }
 
@@ -106,7 +126,7 @@ void Game::restoreDefaults() {
     collisionManager.clearMap();
     snake.restoreDefaultValues();
     obstacle.restoreDefaultValues();
-    apple = AppleFactory::createRandomApple();
+    apple = AppleFactory::createRandomApple(renderResources.appleTexture);
     state = State::PLAY;
 }
 
@@ -114,24 +134,36 @@ float Game::calculateSpeed(const size_t& snakeDefaultSize)
 {
     const size_t applesEaten = snake.getSize() - snakeDefaultSize;
     const float sizeBonus = std::pow(config.delayDecreaseStep, applesEaten);
-    return config.delay * sizeBonus * apple->getSpeedBonus();
+    return config.getStartDelay() * sizeBonus * apple->getSpeedBonus();
 }
 
 void Game::initVisuals()
 {
-    background.setScale(sf::Vector2f(config.size, config.size));
+    background.setScale(sf::Vector2f(config.getCellSize(), config.getCellSize()));
     background.setTextureRect({ { 0, 0 }, { config.width, config.height } });
-    background.setColor(config.currentTheme->mainColor);
+    background.setColor(config.getMainColor());
 
-    renderResources.gradientShader.setUniform("startColor", sf::Glsl::Vec4(config.currentTheme->snakeColor));
-    renderResources.gradientShader.setUniform("endColor", sf::Glsl::Vec4(config.currentTheme->snakeColorEnd));
+    renderResources.snakeShader.setUniform("startColor", sf::Glsl::Vec4(config.getSnakeColor()));
+    renderResources.snakeShader.setUniform("endColor", sf::Glsl::Vec4(config.getSnakeColorEnd()));
+
+    renderResources.fadeShader.setUniform("duration", config.getStartDelay());
+
+    flashRect.setSize({ config.width * 1.f, config.height * 1.f });
 }
 
-Game::Game() : sManager(soundBufferSize), background(renderResources.backgroundTexture), state(State::PLAY) {
-	renderResources.loadGradientShader();
+Game::Game()
+    : sManager(soundBufferSize),
+    background(renderResources.backgroundTexture),
+    state(State::PLAY),
+    particles(4500)
+{
+	renderResources.loadSnakeShader();
 	renderResources.createBackgroundTexture();
+    renderResources.loadAppleTexture();
+    renderResources.loadFadeShader();
+    renderResources.loadSpriteFadeShader();
 
-    sManager.addSound("move", sound_move_ogg, sound_move_ogg_len);
-    sManager.addSound("eat", sound_food_ogg, sound_food_ogg_len);
-    sManager.addSound("gameover", sound_gameover_ogg, sound_gameover_ogg_len);
+    sManager.addSound("move", sound_move, sound_move_len);
+    sManager.addSound("eat", sound_eat, sound_eat_len);
+    sManager.addSound("gameover", sound_gameover, sound_gameover_len);
 }

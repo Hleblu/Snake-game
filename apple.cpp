@@ -4,34 +4,47 @@
 #include "randomGenerator.hpp"
 #include "snake.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <vector>
 
-Apple::Apple() : speedBonus(1.f), color(config.currentTheme->appleColor) {
+Apple::Apple(std::unique_ptr<IAppleEffect> eff, sf::Texture& texture) 
+    : effect(std::move(eff)), sprite(texture)
+{
+    sprite.setTextureRect(effect->getTextureRect());
+    const float scaleX = config.getCellSize() / sprite.getLocalBounds().size.x;
+    const float scaleY = config.getCellSize() / sprite.getLocalBounds().size.y;
+    sprite.setScale({ scaleX, scaleY });
+    sprite.setColor(config.getAppleColor());
+
     generateNewPosition();
 }
 
-void Apple::updateGraphicalData() {
-    rect.setFillColor(sf::Color(color));
-    rect.setSize(sf::Vector2f(config.size, config.size));
-}
-
-const float Apple::getSpeedBonus() const
+float Apple::getSpeedBonus() const
 {
-    return speedBonus;
+    return effect->getSpeedBonus();
 }
 
 void Apple::generateNewPosition()
 {
     collisionManager.setFree(coords, ObjectType::APPLE);
-    if (collisionManager.numberOfOccupied() >= config.rows * config.columns) return;
+    coords = { -1, -1 };
+    if (collisionManager.numberOfOccupied() >= config.getRows() * config.getColumns()) return;
 
-    const std::int16_t xMax = config.rows - 1;
-    const std::int16_t yMax = config.columns - 1;
-    do {
-        coords.x = RandomGenerator::getInt(0, xMax);
-        coords.y = RandomGenerator::getInt(0, yMax);
-    } while (collisionManager.isCellOccupied(coords));
+    const std::int16_t xMax = config.getRows() - 1;
+    const std::int16_t yMax = config.getColumns() - 1;
+    std::vector<Cell> freeCells{};
+    for (int x = 0; x <= xMax; ++x) {
+        for (int y = 0; y <= yMax; ++y) {
+            if (!collisionManager.isCellOccupied({ x,y }))
+                freeCells.emplace_back( x,y );
+        }
+    }
 
-    rect.setPosition(sf::Vector2f(coords.x * config.size, coords.y * config.size));
+    if (freeCells.empty()) return;
+
+    const int index = RandomGenerator::getInt(0, freeCells.size() - 1);
+    coords = freeCells[index];
+
+    sprite.setPosition(sf::Vector2f(coords.x * config.getCellSize(), coords.y * config.getCellSize()));
     collisionManager.setOccupied(coords, ObjectType::APPLE);
 }
 
@@ -40,53 +53,89 @@ bool Apple::isEaten() const
     return collisionManager.checkCellType(coords, ObjectType::SNAKE_HEAD);
 }
 
-void Apple::applyEffect(Snake& snake) {
-    snake.grow();
+void Apple::applyEffect(Snake& snake) const 
+{
+    effect->apply(snake);
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(rect, states);
+    target.draw(sprite, states);
 }
 
-BonusApple::BonusApple() {
-    speedBonus = 1.f;
-    color = config.currentTheme->bonusAppleColor;
+std::unique_ptr<Apple> AppleFactory::createRandomApple(sf::Texture& texture) {
+    const int number = RandomGenerator::getInt(0, 100);
+    std::unique_ptr<IAppleEffect> effect;
+
+    if (number <= 85) effect = std::make_unique<BasicEffect>();
+    else if (number <= 90) effect = std::make_unique<BonusEffect>();
+    else if (number <= 95) effect = std::make_unique<HasteEffect>();
+    else effect = std::make_unique<SlownessEffect>();
+
+    return std::make_unique<Apple>(std::move(effect), texture);
 }
 
-void BonusApple::applyEffect(Snake& snake) {
+constexpr sf::IntRect basicRect({ 0, 0 }, { 64, 64 });
+constexpr sf::IntRect bonusRect({ 64, 0 }, { 64, 64 });
+constexpr sf::IntRect hasteRect({ 128, 0 }, { 64, 64 });
+constexpr sf::IntRect slownessRect({ 192, 0 }, { 64, 64 });
+
+void BasicEffect::apply(Snake& snake) const
+{
+    snake.grow(1);
+}
+
+float BasicEffect::getSpeedBonus() const
+{
+    return 1.0f;
+}
+
+sf::IntRect BasicEffect::getTextureRect() const
+{
+    return basicRect;
+}
+
+void BonusEffect::apply(Snake& snake) const
+{
     snake.grow(2);
 }
 
-HasteApple::HasteApple()
+float BonusEffect::getSpeedBonus() const
 {
-    speedBonus = 0.8f;
-    color = config.currentTheme->bonusAppleColor;
+    return 1.0f;
 }
 
-void HasteApple::applyEffect(Snake& snake) {
-    snake.grow();
-}
-
-SlownessApple::SlownessApple()
+sf::IntRect BonusEffect::getTextureRect() const
 {
-    speedBonus = 1.2f;
-    color = config.currentTheme->bonusAppleColor;
+    return bonusRect;
 }
 
-void SlownessApple::applyEffect(Snake& snake) {
-    snake.grow();
+void HasteEffect::apply(Snake& snake) const
+{
+    snake.grow(1);
 }
 
-std::unique_ptr<Apple> AppleFactory::createRandomApple() {
-    const int number = RandomGenerator::getInt(1, 30);
-    std::unique_ptr<Apple> apple;
+float HasteEffect::getSpeedBonus() const
+{
+    return 0.8f;
+}
 
-    if (number <= 27) apple = std::make_unique<Apple>();
-    else if (number <= 28) apple = std::make_unique<HasteApple>();
-    else if (number <= 29) apple = std::make_unique<BonusApple>();
-    else apple = std::make_unique<SlownessApple>();
+sf::IntRect HasteEffect::getTextureRect() const
+{
+    return hasteRect;
+}
 
-    apple->updateGraphicalData();
-    return apple;
+void SlownessEffect::apply(Snake& snake) const
+{
+    snake.grow(1);
+}
+
+float SlownessEffect::getSpeedBonus() const
+{
+    return 1.2f;
+}
+
+sf::IntRect SlownessEffect::getTextureRect() const
+{
+    return slownessRect;
 }

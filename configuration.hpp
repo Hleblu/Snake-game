@@ -15,10 +15,16 @@ public:
 		sf::Color obstacleColor;
 	};
 
-	struct GridSettings {
+	struct GridOption {
 		std::uint16_t size;
-		std::uint16_t rows;
 		std::uint16_t columns;
+		std::uint16_t rows;
+		std::string label;
+	};
+
+	struct SpeedOption {
+		float delay;
+		std::string label;
 	};
 
 	const std::uint16_t width = 720;
@@ -26,9 +32,8 @@ public:
 	const sf::Color textBaseColor = { 255, 255, 255 };
 	const sf::Color textOutlineColor = { 30, 30, 30 };
 	const float delayDecreaseStep = 0.995f;
+	const float gameOverDelay = 0.5f;
 private:
-	Configuration();
-
 	template<std::size_t N> void cycleIndex(size_t& index) {
 		index = (index + 1) % N;
 	}
@@ -56,48 +61,45 @@ private:
 			{ {245, 230, 235}, {230, 210, 215}, {255, 105, 130}, {200, 120, 160}, {150, 90, 130}, {90, 60, 80} }
 	} };
 
-	inline static const std::array<GridSettings, 3> gridOptions = { {
-		{ 40, 18, 15 },
-		{ 60, 12, 10 },
-		{ 30, 24, 20 }
+	inline static const std::array<GridOption, 3> gridOptions = { {
+		{ 40, 18, 15, "Field size: Default" },
+		{ 60, 12, 10, "Field size: Small" },
+		{ 30, 24, 20, "Field size: Big" }
 	} };
 
-	inline static const std::array<float, 3> speedOptions = { 0.115f, 0.135f, 0.095f };
+	inline static const std::array<SpeedOption, 3> speedOptions = { {
+		{ 0.115f, "Speed: Default" },
+		{ 0.135f, "Speed: Slow" },
+		{ 0.095f, "Speed: Fast" }
+	} };
 
-	inline static const std::array<std::string, 3> speedOptionsLabels = { "Speed: Default", "Speed: Slow", "Speed: Fast" };
-	inline static const std::array<std::string, 3> fieldSizeOptionsLabels = { "Field size: Default", "Field size: Small", "Field size: Big" };
 	inline static const std::array<std::string, 2> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
 
 public:
-	static Configuration& getInstance();
-	Configuration(const Configuration&) = delete;
-	Configuration& operator=(const Configuration&) = delete;
-
 	const Theme& getCurrentTheme() const { return themeOptions[currentThemeIndex]; }
-	sf::Color getMainColor() const { return getCurrentTheme().mainColor; }
-	sf::Color getSecondColor() const { return getCurrentTheme().secondColor; }
-	sf::Color getAppleColor() const { return getCurrentTheme().appleColor; }
-	sf::Color getSnakeColor() const { return getCurrentTheme().snakeColor; }
-	sf::Color getSnakeColorEnd() const { return getCurrentTheme().snakeColorEnd; }
-	sf::Color getObstacleColor() const { return getCurrentTheme().obstacleColor; }
 
-	const GridSettings& getGridSettings() const { return gridOptions[currentGridSettingsIndex]; }
+	const GridOption& getGridSettings() const { return gridOptions[currentGridSettingsIndex]; }
 	std::uint16_t getCellSize() const { return getGridSettings().size; }
 	std::uint16_t getRows() const { return getGridSettings().rows; }
 	std::uint16_t getColumns() const { return getGridSettings().columns; }
+	std::uint16_t getTotalSize() const { return getRows() * getColumns(); }
 
-	float getStartDelay() const { return speedOptions[currentSpeedIndex]; }
+	float getStartDelay() const { return speedOptions[currentSpeedIndex].delay; }
 
 	bool areObstaclesEnabled() const { return obstaclesEnabled; }
 
-	const std::string& getCurrentGridLabel() const { return fieldSizeOptionsLabels[currentGridSettingsIndex]; }
-	const std::string& getCurrentSpeedLabel()  const { return speedOptionsLabels[currentSpeedIndex]; }
+	const std::string& getCurrentGridLabel() const { return gridOptions[currentGridSettingsIndex].label; }
+	const std::string& getCurrentSpeedLabel() const { return speedOptions[currentSpeedIndex].label; }
 	const std::string& getCurrentObstaclesLabel() const { return obstaclesOptionsLabels[obstaclesEnabled ? 0 : 1]; }
 
 	void cycleTheme() { cycleIndex<themeOptions.size()>(currentThemeIndex); }
 	void cycleGridSize() { cycleIndex<gridOptions.size()>(currentGridSettingsIndex); }
 	void cycleSpeed() { cycleIndex<speedOptions.size()>(currentSpeedIndex); }
 	void toggleObstacles() { obstaclesEnabled = !obstaclesEnabled; }
-};
 
-inline Configuration& config = Configuration::getInstance();
+	float getParticleSize() { return getCellSize() / 5.f; }
+	float getParticleSpeedMin() { return getCellSize() * 1.1f; }
+	float getParticleSpeedMax() { return getCellSize() * 3.f; }
+
+	std::uint16_t getSnakeDefSize() { return std::max(getColumns() / 5, 3); }
+};

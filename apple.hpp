@@ -10,25 +10,49 @@ class Snake;
 
 class IAppleEffect;
 
+class Configuration;
+
+class CollisionManager;
+
 class Apple : public sf::Drawable
 {
 	sf::Sprite sprite;
+	sf::Shader* shader;
 	Cell coords;
 	std::unique_ptr<IAppleEffect> effect;
+	Configuration* config;
+	CollisionManager* collision;
+	float spawnTime;
+	float alpha;
 
 public:
-	Apple(std::unique_ptr<IAppleEffect> eff, sf::Texture& texture);
+	Apple(
+		Configuration* config,
+		CollisionManager* collision,
+		sf::Texture& texture,
+		sf::Shader* shader,
+		std::unique_ptr<IAppleEffect> eff,
+		float spawnTime
+	);
 	void generateNewPosition();
 	bool isEaten() const;
 	float getSpeedBonus() const;
 	void applyEffect(Snake& snake) const;
+	void updateShader(float currentTime);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	~Apple();
 };
 
 class AppleFactory
 {
 public:
-	static std::unique_ptr<Apple> createRandomApple(sf::Texture& texture);
+	static std::unique_ptr<Apple> createRandomApple(
+		Configuration* config,
+		CollisionManager* collision,
+		sf::Texture& texture,
+		sf::Shader* shader,
+		float spawnTime
+	);
 };
 
 class IAppleEffect

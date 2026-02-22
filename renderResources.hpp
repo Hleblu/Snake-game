@@ -12,10 +12,13 @@ public:
 	void loadAppleTexture();
 	void loadFadeShader();
 	void loadSpriteFadeShader();
+	void loadFloatingTextFadeShader();
 
 	sf::Shader snakeShader;
 	sf::Shader fadeShader;
 	sf::Shader spriteFadeShader;
+	sf::Shader floatingTextFadeShader;
+
 	sf::Texture backgroundTexture;
 	sf::Texture appleTexture;
 };

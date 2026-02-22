@@ -1,7 +1,12 @@
 #include "configuration.hpp"
 #include "menu.hpp"
+#include "viewUtils.hpp"
 
-Menu::Menu(State& curr, State self) : currentState(curr), thisState(self){}
+Menu::Menu(State& curr, State self, Configuration* config) : 
+    currentState(curr),
+    thisState(self),
+    config(config)
+{}
 
 void Menu::draw(sf::RenderWindow& window)
 {
@@ -19,9 +24,9 @@ MenuItem* Menu::updateHover(const sf::Vector2f& mousePos)
 
             if (isHovered) {
                 hoveredItem = item.get();
-                item->setColor(config.getSecondColor());
+                item->setColor(config->getCurrentTheme().secondColor);
             }
-            else item->setColor(config.textBaseColor);
+            else item->setColor(config->textBaseColor);
         }
     }
     return hoveredItem;
@@ -30,8 +35,8 @@ MenuItem* Menu::updateHover(const sf::Vector2f& mousePos)
 MenuItem& Menu::addItem(std::unique_ptr<MenuItem> item)
 {
     MenuItem* self = item.get();
-    self->setColor(config.textBaseColor);
-    self->setOutlineColor(config.textOutlineColor);
+    self->setColor(config->textBaseColor);
+    self->setOutlineColor(config->textOutlineColor);
     items.push_back(std::move(item));
     return *self;
 }
@@ -40,8 +45,8 @@ MenuItem& Menu::addItem(const std::string& label, sf::Font& font, unsigned int f
 {
     auto item = std::make_unique<MenuItem>(label, font, fontSize);
     MenuItem* self = item.get();
-    self->setColor(config.textBaseColor);
-    self->setOutlineColor(config.textOutlineColor);
+    self->setColor(config->textBaseColor);
+    self->setOutlineColor(config->textOutlineColor);
     items.push_back(std::move(item));
     return *self;
 }
@@ -58,6 +63,9 @@ void Menu::build()
 
 void Menu::show(sf::RenderWindow& window)
 {
+    ViewUtils::normalizeView(menuView, sf::Vector2f(window.getSize()));
+    window.setView(menuView);
+
     sf::Vector2f mousePos;
     while (window.isOpen() && currentState == thisState) {
 
@@ -75,7 +83,7 @@ void Menu::show(sf::RenderWindow& window)
             }
         }
 
-        window.clear(config.getMainColor());
+        window.clear(config->getCurrentTheme().mainColor);
         draw(window);
         window.display();
     }

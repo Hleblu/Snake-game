@@ -140,9 +140,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="apple.cpp" />
-    <ClCompile Include="cell.cpp" />
     <ClCompile Include="collisionManager.cpp" />
-    <ClCompile Include="configuration.cpp" />
+    <ClCompile Include="flash.cpp" />
+    <ClCompile Include="floatingText.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
@@ -157,6 +157,9 @@
     <ClInclude Include="cell.hpp" />
     <ClInclude Include="collisionManager.hpp" />
     <ClInclude Include="configuration.hpp" />
+    <ClInclude Include="direction.hpp" />
+    <ClInclude Include="flash.hpp" />
+    <ClInclude Include="floatingText.hpp" />
     <ClInclude Include="game.hpp" />
     <ClInclude Include="menu.hpp" />
     <ClInclude Include="obstacle.hpp" />
@@ -170,9 +173,11 @@
     <ClInclude Include="Resources\Sounds\sound_gameover.hpp" />
     <ClInclude Include="Resources\Sounds\sound_move.hpp" />
     <ClInclude Include="Resources\tiny5_regular.hpp" />
+    <ClInclude Include="pathUtils.hpp" />
     <ClInclude Include="snake.hpp" />
     <ClInclude Include="soundManager.hpp" />
     <ClInclude Include="state.h" />
+    <ClInclude Include="viewUtils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

@@ -6,6 +6,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+class Configuration;
+
 class MenuItem : public sf::Drawable
 {
 	std::function<void(MenuItem&)> callback;
@@ -31,11 +33,13 @@ class Menu
 	std::vector<std::unique_ptr<MenuItem>> items;
 	State& currentState;
 	State thisState;
+	Configuration* config;
+	sf::View menuView;
 
 	void draw(sf::RenderWindow& window);
 	MenuItem* updateHover(const sf::Vector2f& mousePos);
 public:
-	Menu(State& curr, State self);
+	Menu(State& curr, State self, Configuration* config);
 	MenuItem& addItem(std::unique_ptr<MenuItem> item);
 	MenuItem& addItem(const std::string& label, sf::Font& font, unsigned int fontSize);
 	void build();

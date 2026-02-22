@@ -1,49 +1,72 @@
 #include "collisionManager.hpp"
-#include "configuration.hpp"
-
-CollisionManager::CollisionManager() {}
-CollisionManager& CollisionManager::getInstance() {
-	static CollisionManager instance;
-	return instance;
+void CollisionManager::init(int rows, int columns)
+{
+	clearMap();
+	if (columns != width || rows != height) {
+		width = columns;
+		height = rows;
+		grid.resize(width * height, ObjectType::NONE);
+	}
 }
 
 void CollisionManager::setOccupied(const Cell& cell, const ObjectType type) {
-	collisionMap[cell].insert(type);
+	if (isOutOfBorders(cell))
+		return;
+
+	auto index = getIndex(cell);
+
+	if (grid[index] == ObjectType::NONE)
+		occupiedCount++;
+
+	grid[index] = grid[index] | type;
 }
 
 void CollisionManager::setFree(const Cell& cell, const ObjectType type) {
-	auto it = collisionMap.find(cell);
-	if (it != collisionMap.end()) {
-		it->second.erase(type);
+	if (isOutOfBorders(cell))
+		return;
 
-		if (it->second.empty())
-			collisionMap.erase(it);
-	}
+	auto index = getIndex(cell);
+
+	grid[index] = grid[index] & (~type);
+
+	if (grid[index] == ObjectType::NONE)
+		occupiedCount--;
 }
 
 void CollisionManager::clearMap() {
-	collisionMap.clear();
+	std::fill(grid.begin(), grid.end(), ObjectType::NONE);
+	occupiedCount = 0;
 }
 
 bool CollisionManager::isCellOccupied(const Cell& cell) const {
-	auto it = collisionMap.find(cell);
-	return it != collisionMap.end() && !it->second.empty();
+	if (isOutOfBorders(cell))
+		return true;
+
+	auto index = getIndex(cell);
+
+	return grid[index] != ObjectType::NONE;
 }
 
 bool CollisionManager::checkCellType(const Cell& cell, const ObjectType type) const {
-	auto it = collisionMap.find(cell);
-	return it != collisionMap.end() && it->second.count(type) != 0;
+	if (isOutOfBorders(cell))
+		return true;
+
+	auto index = getIndex(cell);
+
+	return (grid[index] & type) != ObjectType::NONE;
 }
 
 void CollisionManager::changeTypes(const Cell& cell, const ObjectType oldType, const ObjectType newType) {
-	if (collisionMap[cell].count(oldType) != 0) {
-		collisionMap[cell].erase(oldType);
-		collisionMap[cell].insert(newType);
-	}
+	if (isOutOfBorders(cell)) return;
+
+	auto index = getIndex(cell);
+
+	grid[index] = grid[index] & (~oldType);
+	grid[index] = grid[index] | newType;
 }
 
 std::size_t CollisionManager::numberOfOccupied() const {
-	return collisionMap.size();
+	return occupiedCount;
 }
 
 bool CollisionManager::isEmptyAround(const Cell& cell, const ObjectType type) const {
@@ -65,5 +88,13 @@ bool CollisionManager::isEmptyAround(const Cell& cell) const {
 }
 
 bool CollisionManager::isOutOfBorders(const Cell& cell) const {
-	return cell.x < 0 || cell.x > config.getRows() - 1 || cell.y < 0 || cell.y > config.getColumns() - 1;
+	return cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height;
+}
+
+bool CollisionManager::isOccupancyBelow(int percent) const
+{
+	const int totalCells = width * height;
+	int percentOccup = (numberOfOccupied() * 100) / totalCells;
+
+	return percentOccup <= percent;
 }

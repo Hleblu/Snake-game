@@ -148,7 +148,9 @@
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="particleManager.cpp" />
+    <ClCompile Include="pathUtils.cpp" />
     <ClCompile Include="renderResources.cpp" />
+    <ClCompile Include="serializable.cpp" />
     <ClCompile Include="snake.cpp" />
     <ClCompile Include="soundManager.cpp" />
   </ItemGroup>
@@ -174,6 +176,8 @@
     <ClInclude Include="Resources\Sounds\sound_move.hpp" />
     <ClInclude Include="Resources\tiny5_regular.hpp" />
     <ClInclude Include="pathUtils.hpp" />
+    <ClInclude Include="saveManager.hpp" />
+    <ClInclude Include="serializable.hpp" />
     <ClInclude Include="snake.hpp" />
     <ClInclude Include="soundManager.hpp" />
     <ClInclude Include="state.h" />

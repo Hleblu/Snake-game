@@ -2,8 +2,9 @@
 #include <array>
 #include <SFML/Graphics/Color.hpp>
 #include <string>
+#include "serializable.hpp"
 
-class Configuration
+class Configuration : public Serializable
 {
 public:
 	struct Theme {
@@ -76,6 +77,16 @@ private:
 	inline static const std::array<std::string, 2> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
 
 public:
+	void serialize(Archive& archive) override 
+	{ 
+		archive 
+		&currentGridSettingsIndex 
+		&currentSpeedIndex 
+		&currentThemeIndex
+		&obstaclesEnabled; 
+	}
+	std::string getHeader() const { return "Configuration"; }
+
 	const Theme& getCurrentTheme() const { return themeOptions[currentThemeIndex]; }
 
 	const GridOption& getGridSettings() const { return gridOptions[currentGridSettingsIndex]; }

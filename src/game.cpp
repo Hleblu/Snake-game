@@ -3,10 +3,11 @@
 #include "game.hpp"
 #include "randomGenerator.hpp"
 #include "renderResources.hpp"
-#include "Resources/Sounds/sound_eat.hpp"
-#include "Resources/Sounds/sound_gameover.hpp"
-#include "Resources/Sounds/sound_move.hpp"
+#include "sounds/sound_eat.hpp"
+#include "sounds/sound_gameover.hpp"
+#include "sounds/sound_move.hpp"
 #include "viewUtils.hpp"
+#include <cmath>
 
 constexpr size_t soundBufferSize = 5;
 

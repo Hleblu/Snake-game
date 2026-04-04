@@ -1,0 +1,65 @@
+﻿{
+    "configurations": [
+        {
+            "name": "x64-Debug",
+            "generator": "Ninja",
+            "configurationType": "Debug",
+            "inheritEnvironments": [ "msvc_x64_x64" ],
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "variables": [
+                {
+                    "name": "SFML_DIR",
+                    "value": "C:/SFML-3.0.2/lib/cmake/SFML",
+                    "type": "PATH"
+                },
+                {
+                    "name": "SFML_DOC_DIR",
+                    "value": "C:/SFML-3.0.2/doc",
+                    "type": "PATH"
+                },
+                {
+                    "name": "Ogg_DIR",
+                    "value": "C:/SFML-3.0.2/lib/cmake/Ogg",
+                    "type": "PATH"
+                },
+                {
+                    "name": "FLAC_DIR",
+                    "value": "C:/SFML-3.0.2/lib/cmake/FLAC",
+                    "type": "PATH"
+                }
+            ]
+        },
+        {
+            "name": "x64-Release",
+            "generator": "Ninja",
+            "configurationType": "Release",
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "inheritEnvironments": [ "msvc_x64_x64" ],
+            "variables": [
+                {
+                    "name": "SFML_DIR",
+                    "value": "C:/SFML-3.0.2/lib/cmake/SFML",
+                    "type": "PATH"
+                },
+                {
+                    "name": "Ogg_DIR",
+                    "value": "C:/SFML-3.0.2/lib/cmake/Ogg",
+                    "type": "PATH"
+                },
+                {
+                    "name": "SFML_DOC_DIR",
+                    "value": "C:/SFML-3.0.2/doc",
+                    "type": "PATH"
+                }
+            ]
+        }
+    ]
+}

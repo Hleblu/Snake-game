@@ -15,7 +15,7 @@ private:
     Configuration* config;
     CollisionManager* collision;
     sf::Shader* shader;
-    float time;
+    float time = 0.f;
     sf::VertexArray vertices;
     sf::VertexArray jointVertices;
     std::deque<Cell> segments;

@@ -1,8 +1,9 @@
+#include "configuration.hpp"
 #include "floatingText.hpp"
 #include "randomGenerator.hpp"
-#include "configuration.hpp"
-#include <SFML/Graphics/Shader.hpp>
+#include <algorithm>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Shader.hpp>
 
 constexpr float LIFE_TIME = 0.8f;
 

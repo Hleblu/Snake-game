@@ -1,5 +1,5 @@
 #pragma once
-#include "state.h"
+#include "state.hpp"
 #include <functional>
 #include <memory>
 #include <SFML/Graphics/Font.hpp>

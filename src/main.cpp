@@ -3,10 +3,10 @@
 #include "menu.hpp"
 #include "pathUtils.hpp"
 #include "randomGenerator.hpp"
-#include "Resources/game_icon.hpp"
-#include "Resources/tiny5_regular.hpp"
+#include "icons/game_icon.hpp"
+#include "fonts/tiny5_regular.hpp"
 #include "saveManager.hpp"
-#include "state.h"
+#include "state.hpp"
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
 
@@ -29,12 +29,12 @@ int main()
 {
     auto config = std::make_unique<Configuration>();
 
-    const std::string savePath = PathUtils::getSaveFilePath("Snake", "SnakeSave");
-    SaveManager saveManager;
-    saveManager.bind(*config);
-    saveManager.load(savePath);
-
     try {
+        const std::string savePath = PathUtils::getSaveFilePath("Snake", "SnakeSave");
+        SaveManager saveManager;
+        saveManager.bind(*config);
+        saveManager.load(savePath);
+
         sf::RenderWindow window(sf::VideoMode(
             { config->width, config->height }),
             "Snake",
@@ -124,12 +124,12 @@ int main()
                     state = State::EXIT;
                     break;
             }
+
+            saveManager.save(savePath);
         }
     }
 
     catch (const std::exception& e){
         std::cerr << "Error: " << e.what();
     }
-
-    saveManager.save(savePath);
 }

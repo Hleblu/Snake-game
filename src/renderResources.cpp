@@ -1,7 +1,7 @@
 ﻿#include "renderResources.hpp"
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
-#include "Resources/appleTexture.hpp"
+#include "textures/appleTexture.hpp"
 
 void RenderResources::loadSnakeShader()
 {

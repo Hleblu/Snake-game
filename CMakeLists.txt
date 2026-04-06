@@ -5,15 +5,24 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include(FetchContent)
+
+FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 3.0.2
+    GIT_SHALLOW TRUE
+)
+
 if (WIN32)
-    set(SFML_STATIC_LIBRARIES ON)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 endif()
 
-if (WIN32 OR APPLE)
-    find_package(SFML 3 COMPONENTS Graphics Window System Audio Main REQUIRED)
-else()
-    find_package(SFML 3 COMPONENTS Graphics Window System Audio REQUIRED)
-endif()
+set(SFML_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(SFML_BUILD_DOC OFF CACHE BOOL "" FORCE)
+set(SFML_BUILD_TEST_SUITE OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(SFML)
 
 add_executable(Snake
     src/main.cpp 

@@ -5,6 +5,7 @@
 *.suo
 
 CMakeUserPresets.json
+CMakeSettings.json
 
 # ===== CMake build =====
 

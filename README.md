@@ -1,28 +1,50 @@
-# SnakeGame (SFML 3.X)
+# SnakeGame (SFML 3.0.X)
 ## Modern C++17 implementation of classic Snake game, lightweight, configurable & portable.
 
+<div align = "center"><img src="assets/icons/game_icon.ico" width = "50%"></div>
+
 ## Features
-- Standalone executable (No external DLL requirements due to static linking and SFML 3.X);
-- Embedded w/ xxd headers assets;
-- Visual effects made using simple shaders;
+- Standalone executable (No external DLL requirements due to static linking and SFML 3.0.X);
+- Embedded directly into binary assets via xxd-generated headers;
+- Visual effects made using simple shaders, particle system and more;
+- Sound effects which make the exprience more enjoyable;
 
 ## Requirements
-- SFML 3.0 or higher with compiled static libraries;
 - CMake 3.16 or higher;
-- C++ 17 compiler;
+- Compiler with C++17 support;
+- ***Linux only*** Core system dependencies required to build SFML 3.0.X;
 
-## Build (VS2022 example)
-1. Open the project as a folder in VS2022;
-2. Point the SFML_DIR variable to your SFML installation;
-3. Select the x64-Release configuration in the toolbar;
-4. Go to <ins>Build</ins> > <ins>Build all</ins>;
-5. You will find the executable at <ins>out</ins> > <ins>build</ins> > <ins>x64-Release</ins>
+>[!NOTE]
+>Check the list of dependencies on [official SFML website](https://www.sfml-dev.org/tutorials/3.0/getting-started/build-from-source/#installing-dependencies).
+>This is not required if you build for Windows, since it uses static libraries.
 
-## Screenshots
-### Main menu
-![Main menu](screenshots/main_menu.png)
-### Config menu
-![Setting menu](screenshots/settings_menu.png)
-### Game field
-![Game field 1](screenshots/gamefield.png)
-![Game field 2](screenshots/gamefield_2.png)
+## Build 
+The project uses CMake's `FetchContent`, SFML 3.0.X and its dependencies will be downloaded on build. User needs only to clone the repository.
+```bash
+git clone https://github.com/Hleblu/Snake-game.git sfmlSnake
+```
+After cloning repository go inside the project folder and start the CMake build process.
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+```
+Compile the executable.
+```bash
+cmake --build build --config Release
+```
+Compiled executable will be located in <ins>build/Release<ins> directory. Enjoy!
+
+## Preview
+<div align="center">
+	<img src="preview/gifs/gameplay.gif" alt="Gameplay" width = "45%">
+	<img src="preview/gifs/menu.gif" alt="Menu" width = "45%">
+	<br><br>
+	<img src="preview/screenshots/gamefield.png" alt="Game field" width = "45%">
+	<img src="preview/screenshots/main_menu.png" alt="Main menu" width = "45%">
+	<br><br>
+	<img src="preview/screenshots/settings_menu.png" alt="Settings menu" width = "45%">
+	<img src="preview/screenshots/gamefield_2.png" alt="Game field 2" width = "45%">
+</div>
+
+## Important notes
+- **Learning project:** This project was developed primarily for learning C++ and SFML.
+- **Broken Commit History:** Please do not build commits prior to `[0944915]`. To release this repository publicly, all originally assets were scraped and replaced with CC0 alternatives (which I found better). Therefore older commits miss the resources and won't compile.

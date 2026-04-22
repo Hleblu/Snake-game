@@ -14,7 +14,7 @@ void SoundManager::playSound(const std::string& soundName) {
     if (soundsMap.find(soundName) != soundsMap.end()) {
         auto& buffer = soundsMap[soundName];
 
-        for (auto& sound : soundsBuffer) {
+        for (auto& sound : soundsPool) {
             if (sound.getStatus() == sf::Sound::Status::Stopped) {
                 sound.setBuffer(buffer);
                 sound.play();
@@ -23,8 +23,8 @@ void SoundManager::playSound(const std::string& soundName) {
         }
 
         auto oldestSound = std::min_element(
-            soundsBuffer.begin(),
-            soundsBuffer.end(),
+            soundsPool.begin(),
+            soundsPool.end(),
             [](const sf::Sound& a, const sf::Sound& b) {
                 return a.getPlayingOffset() > b.getPlayingOffset();
             });
@@ -35,6 +35,9 @@ void SoundManager::playSound(const std::string& soundName) {
 }
 
 SoundManager::SoundManager(const int bufferSize) {
+    if (bufferSize < 0)
+        throw std::invalid_argument("buffer size of SoundManager instance can't be negative");
+
     sf::SoundBuffer dummy;
-    soundsBuffer.resize(bufferSize, sf::Sound(dummy));
+    soundsPool.resize(bufferSize, sf::Sound(dummy));
 }

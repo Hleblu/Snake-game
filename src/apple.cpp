@@ -38,9 +38,14 @@ float Apple::getSpeedBonus() const
     return effect->getSpeedBonus();
 }
 
+const Cell Apple::getPosition() const 
+{
+    return coords;
+}
+
 void Apple::generateNewPosition()
 {
-    if (collision->isOccupancyBelow(100)) {
+    if (collision->getOccupancyRate() < 1.f) {
         const std::int16_t xMax = config->getColumns();
         const std::int16_t totalCells = config->getTotalSize();
         const int startingIndex = RandomGenerator::getInt(0, totalCells);

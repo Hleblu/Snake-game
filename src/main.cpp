@@ -1,4 +1,5 @@
 #include "configuration.hpp"
+#include "difficultyManager.hpp"
 #include "game.hpp"
 #include "menu.hpp"
 #include "pathUtils.hpp"
@@ -28,11 +29,13 @@ void showLoadingScreen(sf::RenderWindow& window, sf::Font* font, Configuration* 
 int main()
 {
     auto config = std::make_unique<Configuration>();
+    auto difficulty = std::make_unique<DifficultyManager>();
 
     try {
         const std::string savePath = PathUtils::getSaveFilePath("Snake", "SnakeSave");
         SaveManager saveManager;
         saveManager.bind(*config);
+        saveManager.bind(*difficulty);
         saveManager.load(savePath);
 
         sf::RenderWindow window(sf::VideoMode(
@@ -58,7 +61,7 @@ int main()
 
         State state;
 
-        Game game(config.get(), tiny5.get());
+        Game game(config.get(), tiny5.get(), difficulty.get());
 
         Menu menu(state, State::MENU, config.get());
 

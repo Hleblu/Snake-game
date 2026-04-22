@@ -4,7 +4,7 @@
 #include <SFML/Audio/SoundBuffer.hpp>
 
 class SoundManager {
-    std::vector<sf::Sound> soundsBuffer;
+    std::vector<sf::Sound> soundsPool;
     std::map<std::string, sf::SoundBuffer> soundsMap;
 
 public:

@@ -18,7 +18,7 @@ Snake::Snake(Configuration* config, CollisionManager* collision, sf::Shader* sha
     restoreDefaultValues();
 }
 
-sf::Vector2f Snake::getPositionInfront() const
+sf::Vector2f Snake::getHeadCenter() const
 {
     const Cell& head = segments.front();
 
@@ -42,7 +42,7 @@ void Snake::restoreDefaultValues()
     for (int i = 0; i < config->getSnakeDefSize(); ++i)
         segments.push_back({ centerX - i, centerY });
 
-    prevSegments = segments;
+    lastSegments = segments;
 
     for (auto& seg : segments)
         collision->setOccupied(seg, ObjectType::SNAKE_TAIL);
@@ -52,8 +52,8 @@ void Snake::restoreDefaultValues()
     prevDir = Direction::Val::NONE;
     nextDir = Direction::Val:: NONE;
 
-    firstMove = true;
-    tailCollisionDelay = 0;
+    hasNotMovedYet = true;
+    collisionPending = 0;
 
     vertices.clear();
     vertices.resize(config->getRows() * config->getColumns() * VERTEX_PER_TRIANGLE);
@@ -83,17 +83,17 @@ void Snake::triggerDeath(float currentTime)
         shader->setUniform("fadeStartTime", currentTime);
 }
 
-bool Snake::firstTimeMoving() const
+bool Snake::isWaitingForFirstMove() const
 {
-    return firstMove;
+    return hasNotMovedYet;
 }
 
 void Snake::grow(int size)
 {
-    tailCollisionDelay += size;
+    collisionPending += size;
     const size_t newSize = segments.size() + size;
-    segments.resize(newSize, prevSegments.back());
-    prevSegments.resize(newSize, prevSegments.back());
+    segments.resize(newSize, lastSegments.back());
+    lastSegments.resize(newSize, lastSegments.back());
 	updateTexCoords();
 }
 
@@ -101,17 +101,17 @@ void Snake::move()
 {
     if (dir == Direction::Val::NONE) return;
 
-    if (tailCollisionDelay == 0) {
-        collision->setFree(prevSegments.back(), ObjectType::SNAKE_TAIL_GHOST);
+    if (collisionPending == 0) {
+        collision->setFree(lastSegments.back(), ObjectType::SNAKE_TAIL_GHOST);
         collision->changeTypes(segments.back(), ObjectType::SNAKE_TAIL, ObjectType::SNAKE_TAIL_GHOST);
     }
-    else tailCollisionDelay -= 1;
+    else collisionPending -= 1;
 
-    if (!firstMove) { 
-        prevSegments.pop_back();
-        prevSegments.emplace_front(segments.front());
+    if (!hasNotMovedYet) { 
+        lastSegments.pop_back();
+        lastSegments.emplace_front(segments.front());
     }
-    else firstMove = false;
+    else hasNotMovedYet = false;
     
     segments.pop_back();
     segments.emplace_front(segments.front());
@@ -144,18 +144,24 @@ bool Snake::canUpdateDirection() const
     return nextDir != dir && !prevDir.isOpposite(nextDir);
 }
 
-const size_t Snake::getSize() const
+size_t Snake::getSize() const
 {
     return segments.size();
 }
 
+Cell Snake::getHead() const
+{
+    return segments[0];
+}
+
 void Snake::updateShader(float currentTime)
 {
-    time = currentTime;
+    shaderTime = currentTime;
 }
 
 void Snake::updateTexCoords()
 {
+    if (segments.size() <= 1) return;
 	for (size_t i = 0; i < segments.size(); ++i) {
         const float normalizedPosition = static_cast<float>(i) / (segments.size() - 1);
         sf::Vertex* triangles = &vertices[i * VERTEX_PER_TRIANGLE];
@@ -172,8 +178,8 @@ void Snake::updateTexCoords()
 void Snake::updateVertices(float dt)
 {
     for (size_t i = 0; i < segments.size(); ++i) {
-        const float posX = (prevSegments[i].x + (segments[i].x - prevSegments[i].x) * dt) * config->getCellSize();
-        const float posY = (prevSegments[i].y + (segments[i].y - prevSegments[i].y) * dt) * config->getCellSize();
+        const float posX = (lastSegments[i].x + (segments[i].x - lastSegments[i].x) * dt) * config->getCellSize();
+        const float posY = (lastSegments[i].y + (segments[i].y - lastSegments[i].y) * dt) * config->getCellSize();
 		const float posXEnd = posX + config->getCellSize();
 		const float posYEnd = posY + config->getCellSize();
 
@@ -194,7 +200,7 @@ void Snake::updateJointVertices()
     for (size_t i = 1; i < getSize(); ++i) {
         const Cell prevSeg = segments[i - 1];
         const Cell thisSeg = segments[i];
-        const Cell nextSeg = prevSegments[i];
+        const Cell nextSeg = lastSegments[i];
 
         if (prevSeg.x != nextSeg.x && prevSeg.y != nextSeg.y) {
             const float posX = thisSeg.x * config->getCellSize();
@@ -217,7 +223,7 @@ void Snake::updateJointVertices()
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     if (shader) {
-        shader->setUniform("currentTime", time);
+        shader->setUniform("currentTime", shaderTime);
         states.shader = shader;
     }
 

@@ -14,7 +14,7 @@ class Obstacle : public sf::Drawable
 	Configuration* config;
 	CollisionManager* collision;
 	sf::Shader* shader;
-	float time;
+	float shaderTime;
 
 	void updateVertices(float creationTime);
 public:

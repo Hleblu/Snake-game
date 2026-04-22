@@ -37,6 +37,7 @@ public:
 	void generateNewPosition();
 	bool isEaten() const;
 	float getSpeedBonus() const;
+	const Cell getPosition() const;
 	void applyEffect(Snake& snake) const;
 	void updateShader(float currentTime);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;

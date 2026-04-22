@@ -17,7 +17,6 @@ public:
 	static void shakeView(
 		sf::View& view,
 		sf::Vector2f defaultCenter,
-		sf::RenderWindow& window,
 		unsigned int intensivity,
 		Direction::Val dir
 	)
@@ -26,13 +25,11 @@ public:
 		const float offsetX = RandomGenerator::getInt(intensivity / 2u, intensivity) * vector.x;
 		const float offsetY = RandomGenerator::getInt(intensivity / 2u, intensivity) * vector.y;
 		view.setCenter(defaultCenter += { offsetX, offsetY });
-		window.setView(view);
 	}
 
 	static void shakeView(
 		sf::View& view,
 		sf::Vector2f defaultCenter,
-		sf::RenderWindow& window,
 		unsigned int intensivity,
 		Direction::Val dir,
 		float timePassed,
@@ -40,6 +37,6 @@ public:
 	)
 	{
 		intensivity *= std::max(0.f, 1 - timePassed / duration);
-		shakeView(view, defaultCenter, window, intensivity, dir);
+		shakeView(view, defaultCenter, intensivity, dir);
 	}
 };

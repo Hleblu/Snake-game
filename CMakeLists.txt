@@ -39,6 +39,7 @@ add_executable(Snake
     src/serializable.cpp
     src/snake.cpp
     src/soundManager.cpp
+    src/difficultyManager.cpp
 )
 
 if (WIN32)

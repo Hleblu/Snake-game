@@ -91,10 +91,10 @@ bool CollisionManager::isOutOfBorders(const Cell& cell) const {
 	return cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height;
 }
 
-bool CollisionManager::isOccupancyBelow(int percent) const
+float CollisionManager::getOccupancyRate() const
 {
 	const int totalCells = width * height;
-	int percentOccup = (numberOfOccupied() * 100) / totalCells;
+	const float occupied = numberOfOccupied() / totalCells;
 
-	return percentOccup <= percent;
+	return occupied;
 }

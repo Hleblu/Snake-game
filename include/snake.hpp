@@ -15,13 +15,13 @@ private:
     Configuration* config;
     CollisionManager* collision;
     sf::Shader* shader;
-    float time = 0.f;
+    float shaderTime = 0.f;
     sf::VertexArray vertices;
     sf::VertexArray jointVertices;
     std::deque<Cell> segments;
-    std::deque<Cell> prevSegments;
-    std::uint16_t tailCollisionDelay;
-    bool firstMove;
+    std::deque<Cell> lastSegments;
+    std::uint16_t collisionPending;
+    bool hasNotMovedYet;
     Direction dir, prevDir, nextDir;
 
     void updateTexCoords();
@@ -29,17 +29,18 @@ private:
     bool canUpdateDirection() const;
 public:
     Snake(Configuration* config, CollisionManager* collision, sf::Shader* shader);
-    sf::Vector2f getPositionInfront() const;
+    sf::Vector2f getHeadCenter() const;
     Direction getDirection() const;
     void restoreDefaultValues();
     bool hasCollided() const;
     void triggerDeath(float currentTime);
-    bool firstTimeMoving() const;
+    bool isWaitingForFirstMove() const;
     void grow(int size = 1);
     void move();
     void setNextDirection(Direction::Val dir);
     bool updateDirection();
-    const size_t getSize() const;
+    size_t getSize() const;
+    Cell getHead() const;
     void updateShader(float currentTime);
     void updateVertices(float dt = 0);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

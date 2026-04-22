@@ -5,15 +5,16 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Shader.hpp>
 
-constexpr float LIFE_TIME = 0.8f;
-
 FloatingText::FloatingText(Configuration* config, sf::Shader* shader, sf::Font* font)
 	: config(config),
 	shader(shader),
 	font(font),
 	label(*font),
-	currentAge(LIFE_TIME)
-{}
+	currentAge(1.f),
+	lifeTime(0.f)
+{
+	initAppearence();
+}
 
 void FloatingText::initAppearence()
 {
@@ -22,8 +23,9 @@ void FloatingText::initAppearence()
 	label.setOutlineThickness(config->getCellSize() * 0.07f);
 }
 
-void FloatingText::updateLabel(const std::string& str, sf::Vector2f pos)
+void FloatingText::updateLabel(const std::string& str, sf::Vector2f pos, float lifeTime)
 {
+	this->lifeTime = lifeTime;
 	label.setString(str);
 
 	const auto cellSize = config->getCellSize();
@@ -51,12 +53,17 @@ void FloatingText::updateShader(float dt)
 	currentAge += dt;
 }
 
+void FloatingText::hide()
+{
+	currentAge = lifeTime;
+}
+
 void FloatingText::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	if (currentAge > LIFE_TIME) return;
+	if (currentAge > lifeTime) return;
 	if (shader)
 	{
-		const float normalizedTime = std::min(currentAge / LIFE_TIME, 1.0f);
+		const float normalizedTime = std::min(currentAge / lifeTime, 1.0f);
 		shader->setUniform("time", normalizedTime);
 		shader->setUniform("texture", sf::Shader::CurrentTexture);
 		states.shader = shader;

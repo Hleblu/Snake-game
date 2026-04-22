@@ -1,6 +1,7 @@
 #pragma once
 #include "apple.hpp"
 #include "collisionManager.hpp"
+#include "difficultyManager.hpp"
 #include "flash.hpp"
 #include "floatingText.hpp"
 #include "obstacle.hpp"
@@ -20,24 +21,24 @@ class GameContext
 {
 public:
     std::uint16_t score = 0;
-    float totalTime = 0;
-
-    float deltaTime = 0;
-    float updateAccumulator = 0;
-    float gameOverTimer = 0;
-    float delay = 0;
+    float shaderTime = 0.f;
+    float deltaTime = 0.f;
+    float updateAccumulator = 0.f;
+    float gameOverTimer = 0.f;
+    float updateDelay = 0.f;
+    bool gameStarted = false;
     
     void reset(float startDelay);
 };
 
-class Game 
+class Game
 {
     Configuration* config;
     std::unique_ptr<CollisionManager> collision;
     GameContext context;
     sf::Clock clock;
     sf::Sprite background;
-    SoundManager sManager;
+    SoundManager sounds;
     RenderResources resources;
     Snake snake;
     Obstacle obstacle;
@@ -46,19 +47,33 @@ class Game
     Flash flash;
     FloatingText floatingText;
     sf::View gameView;
-    sf::Vector2f defCenter;
+    sf::Vector2f defaultCenter;
+    DifficultyManager* difficulty;
 
-    enum class State {
+    enum class Phase {
         PLAY,
         EXIT,
         PAUSE,
         GAMEOVER
-    } state;
+    } phase;
 
     void restoreDefaults();
     float calculateSpeed(std::uint16_t score);
     void initVisuals(sf::RenderWindow& window);
+
+    void handleEvents(sf::RenderWindow& window);
+    void render(sf::RenderWindow& window);
+
+    void tick();
+
+    void tickPlay();
+    void tickStep();
+    void handleSnakeCollision();
+    void handleApple();
+
+    void tickVisualUpdates();
+    void tickGameOver();
 public:
     void start(sf::RenderWindow& window);
-    Game(Configuration* config, sf::Font* font);
+    Game(Configuration* config, sf::Font* font, DifficultyManager* difficulty);
 };

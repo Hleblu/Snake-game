@@ -16,11 +16,11 @@ Obstacle::Obstacle(Configuration* config, CollisionManager* collision, sf::Shade
 
 void Obstacle::updateShader(float currentTime)
 {
-    time = currentTime;
+    shaderTime = currentTime;
 }
 
 void Obstacle::generateNewPosition(float creationTime) {
-    if (!collision->isOccupancyBelow(90)) return;
+    if (collision->getOccupancyRate() > 0.9f) return;
 
     const std::int16_t xMax = config->getColumns() - 1;
     const std::int16_t yMax = config->getRows() - 1;
@@ -72,7 +72,7 @@ void Obstacle::draw(sf::RenderTarget& target, sf::RenderStates states) const
     if (!config->areObstaclesEnabled()) return;
     if (shader) {
         shader->setUniform("duration", config->getStartDelay());
-        shader->setUniform("currentTime", time);
+        shader->setUniform("currentTime", shaderTime);
         states.shader = shader;
     }
     target.draw(vertices, states);

@@ -56,5 +56,5 @@ public:
 	bool isEmptyAround(const Cell& cell, const ObjectType type) const;
 	bool isEmptyAround(const Cell& cell) const;
 	bool isOutOfBorders(const Cell& cell) const;
-	bool isOccupancyBelow(int procent) const;
+	float getOccupancyRate() const;
 };

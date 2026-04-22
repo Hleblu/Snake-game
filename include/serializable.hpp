@@ -27,5 +27,5 @@ class Serializable
 public:
 	virtual ~Serializable() = default;
 	virtual std::string getHeader() const = 0;
-	virtual void serialize(Archive& arhive) = 0;
+	virtual void serialize(Archive& archive) = 0;
 };

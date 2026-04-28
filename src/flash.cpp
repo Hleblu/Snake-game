@@ -12,9 +12,9 @@ Flash::Flash(Configuration* config, sf::Color color)
 	rect.setSize({ config->width * 1.f, config->height * 1.f });
 }
 
-void Flash::updateAnim(float gameOverTimer)
+void Flash::updateAnim(float time)
 {
-	alpha = 1.f - (gameOverTimer - config->gameOverDelay) * ALPHA_MAX;
+	alpha = 1.f - (time - config->gameOverDelay) * ALPHA_MAX;
 	auto newColor = color;
 	newColor.a = alpha;
 	rect.setFillColor(newColor);

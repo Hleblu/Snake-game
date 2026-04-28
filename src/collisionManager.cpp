@@ -94,7 +94,7 @@ bool CollisionManager::isOutOfBorders(const Cell& cell) const {
 float CollisionManager::getOccupancyRate() const
 {
 	const int totalCells = width * height;
-	const float occupied = numberOfOccupied() / totalCells;
+	const float occupied = numberOfOccupied() / static_cast<float>(totalCells);
 
 	return occupied;
 }

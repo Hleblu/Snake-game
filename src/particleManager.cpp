@@ -16,7 +16,7 @@ namespace {
 	void updateVertices(sf::VertexArray& vertices, int index, sf::Vector2f position, float size, const sf::Color& color)
 	{
 		const std::size_t vIndex = index * VERTICES_COUNT;
-		const float halfSize = size /= 2.f;
+		const float halfSize = size / 2.f;
 
 		vertices[vIndex].position = { position.x - halfSize, position.y - halfSize };
 		vertices[vIndex + 1].position = { position.x + halfSize, position.y - halfSize };
@@ -106,9 +106,6 @@ void ParticleManager::update(float dt)
 		p.velocity.y += GRAVITY * dt;
 		p.position += p.velocity * dt;
 
-		//const float lifePercent = p.lifeTime / MAX_LIFE_TIME;
-		//p.color.a = static_cast<std::uint8_t>(lifePercent * 255.f);
-
 		updateVertices(vertices, i, p.position, p.size, p.color);
 
 		i++;
@@ -123,6 +120,6 @@ void ParticleManager::clearParticles()
 
 void ParticleManager::draw(sf::RenderTarget& target, sf::RenderStates states) const 
 {
-	target.draw(&vertices[0], aliveCount * 6, vertices.getPrimitiveType(), states);
+	target.draw(&vertices[0], aliveCount * VERTICES_COUNT, vertices.getPrimitiveType(), states);
 }
 

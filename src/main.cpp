@@ -10,6 +10,7 @@
 #include "state.hpp"
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
+#include <SFML/Audio/Listener.hpp>
 
 void showLoadingScreen(sf::RenderWindow& window, sf::Font* font, Configuration* config)
 {
@@ -100,15 +101,41 @@ int main()
                 self.setLabel(config->getCurrentObstaclesLabel());
             });
 
-        settings.addItem("Change theme", *tiny5, 72)
-            .setCallback([&](auto& self) {
-                config->cycleTheme();
-            });
+        settings.addItem("Next", *tiny5, 72)
+            .setCallback([&](auto& self) { state = State::SETTINGS_SECOND; });
 
         settings.addItem("Go back", *tiny5, 72)
             .setCallback([&](auto& self) { state = State::MENU; });
 
         settings.build();
+
+        Menu settingsSecond(state, State::SETTINGS_SECOND, config.get());
+
+        settingsSecond.addItem("Settings: 2", *tiny5, 96);
+
+        settingsSecond.addItem(config->getCurrentSoundLabel(), *tiny5, 72)
+            .setCallback([&](auto& self) {
+                config->toggleSound();
+                const float listenerValue = config->isSoundEnabled() ? 100.f : 0.f;
+                sf::Listener::setGlobalVolume(listenerValue);
+                self.setLabel(config->getCurrentSoundLabel());
+            });
+
+        settingsSecond.addItem(config->getCurrentShakeLabel(), *tiny5, 72)
+            .setCallback([&](auto& self) {
+                config->toggleShake();
+                self.setLabel(config->getCurrentShakeLabel());
+            });
+
+        settingsSecond.addItem("Change theme", *tiny5, 72)
+            .setCallback([&](auto& self) {
+                config->cycleTheme();
+            });
+
+        settingsSecond.addItem("Go back", *tiny5, 72)
+            .setCallback([&](auto& self) { state = State::SETTINGS; });
+
+        settingsSecond.build();
 
         state = State::MENU;
         while (window.isOpen() && state != State::EXIT) {
@@ -118,6 +145,9 @@ int main()
                     break;
                 case State::SETTINGS:
                     settings.show(window);
+                    break;
+                case State::SETTINGS_SECOND:
+                    settingsSecond.show(window);
                     break;
                 case State::GAME:
                     game.start(window);

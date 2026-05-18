@@ -20,5 +20,6 @@ enum class State {
     GAME,
     MENU,
     SETTINGS,
+    SETTINGS_SECOND,
     EXIT
 };

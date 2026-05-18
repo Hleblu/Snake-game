@@ -1,8 +1,8 @@
 #pragma once
+#include "serializable.hpp"
 #include <array>
 #include <SFML/Graphics/Color.hpp>
 #include <string>
-#include "serializable.hpp"
 
 class Configuration : public Serializable
 {
@@ -33,7 +33,7 @@ public:
 	const sf::Color textBaseColor = { 255, 255, 255 };
 	const sf::Color textOutlineColor = { 30, 30, 30 };
 	const float delayDecreaseStep = 0.995f;
-	const float gameOverDelay = 0.5f;
+	const float gameOverDelay = .8f;
 private:
 	template<std::size_t N> void cycleIndex(size_t& index) {
 		index = (index + 1) % N;
@@ -44,6 +44,8 @@ private:
 	std::size_t currentSpeedIndex = 0;
 
 	bool obstaclesEnabled = true;
+	bool soundEnabled = true;
+	bool shakeEnabled = true;
 
 	inline static const std::array<Theme, 7> themeOptions = { {
 			//classic
@@ -75,6 +77,8 @@ private:
 	} };
 
 	inline static const std::array<std::string, 2> obstaclesOptionsLabels = { "Obstacles: Enabled", "Obstacles: Disabled" };
+	inline static const std::array<std::string, 2> soundOptionsLabels = { "Sound: Enabled", "Sound: Disabled" };
+	inline static const std::array<std::string, 2> shakeOptionsLabels = { "Shake: Enabled", "Shake: Disabled" };
 
 public:
 	void serialize(Archive& archive) override 
@@ -98,19 +102,33 @@ public:
 	float getStartDelay() const { return speedOptions[currentSpeedIndex].delay; }
 
 	bool areObstaclesEnabled() const { return obstaclesEnabled; }
+	bool isSoundEnabled() const { return soundEnabled; }
+	bool isShakeEnabled() const { return shakeEnabled; }
 
 	const std::string& getCurrentGridLabel() const { return gridOptions[currentGridSettingsIndex].label; }
 	const std::string& getCurrentSpeedLabel() const { return speedOptions[currentSpeedIndex].label; }
 	const std::string& getCurrentObstaclesLabel() const { return obstaclesOptionsLabels[obstaclesEnabled ? 0 : 1]; }
+	const std::string& getCurrentSoundLabel() const { return soundOptionsLabels[soundEnabled ? 0 : 1]; }
+	const std::string& getCurrentShakeLabel() const { return shakeOptionsLabels[shakeEnabled ? 0 : 1]; }
 
 	void cycleTheme() { cycleIndex<themeOptions.size()>(currentThemeIndex); }
 	void cycleGridSize() { cycleIndex<gridOptions.size()>(currentGridSettingsIndex); }
 	void cycleSpeed() { cycleIndex<speedOptions.size()>(currentSpeedIndex); }
+
 	void toggleObstacles() { obstaclesEnabled = !obstaclesEnabled; }
+	void toggleSound() { soundEnabled = !soundEnabled; }
+	void toggleShake() { shakeEnabled = !shakeEnabled; }
 
 	float getParticleSize() { return getCellSize() / 5.f; }
 	float getParticleSpeedMin() { return getCellSize() * 1.1f; }
 	float getParticleSpeedMax() { return getCellSize() * 3.f; }
 
 	std::uint16_t getSnakeDefSize() { return std::max(getColumns() / 5, 3); }
+
+	std::uint16_t getShakeIntensity() { return  shakeEnabled ? getCellSize() / 10 : 0; }
+
+	float getSnakeFadeDelay() { return gameOverDelay * .3f; }
+	float getSnakeFadeDuration() { return gameOverDelay * .65f; }
+	float getFlashDuration() { return gameOverDelay * .5f; }
+	float getShakeDuration() { return gameOverDelay * .8f; }
 };

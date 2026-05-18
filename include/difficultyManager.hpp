@@ -27,14 +27,14 @@ private:
 	SessionResults unifiedResults;
 	SessionResults currentSession;
 	int sessionCounter = 0;
-	float modificator = 1.f;
+	float modifier = 1.f;
 
 public:
 	void onStart();
 	void onEnd();
 	void updateExpected(const Cell& p, const Cell& g, float occupancy, float delay);
 	void updateCurrent(float dt);
-	float getModificator() const;
+	float getModifier() const;
 
 	std::string getHeader() const override;
 	void serialize(Archive& archive) override;

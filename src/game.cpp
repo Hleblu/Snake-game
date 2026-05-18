@@ -8,15 +8,39 @@
 #include "sounds/sound_move.hpp"
 #include "viewUtils.hpp"
 #include <cmath>
+#include <map>
 
 constexpr size_t soundPoolSize = 5;
 constexpr size_t particlePoolSize = 120;
 constexpr size_t particlesPerEmission = 20;
-constexpr size_t shakeIntensity = 3;
 
 constexpr const char* SOUND_MOVE = "move";
 constexpr const char* SOUND_EAT = "eat";
 constexpr const char* SOUND_GAMEOVER = "gameover";
+
+enum class Action
+{
+    MoveLeft,
+    MoveRight,
+    MoveUp,
+    MoveDown,
+    Pause,
+    Quit,
+};
+
+const std::map<sf::Keyboard::Key, Action> keyBinds
+{
+    { sf::Keyboard::Key::Left, Action::MoveLeft },
+    { sf::Keyboard::Key::A, Action::MoveLeft },
+    { sf::Keyboard::Key::Right, Action::MoveRight },
+    { sf::Keyboard::Key::D, Action::MoveRight },
+    { sf::Keyboard::Key::Up, Action::MoveUp },
+    { sf::Keyboard::Key::W, Action::MoveUp },
+    { sf::Keyboard::Key::Down, Action::MoveDown },
+    { sf::Keyboard::Key::S, Action::MoveDown },
+    { sf::Keyboard::Key::Escape, Action::Quit },
+    { sf::Keyboard::Key::Space, Action::Pause }
+};
 
 void Game::start(sf::RenderWindow& window)
 {
@@ -43,6 +67,7 @@ void Game::restoreDefaults() {
     particles.clearParticles();
     snake.restoreDefaultValues();
     obstacle.restoreDefaultValues();
+    floatingText.initAppearence();
     floatingText.hide();
     apple = AppleFactory::createRandomApple(
         config,
@@ -63,7 +88,7 @@ void Game::restoreDefaults() {
 float Game::calculateSpeed(std::uint16_t score)
 {
     const float sizeBonus = std::pow(config->delayDecreaseStep, score);
-    return config->getStartDelay() / difficulty->getModificator() * sizeBonus * apple->getSpeedBonus();
+    return config->getStartDelay() / difficulty->getModifier() * sizeBonus * apple->getSpeedBonus();
 }
 
 void Game::initVisuals(sf::RenderWindow& window)
@@ -89,31 +114,34 @@ void Game::handleEvents(sf::RenderWindow& window)
         if (event->is<sf::Event::Closed>()) window.close();
         else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
         {
+            auto it = keyBinds.find(keyPressed->code);
+            if (it == keyBinds.end()) continue;
+
             if (phase == Phase::PLAY) {
-                switch (keyPressed->code)
+                switch (it->second)
                 {
-                case sf::Keyboard::Key::Left:
+                case Action::MoveLeft:
                     if (!snake.isWaitingForFirstMove()) // prevent gameover, since snake starts facing righwards
                         snake.setNextDirection(Direction::Val::LEFT);
                     break;
-                case sf::Keyboard::Key::Right:
+                case Action::MoveRight:
                     snake.setNextDirection(Direction::Val::RIGHT);
                     break;
-                case sf::Keyboard::Key::Up:
+                case Action::MoveUp:
                     snake.setNextDirection(Direction::Val::UP);
                     break;
-                case sf::Keyboard::Key::Down:
+                case Action::MoveDown:
                     snake.setNextDirection(Direction::Val::DOWN);
                     break;
                 }
             }
 
-            switch (keyPressed->code)
+            switch (it->second)
             {
-            case sf::Keyboard::Key::Escape:
+            case Action::Quit:
                 phase = Phase::EXIT;
                 break;
-            case sf::Keyboard::Key::Space:
+            case Action::Pause:
                 if (phase != Phase::GAMEOVER)
                     phase = (phase == Phase::PLAY) ? Phase::PAUSE : Phase::PLAY;
                 break;
@@ -245,10 +273,10 @@ void Game::tickVisualUpdates()
         ViewUtils::shakeView(
             gameView,
             defaultCenter,
-            shakeIntensity,
+            config->getShakeIntensity(),
             snake.getDirection(),
             context.gameOverTimer,
-            config->gameOverDelay
+            config->getShakeDuration()
         );
 
         snake.updateShader(context.shaderTime);

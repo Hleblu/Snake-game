@@ -77,8 +77,9 @@ void Menu::show(sf::RenderWindow& window)
 
             const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>();
             const bool isClicked = mouseButtonPressed && mouseButtonPressed->button == sf::Mouse::Button::Left;
+            const bool isTouched = event->is<sf::Event::TouchBegan>();
 
-            if (hovered && isClicked) {
+            if (hovered && (isClicked || isTouched)) {
                 hovered->callFunction();
             }
         }

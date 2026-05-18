@@ -65,8 +65,8 @@ void Snake::restoreDefaultValues()
     if (shader) {
         shader->setUniform("startColor", sf::Glsl::Vec4(config->getCurrentTheme().snakeColor));
         shader->setUniform("endColor", sf::Glsl::Vec4(config->getCurrentTheme().snakeColorEnd));
-        shader->setUniform("fadeDuration", config->gameOverDelay);
-        shader->setUniform("fadeStartTime", -1.f);
+        shader->setUniform("fadeDuration", config->getSnakeFadeDuration());
+        shader->setUniform("fadeStartTime", -config->getSnakeFadeDuration());
     }
 }
 
@@ -80,7 +80,7 @@ bool Snake::hasCollided() const
 void Snake::triggerDeath(float currentTime)
 {
     if (shader)
-        shader->setUniform("fadeStartTime", currentTime);
+        shader->setUniform("fadeStartTime", currentTime + config->getSnakeFadeDelay());
 }
 
 bool Snake::isWaitingForFirstMove() const

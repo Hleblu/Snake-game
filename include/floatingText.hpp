@@ -15,9 +15,9 @@ class FloatingText : public sf::Drawable
 	float currentAge;
 	float lifeTime;
 
-	void initAppearence();
 public:
 	FloatingText(Configuration* config, sf::Shader* shader, sf::Font* font);
+	void initAppearence();
 	void updateLabel(const std::string& str, sf::Vector2f pos, float lifeTime = defaultLifeTime);
 	void updateShader(float dt);
 	void hide();

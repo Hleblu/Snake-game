@@ -1,7 +1,8 @@
 #include "difficultyManager.hpp"
 #include <cmath>
+#include <algorithm>
 
-constexpr float PATHING_BIAS = 1.5f;
+constexpr float PATHING_BIAS = 1.25f;
 constexpr int SESSION_COUNT = 10;
 
 void SessionResults::reset()
@@ -61,7 +62,8 @@ void DifficultyManager::onEnd()
 	if (sessionCounter >= SESSION_COUNT) 
 	{
 		const float timeDifference = unifiedResults.getExpected() - unifiedResults.getActual();
-		modificator *= (1 + 0.05f * std::tanh(timeDifference / unifiedResults.getExpected()));
+		modifier *= (1 + 0.05f * std::tanh(timeDifference / unifiedResults.getExpected()));
+		modifier = std::clamp(modifier, .8f, 1.4f);
 		sessionCounter = 0;
 		unifiedResults.reset();
 	}
@@ -79,9 +81,9 @@ void DifficultyManager::updateCurrent(float dt)
 	currentSession.addActual(dt);
 }
 
-float DifficultyManager::getModificator() const
+float DifficultyManager::getModifier() const
 {
-	return modificator;
+	return modifier;
 }
 
 std::string DifficultyManager::getHeader() const
@@ -93,7 +95,7 @@ void DifficultyManager::serialize(Archive& archive)
 {
 	archive
 		& sessionCounter
-		& modificator;
+		& modifier;
 
 	unifiedResults.serialize(archive);
 }

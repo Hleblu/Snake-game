@@ -14,7 +14,8 @@ Flash::Flash(Configuration* config, sf::Color color)
 
 void Flash::updateAnim(float time)
 {
-	alpha = 1.f - (time - config->gameOverDelay) * ALPHA_MAX;
+	if (time > config->getFlashDuration()) return;
+	alpha = (1.f - time / config->getFlashDuration()) * ALPHA_MAX;
 	auto newColor = color;
 	newColor.a = alpha;
 	rect.setFillColor(newColor);

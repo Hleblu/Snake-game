@@ -4,7 +4,7 @@
 #include <limits>
 
 Archive::Archive(std::iostream& stream, bool isSaving) :
-	stream(stream), isSaving(isSaving)
+	stream(stream), isSaving(isSaving), isGood(true)
 {
 	if (isSaving)
 		stream

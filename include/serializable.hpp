@@ -6,6 +6,7 @@ class Archive
 {
 	std::iostream& stream;
 	bool isSaving;
+	bool isGood;
 public:
 	Archive(std::iostream& stream, bool isSaving);
 
@@ -13,8 +14,10 @@ public:
 	{
 		if (isSaving)
 			stream << data << ' ';
-		else
-			stream >> data;
+		else {
+			if (isGood == false) return *this;
+			if (!(stream >> data)) isGood = false;
+		}
 
 		return *this;
 	}

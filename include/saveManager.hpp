@@ -4,7 +4,7 @@
 #include <string>
 #include "serializable.hpp"
 
-constexpr char VERSION = 'A.01';
+constexpr char VERSION = 'B';
 
 class SaveManager
 {

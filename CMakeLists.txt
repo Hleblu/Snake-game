@@ -10,7 +10,7 @@ include(FetchContent)
 FetchContent_Declare(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 3.0.2
+    GIT_TAG 3.1.0
     GIT_SHALLOW TRUE
 )
 
@@ -40,6 +40,7 @@ add_executable(Snake
     src/snake.cpp
     src/soundManager.cpp
     src/difficultyManager.cpp
+    src/checkeredBG.cpp
 )
 
 if (WIN32)

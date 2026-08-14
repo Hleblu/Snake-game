@@ -1,6 +1,6 @@
 #pragma once
-#include "cell.hpp"
 #include <memory>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -18,17 +18,17 @@ class Apple : public sf::Drawable
 {
 	sf::Sprite sprite;
 	sf::Shader* shader;
-	Cell coords;
+	sf::Vector2i coords;
 	std::unique_ptr<IAppleEffect> effect;
-	Configuration* config;
-	CollisionManager* collision;
+	Configuration& config;
+	CollisionManager& collision;
 	float spawnTime;
 	float alpha;
 
 public:
 	Apple(
-		Configuration* config,
-		CollisionManager* collision,
+		Configuration& config,
+		CollisionManager& collision,
 		sf::Texture& texture,
 		sf::Shader* shader,
 		std::unique_ptr<IAppleEffect> eff,
@@ -37,7 +37,7 @@ public:
 	void generateNewPosition();
 	bool isEaten() const;
 	float getSpeedBonus() const;
-	const Cell getPosition() const;
+	const sf::Vector2i getPosition() const;
 	void applyEffect(Snake& snake) const;
 	void updateShader(float currentTime);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -48,8 +48,8 @@ class AppleFactory
 {
 public:
 	static std::unique_ptr<Apple> createRandomApple(
-		Configuration* config,
-		CollisionManager* collision,
+		Configuration& config,
+		CollisionManager& collision,
 		sf::Texture& texture,
 		sf::Shader* shader,
 		float spawnTime

@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics/Shader.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 class RenderResources
 {
@@ -8,7 +9,8 @@ public:
 	RenderResources() = default;
 
 	void loadSnakeShader();
-	void createBackgroundTexture();
+	sf::Texture createCheckerboardTexture();
+	void updateCheckerboardTexture(sf::Texture& texture, sf::Color first, sf::Color second);
 	void loadAppleTexture();
 	void loadFadeShader();
 	void loadSpriteFadeShader();
@@ -19,6 +21,5 @@ public:
 	sf::Shader spriteFadeShader;
 	sf::Shader floatingTextFadeShader;
 
-	sf::Texture backgroundTexture;
 	sf::Texture appleTexture;
 };

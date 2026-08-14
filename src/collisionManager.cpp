@@ -1,4 +1,5 @@
 #include "collisionManager.hpp"
+
 void CollisionManager::init(int rows, int columns)
 {
 	clearMap();
@@ -9,7 +10,7 @@ void CollisionManager::init(int rows, int columns)
 	}
 }
 
-void CollisionManager::setOccupied(const Cell& cell, const ObjectType type) {
+void CollisionManager::setOccupied(const sf::Vector2i& cell, const ObjectType type) {
 	if (isOutOfBorders(cell))
 		return;
 
@@ -21,7 +22,7 @@ void CollisionManager::setOccupied(const Cell& cell, const ObjectType type) {
 	grid[index] = grid[index] | type;
 }
 
-void CollisionManager::setFree(const Cell& cell, const ObjectType type) {
+void CollisionManager::setFree(const sf::Vector2i& cell, const ObjectType type) {
 	if (isOutOfBorders(cell))
 		return;
 
@@ -38,7 +39,7 @@ void CollisionManager::clearMap() {
 	occupiedCount = 0;
 }
 
-bool CollisionManager::isCellOccupied(const Cell& cell) const {
+bool CollisionManager::isCellOccupied(const sf::Vector2i& cell) const {
 	if (isOutOfBorders(cell))
 		return true;
 
@@ -47,7 +48,7 @@ bool CollisionManager::isCellOccupied(const Cell& cell) const {
 	return grid[index] != ObjectType::NONE;
 }
 
-bool CollisionManager::checkCellType(const Cell& cell, const ObjectType type) const {
+bool CollisionManager::checkCellType(const sf::Vector2i& cell, const ObjectType type) const {
 	if (isOutOfBorders(cell))
 		return true;
 
@@ -56,7 +57,7 @@ bool CollisionManager::checkCellType(const Cell& cell, const ObjectType type) co
 	return (grid[index] & type) != ObjectType::NONE;
 }
 
-void CollisionManager::changeTypes(const Cell& cell, const ObjectType oldType, const ObjectType newType) {
+void CollisionManager::changeTypes(const sf::Vector2i& cell, const ObjectType oldType, const ObjectType newType) {
 	if (isOutOfBorders(cell)) return;
 
 	auto index = getIndex(cell);
@@ -69,25 +70,25 @@ std::size_t CollisionManager::numberOfOccupied() const {
 	return occupiedCount;
 }
 
-bool CollisionManager::isEmptyAround(const Cell& cell, const ObjectType type) const {
+bool CollisionManager::isEmptyAround(const sf::Vector2i& cell, const ObjectType type) const {
 	for (const auto& dir : neighbourDirections) {
-		const Cell suspectedCell = { cell.x + dir.x, cell.y + dir.y };
+		const sf::Vector2i suspectedCell = { cell.x + dir.x, cell.y + dir.y };
 		if (checkCellType(suspectedCell, type))
 			return false;
 	}
 	return true;
 }
 
-bool CollisionManager::isEmptyAround(const Cell& cell) const {
+bool CollisionManager::isEmptyAround(const sf::Vector2i& cell) const {
 	for (const auto& dir : neighbourDirections) {
-		const Cell suspectedCell = { cell.x + dir.x, cell.y + dir.y };
+		const sf::Vector2i suspectedCell = { cell.x + dir.x, cell.y + dir.y };
 		if (isCellOccupied(suspectedCell))
 			return false;
 	}
 	return true;
 }
 
-bool CollisionManager::isOutOfBorders(const Cell& cell) const {
+bool CollisionManager::isOutOfBorders(const sf::Vector2i& cell) const {
 	return cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height;
 }
 

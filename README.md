@@ -1,10 +1,10 @@
-# SnakeGame (SFML 3.0.X)
+# SnakeGame (SFML 3.1.X)
 ## Modern C++17 implementation of classic Snake game, lightweight, configurable & portable.
 
 <div align = "center"><img src="assets/icons/game_icon.ico" width = "50%"></div>
 
 ## Features
-- Standalone executable (No external DLL requirements due to static linking and SFML 3.0.X);
+- Standalone executable (No external DLL requirements due to static linking and SFML 3.1.X);
 - Embedded directly into binary assets via xxd-generated headers;
 - Visual effects made using simple shaders, particle system and more;
 - Sound effects which make the exprience more enjoyable;
@@ -12,14 +12,14 @@
 ## Requirements
 - CMake 3.16 or higher;
 - Compiler with C++17 support;
-- ***Linux only*** Core system dependencies required to build SFML 3.0.X;
+- ***Linux only*** Core system dependencies required to build SFML 3.1.X;
 
 >[!NOTE]
 >Check the list of dependencies on [official SFML website](https://www.sfml-dev.org/tutorials/3.0/getting-started/build-from-source/#installing-dependencies).
 >This is not required if you build for Windows, since it uses static libraries.
 
 ## Build 
-The project uses CMake's `FetchContent`, SFML 3.0.X and its dependencies will be downloaded on build. User needs only to clone the repository.
+The project uses CMake's `FetchContent`, SFML 3.1.X and its dependencies will be downloaded on build. User needs only to clone the repository.
 ```bash
 git clone https://github.com/Hleblu/Snake-game.git sfmlSnake
 ```

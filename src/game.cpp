@@ -10,13 +10,15 @@
 #include <cmath>
 #include <map>
 
-constexpr size_t soundPoolSize = 5;
-constexpr size_t particlePoolSize = 120;
-constexpr size_t particlesPerEmission = 20;
+namespace {
+    constexpr size_t soundPoolSize = 5;
+    constexpr size_t particlePoolSize = 120;
+    constexpr size_t particlesPerEmission = 20;
 
-constexpr const char* SOUND_MOVE = "move";
-constexpr const char* SOUND_EAT = "eat";
-constexpr const char* SOUND_GAMEOVER = "gameover";
+    constexpr const char* SOUND_MOVE = "move";
+    constexpr const char* SOUND_EAT = "eat";
+    constexpr const char* SOUND_GAMEOVER = "gameover";
+}
 
 enum class Action
 {
@@ -42,9 +44,43 @@ const std::map<sf::Keyboard::Key, Action> keyBinds
     { sf::Keyboard::Key::Space, Action::Pause }
 };
 
+void GameContext::reset(float startDelay)
+{
+    score = 0;
+    shaderTime = 0.f;
+    deltaTime = 0.f;
+    updateAccumulator = 0.f;
+    gameOverTimer = 0.f;
+    updateDelay = startDelay;
+}
+
+Game::Game(Configuration& config, sf::Font& font, DifficultyManager& difficulty) :
+    config(config),
+    collision(),
+    sounds(soundPoolSize),
+    background(resources.createCheckerboardTexture()),
+    phase(Phase::PLAY),
+    particles(particlePoolSize),
+    snake(config, collision, &resources.snakeShader),
+    obstacle(config, collision, &resources.fadeShader),
+    flash(config, sf::Color::White),
+    floatingText(config, &resources.floatingTextFadeShader, font),
+    difficulty(difficulty)
+{
+    resources.loadSnakeShader();
+    resources.loadAppleTexture();
+    resources.loadFadeShader();
+    resources.loadSpriteFadeShader();
+    resources.loadFloatingTextFadeShader();
+
+    sounds.addSound(SOUND_MOVE, sound_move, sound_move_len);
+    sounds.addSound(SOUND_EAT, sound_eat, sound_eat_len);
+    sounds.addSound(SOUND_GAMEOVER, sound_gameover, sound_gameover_len);
+}
+
 void Game::start(sf::RenderWindow& window)
 {
-    difficulty->onStart();
+    difficulty.onStart();
     restoreDefaults();
     initVisuals(window);
 
@@ -58,12 +94,12 @@ void Game::start(sf::RenderWindow& window)
         render(window);
     }
     if (!snake.isWaitingForFirstMove())
-        difficulty->onEnd();
+        difficulty.onEnd();
 }
 
 void Game::restoreDefaults() {
-    context.reset(config->getStartDelay());
-    collision->init(config->getRows(), config->getColumns());
+    context.reset(config.getStartDelay());
+    collision.init(config.getRows(), config.getColumns());
     particles.clearParticles();
     snake.restoreDefaultValues();
     obstacle.restoreDefaultValues();
@@ -71,38 +107,34 @@ void Game::restoreDefaults() {
     floatingText.hide();
     apple = AppleFactory::createRandomApple(
         config,
-        collision.get(),
+        collision,
         resources.appleTexture,
         &resources.spriteFadeShader,
         0
     );
-    difficulty->updateExpected(
+    difficulty.updateExpected(
         snake.getHead(),
         apple->getPosition(),
-        collision->getOccupancyRate(),
+        collision.getOccupancyRate(),
         context.updateDelay
     );
     phase = Phase::PLAY;
 }
 
-float Game::calculateSpeed(std::uint16_t score)
-{
-    const float sizeBonus = std::pow(config->delayDecreaseStep, score);
-    return config->getStartDelay() / difficulty->getModifier() * sizeBonus * apple->getSpeedBonus();
-}
-
 void Game::initVisuals(sf::RenderWindow& window)
 {
-    background.setScale(sf::Vector2f(config->getCellSize(), config->getCellSize()));
-    background.setTextureRect({ { 0, 0 }, { config->width, config->height } });
-    background.setColor(config->getCurrentTheme().mainColor);
-    
-    ViewUtils::normalizeView(gameView, 
-        { 
-            static_cast<float>(config->width),
-            static_cast<float>(config->height)
-        }
+    background.updateDimensions(
+        config.getCellSize(),
+        sf::IntRect({0, 0}, {config.getFieldDimensions<int>()})
     );
+
+    resources.updateCheckerboardTexture(
+        background.getTexture(),
+        config.getCurrentTheme().mainColor,
+        config.getCurrentTheme().secondColor
+    );
+    
+    ViewUtils::normalizeView(gameView, config.getFieldDimensions<float>(), sf::Vector2f(window.getSize()));
     defaultCenter = gameView.getCenter();
     window.setView(gameView);
 }
@@ -112,7 +144,16 @@ void Game::handleEvents(sf::RenderWindow& window)
     while (const std::optional event = window.pollEvent())
     {
         if (event->is<sf::Event::Closed>()) window.close();
-        else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+
+        if (const auto* resized = event->getIf<sf::Event::Resized>()) {
+            ViewUtils::normalizeView(
+                gameView,
+                config.getFieldDimensions<float>(),
+                sf::Vector2f(resized->size)
+            );
+        }
+
+        if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
         {
             auto it = keyBinds.find(keyPressed->code);
             if (it == keyBinds.end()) continue;
@@ -154,7 +195,7 @@ void Game::render(sf::RenderWindow& window)
 {
     window.setView(gameView);
 
-    window.clear(config->getCurrentTheme().secondColor);
+    window.clear(config.getCurrentTheme().obstacleColor);
 
     window.draw(background);
     window.draw(particles);
@@ -188,7 +229,7 @@ void Game::tick()
 void Game::tickPlay()
 {
     if (!snake.isWaitingForFirstMove())
-        difficulty->updateCurrent(context.deltaTime);
+        difficulty.updateCurrent(context.deltaTime);
 
     context.updateAccumulator += context.deltaTime;
 
@@ -234,31 +275,37 @@ void Game::handleApple()
     particles.emit(
         particlesPerEmission,
         snake.getHeadCenter(),
-        config->getParticleSize(),
-        config->getCurrentTheme().appleColor,
-        config->getParticleSpeedMin(),
-        config->getParticleSpeedMax()
+        config.getParticleSize(),
+        config.getCurrentTheme().appleColor,
+        config.getParticleSpeedMin(),
+        config.getParticleSpeedMax()
     );
 
     sounds.playSound(SOUND_EAT);
     apple->applyEffect(snake);
     apple = AppleFactory::createRandomApple(
         config,
-        collision.get(),
+        collision,
         resources.appleTexture,
         &resources.spriteFadeShader,
         context.shaderTime
     );
 
-    if (config->areObstaclesEnabled() && (context.score & 1) == 1)
+    if (config.areObstaclesEnabled() && (context.score & 1) == 1)
         obstacle.generateNewPosition(context.shaderTime);
 
-    difficulty->updateExpected(
+    difficulty.updateExpected(
         snake.getHead(),
         apple->getPosition(),
-        collision->getOccupancyRate(),
+        collision.getOccupancyRate(),
         context.updateDelay
     );
+}
+
+float Game::calculateSpeed(std::uint16_t score)
+{
+    const float sizeBonus = std::pow(config.delayDecreaseStep, score);
+    return config.getStartDelay() / difficulty.getModifier() * sizeBonus * apple->getSpeedBonus();
 }
 
 void Game::tickVisualUpdates()
@@ -273,10 +320,10 @@ void Game::tickVisualUpdates()
         ViewUtils::shakeView(
             gameView,
             defaultCenter,
-            config->getShakeIntensity(),
+            config.getShakeIntensity(),
             snake.getDirection(),
             context.gameOverTimer,
-            config->getShakeDuration()
+            config.getShakeDuration()
         );
 
         snake.updateShader(context.shaderTime);
@@ -287,41 +334,6 @@ void Game::tickVisualUpdates()
 void Game::tickGameOver()
 {
     context.gameOverTimer += context.deltaTime;
-    if (context.gameOverTimer >= config->gameOverDelay)
+    if (context.gameOverTimer >= config.gameOverDelay)
         phase = Phase::EXIT;
-}
-
-Game::Game(Configuration* config, sf::Font* font, DifficultyManager* difficulty)
-    : sounds(soundPoolSize),
-    background(resources.backgroundTexture),
-    phase(Phase::PLAY),
-    particles(particlePoolSize),
-    config(config),
-    collision(std::make_unique<CollisionManager>()),
-    snake(config, collision.get(), &resources.snakeShader),
-    obstacle(config, collision.get(), &resources.fadeShader),
-    flash(config, sf::Color::White),
-    floatingText(config, &resources.floatingTextFadeShader, font),
-    difficulty(difficulty)
-{
-	resources.loadSnakeShader();
-	resources.createBackgroundTexture();
-    resources.loadAppleTexture();
-    resources.loadFadeShader();
-    resources.loadSpriteFadeShader();
-    resources.loadFloatingTextFadeShader();
-
-    sounds.addSound(SOUND_MOVE, sound_move, sound_move_len);
-    sounds.addSound(SOUND_EAT, sound_eat, sound_eat_len);
-    sounds.addSound(SOUND_GAMEOVER, sound_gameover, sound_gameover_len);
-}
-
-void GameContext::reset(float startDelay)
-{
-    score = 0;
-    shaderTime = 0.f;
-    deltaTime = 0.f;
-    updateAccumulator = 0.f;
-    gameOverTimer = 0.f;
-    updateDelay = startDelay;
 }

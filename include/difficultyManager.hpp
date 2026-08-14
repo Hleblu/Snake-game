@@ -1,6 +1,6 @@
 #pragma once
 #include "serializable.hpp"
-#include "cell.hpp"
+#include <SFML/System/Vector2.hpp>
 
 class SessionResults : public Serializable
 {
@@ -19,6 +19,7 @@ public:
 
 	std::string getHeader() const override;
 	void serialize(Archive& archive) override;
+	void setDefaults() override;
 };
 
 class DifficultyManager : public Serializable
@@ -32,10 +33,11 @@ private:
 public:
 	void onStart();
 	void onEnd();
-	void updateExpected(const Cell& p, const Cell& g, float occupancy, float delay);
+	void updateExpected(const sf::Vector2i& p, const sf::Vector2i& g, float occupancy, float delay);
 	void updateCurrent(float dt);
 	float getModifier() const;
 
 	std::string getHeader() const override;
 	void serialize(Archive& archive) override;
+	void setDefaults() override;
 };

@@ -2,20 +2,22 @@
 #include "configuration.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
-constexpr std::uint8_t ALPHA_MAX = 115;
+namespace {
+	constexpr std::uint8_t ALPHA_MAX = 115;
+}
 
-Flash::Flash(Configuration* config, sf::Color color)
+Flash::Flash(Configuration& config, sf::Color color)
 	: config(config),
 	color(color),
 	alpha(0)
 {
-	rect.setSize({ config->width * 1.f, config->height * 1.f });
+	rect.setSize(config.getFieldDimensions<float>());
 }
 
 void Flash::updateAnim(float time)
 {
-	if (time > config->getFlashDuration()) return;
-	alpha = (1.f - time / config->getFlashDuration()) * ALPHA_MAX;
+	if (time > config.getFlashDuration()) return;
+	alpha = (1.f - time / config.getFlashDuration()) * ALPHA_MAX;
 	auto newColor = color;
 	newColor.a = alpha;
 	rect.setFillColor(newColor);

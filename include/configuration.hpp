@@ -1,7 +1,9 @@
 #pragma once
 #include "serializable.hpp"
+#include <algorithm>
 #include <array>
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <string>
 
 class Configuration : public Serializable
@@ -81,14 +83,32 @@ private:
 	inline static const std::array<std::string, 2> shakeOptionsLabels = { "Shake: Enabled", "Shake: Disabled" };
 
 public:
+	template<class T> sf::Vector2<T> getFieldDimensions() const
+	{
+		return sf::Vector2<T>({ static_cast<T>(width), static_cast<T>(height) });
+	}
+
 	void serialize(Archive& archive) override 
 	{ 
-		archive 
-		&currentGridSettingsIndex 
-		&currentSpeedIndex 
-		&currentThemeIndex
-		&obstaclesEnabled; 
+		archive
+			& currentGridSettingsIndex
+			& currentSpeedIndex
+			& currentThemeIndex
+			& obstaclesEnabled
+			& soundEnabled
+			& shakeEnabled;
 	}
+
+	void setDefaults() override
+	{
+		currentGridSettingsIndex = 0;
+		currentSpeedIndex = 0;
+		currentThemeIndex = 0;
+		obstaclesEnabled = 1;
+		soundEnabled = 1;
+		shakeEnabled = 1;
+	}
+
 	std::string getHeader() const { return "Configuration"; }
 
 	const Theme& getCurrentTheme() const { return themeOptions[currentThemeIndex]; }
@@ -119,16 +139,16 @@ public:
 	void toggleSound() { soundEnabled = !soundEnabled; }
 	void toggleShake() { shakeEnabled = !shakeEnabled; }
 
-	float getParticleSize() { return getCellSize() / 5.f; }
-	float getParticleSpeedMin() { return getCellSize() * 1.1f; }
-	float getParticleSpeedMax() { return getCellSize() * 3.f; }
+	float getParticleSize() const { return getCellSize() / 5.f; }
+	float getParticleSpeedMin() const { return getCellSize() * 1.1f; }
+	float getParticleSpeedMax() const { return getCellSize() * 3.f; }
 
-	std::uint16_t getSnakeDefSize() { return std::max(getColumns() / 5, 3); }
+	std::uint16_t getSnakeDefSize() const { return std::max(getColumns() / 5, 3); }
 
-	std::uint16_t getShakeIntensity() { return  shakeEnabled ? getCellSize() / 10 : 0; }
+	float getShakeIntensity() const { return  shakeEnabled ? getCellSize() / 10.f : 0.f; }
 
-	float getSnakeFadeDelay() { return gameOverDelay * .3f; }
-	float getSnakeFadeDuration() { return gameOverDelay * .65f; }
-	float getFlashDuration() { return gameOverDelay * .5f; }
-	float getShakeDuration() { return gameOverDelay * .8f; }
+	float getSnakeFadeDelay() const { return gameOverDelay * .3f; }
+	float getSnakeFadeDuration() const { return gameOverDelay * .65f; }
+	float getFlashDuration() const { return gameOverDelay * .5f; }
+	float getShakeDuration() const { return gameOverDelay * .8f; }
 };

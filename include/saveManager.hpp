@@ -4,7 +4,9 @@
 #include <string>
 #include "serializable.hpp"
 
-constexpr char VERSION = 'B';
+namespace {
+	constexpr char VERSION = 'B';
+}
 
 class SaveManager
 {
@@ -13,6 +15,12 @@ public:
 	void bind(Serializable& serialized)
 	{
 		clients[serialized.getHeader()] = &serialized;
+	}
+
+	void resetAll()
+	{
+		for (auto& client : clients)
+			client.second->setDefaults();
 	}
 
 	bool save(const std::string& filePath)
@@ -62,11 +70,22 @@ public:
 			auto it = clients.find(key);
 			if (it != clients.end())
 			{
-				Archive archive(file, false);
-				it->second->serialize(archive);
+				try {
+					Archive archive(file, false);
+					it->second->serialize(archive);
+				}
+				catch (const std::runtime_error& e) {
+					resetAll();
+					return false;
+				}
 			}
 		}
 
-		return !file.fail() || file.eof();
+		if (file.fail() && !file.eof()) {
+			resetAll();
+			return false;
+		}
+
+		return true;
 	}
 };

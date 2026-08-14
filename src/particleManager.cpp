@@ -4,10 +4,12 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-constexpr float MAX_LIFE_TIME = 0.8f;
-constexpr float MIN_LIFE_TIME = 0.4f;
-constexpr int VERTICES_COUNT = 6;
-constexpr float GRAVITY = 800.f;
+namespace {
+	constexpr float MAX_LIFE_TIME = 0.8f;
+	constexpr float MIN_LIFE_TIME = 0.4f;
+	constexpr int VERTICES_COUNT = 6;
+	constexpr float GRAVITY = 800.f;
+}
 
 ParticleManager::ParticleManager(std::size_t count)
 	: particles(count), vertices(sf::PrimitiveType::Triangles, count * VERTICES_COUNT) { }

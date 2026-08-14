@@ -14,9 +14,9 @@ class MenuItem : public sf::Drawable
 	sf::Text text;
 	bool interactive = false;
 public:
-	MenuItem(const std::string& label, sf::Font& font, unsigned int fontSize);
+	MenuItem(const sf::String& string, sf::Font& font, unsigned int fontSize);
 
-	void setLabel(const std::string& label);
+	void setString(const sf::String& string);
 	void setColor(const sf::Color& color);
 	void setOutlineColor(const sf::Color& color);
 	void setCallback(std::function<void(MenuItem&)> newCallback);
@@ -33,13 +33,13 @@ class Menu
 	std::vector<std::unique_ptr<MenuItem>> items;
 	State& currentState;
 	State thisState;
-	Configuration* config;
+	Configuration& config;
 	sf::View menuView;
 
 	void draw(sf::RenderWindow& window);
 	MenuItem* updateHover(const sf::Vector2f& mousePos);
 public:
-	Menu(State& curr, State self, Configuration* config);
+	Menu(State& curr, State self, Configuration& config);
 	MenuItem& addItem(std::unique_ptr<MenuItem> item);
 	MenuItem& addItem(const std::string& label, sf::Font& font, unsigned int fontSize);
 	void build();

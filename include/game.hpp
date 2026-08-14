@@ -1,5 +1,6 @@
 #pragma once
 #include "apple.hpp"
+#include "checkeredBG.hpp"
 #include "collisionManager.hpp"
 #include "difficultyManager.hpp"
 #include "flash.hpp"
@@ -11,7 +12,6 @@
 #include "soundManager.hpp"
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Clock.hpp>
 
@@ -33,13 +33,13 @@ public:
 
 class Game
 {
-    Configuration* config;
-    std::unique_ptr<CollisionManager> collision;
+    Configuration& config;
+    CollisionManager collision;
+    RenderResources resources;
     GameContext context;
     sf::Clock clock;
-    sf::Sprite background;
+    ChekeredBG background;
     SoundManager sounds;
-    RenderResources resources;
     Snake snake;
     Obstacle obstacle;
     ParticleManager particles;
@@ -48,7 +48,7 @@ class Game
     FloatingText floatingText;
     sf::View gameView;
     sf::Vector2f defaultCenter;
-    DifficultyManager* difficulty;
+    DifficultyManager& difficulty;
 
     enum class Phase {
         PLAY,
@@ -58,7 +58,6 @@ class Game
     } phase;
 
     void restoreDefaults();
-    float calculateSpeed(std::uint16_t score);
     void initVisuals(sf::RenderWindow& window);
 
     void handleEvents(sf::RenderWindow& window);
@@ -70,10 +69,11 @@ class Game
     void tickStep();
     void handleSnakeCollision();
     void handleApple();
+    float calculateSpeed(std::uint16_t score);
 
     void tickVisualUpdates();
     void tickGameOver();
 public:
+    Game(Configuration& config, sf::Font& font, DifficultyManager& difficulty);
     void start(sf::RenderWindow& window);
-    Game(Configuration* config, sf::Font* font, DifficultyManager* difficulty);
 };

@@ -1,5 +1,5 @@
 #pragma once
-#include "cell.hpp"
+#include <SFML/System/Vector2.hpp>
 #include <array>
 #include <vector>
 #include <cstdint>
@@ -32,7 +32,7 @@ inline ObjectType operator~(ObjectType a) {
 
 class CollisionManager
 {
-	const std::array<Cell, 8> neighbourDirections = { {
+	const std::array<sf::Vector2i, 8> neighbourDirections = { {
 			{0, 1}, {0, -1}, {1, 0}, {-1, 0},
 			{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
 		} };
@@ -41,20 +41,20 @@ class CollisionManager
 	int width = 0;
 	int height = 0;
 
-	inline std::size_t getIndex(const Cell& cell) const {
+	inline std::size_t getIndex(const sf::Vector2i& cell) const {
 		return cell.y * width + cell.x;
 	}
 public:
 	void init(int rows, int columns);
-	void setOccupied(const Cell& cell, const ObjectType type);
-	void setFree(const Cell& cell, const ObjectType type);
-	void changeTypes(const Cell& cell, const ObjectType oldType, const ObjectType newType);
+	void setOccupied(const sf::Vector2i& cell, const ObjectType type);
+	void setFree(const sf::Vector2i& cell, const ObjectType type);
+	void changeTypes(const sf::Vector2i& cell, const ObjectType oldType, const ObjectType newType);
 	void clearMap();
-	bool isCellOccupied(const Cell& cell) const;
-	bool checkCellType(const Cell& cell, const ObjectType type) const;
+	bool isCellOccupied(const sf::Vector2i& cell) const;
+	bool checkCellType(const sf::Vector2i& cell, const ObjectType type) const;
 	std::size_t numberOfOccupied() const;
-	bool isEmptyAround(const Cell& cell, const ObjectType type) const;
-	bool isEmptyAround(const Cell& cell) const;
-	bool isOutOfBorders(const Cell& cell) const;
+	bool isEmptyAround(const sf::Vector2i& cell, const ObjectType type) const;
+	bool isEmptyAround(const sf::Vector2i& cell) const;
+	bool isOutOfBorders(const sf::Vector2i& cell) const;
 	float getOccupancyRate() const;
 };

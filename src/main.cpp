@@ -12,15 +12,12 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Audio/Listener.hpp>
 
-void showLoadingScreen(sf::RenderWindow& window, sf::Font* font, Configuration* config)
+void showLoadingScreen(sf::RenderWindow& window, sf::Font& font, Configuration& config)
 {
-    sf::Text loadingTip(*font, "Loading..", 72);
+    sf::Text loadingTip(font, "Loading..", 72);
     const sf::FloatRect bounds = loadingTip.getLocalBounds();
-    loadingTip.setOrigin({
-        bounds.position.x + bounds.size.x / 2.f,
-        bounds.position.y + bounds.size.y / 2.f
-    });
-    loadingTip.setPosition({ config->width / 2.f, config->height / 2.f });
+    loadingTip.setOrigin(bounds.position + bounds.size / 2.f);
+    loadingTip.setPosition(config.getFieldDimensions<float>() / 2.f);
 
     window.clear(sf::Color::Black);
     window.draw(loadingTip);
@@ -29,110 +26,112 @@ void showLoadingScreen(sf::RenderWindow& window, sf::Font* font, Configuration* 
 
 int main()
 {
-    auto config = std::make_unique<Configuration>();
-    auto difficulty = std::make_unique<DifficultyManager>();
+    Configuration config;
+    DifficultyManager difficulty;
 
     try {
         const std::string savePath = PathUtils::getSaveFilePath("Snake", "SnakeSave");
         SaveManager saveManager;
-        saveManager.bind(*config);
-        saveManager.bind(*difficulty);
+        saveManager.bind(config);
+        saveManager.bind(difficulty);
         saveManager.load(savePath);
 
         sf::RenderWindow window(sf::VideoMode(
-            { config->width, config->height }),
+            config.getFieldDimensions<unsigned int>()),
             "Snake",
-            sf::Style::Titlebar | sf::Style::Close
+            sf::Style::Default //^ sf::Style::Resize
         );
+        window.setMinimumSize(config.getFieldDimensions<unsigned int>() / 2u);
         window.setKeyRepeatEnabled(false);
         window.setFramerateLimit(160);
 
         sf::Image icon;
         if (!icon.loadFromMemory(game_icon, game_icon_len)) throw std::runtime_error("Can\'t load icon");
-        window.setIcon({ icon.getSize().x, icon.getSize().y }, icon.getPixelsPtr());
+        window.setIcon({ icon.getSize() }, icon.getPixelsPtr());
 
-        auto tiny5 = std::make_unique<sf::Font>();
+        sf::Font tiny5;
+        tiny5.setSmooth(false);
 
-        if (!tiny5->openFromMemory(tiny5_regular, tiny5_regular_len))
+        if (!tiny5.openFromMemory(tiny5_regular, tiny5_regular_len))
             throw std::runtime_error("failed to load font from memory");
 
-        showLoadingScreen(window, tiny5.get(), config.get());
+        showLoadingScreen(window, tiny5, config);
 
         RandomGenerator::seed(static_cast<uint64_t>(std::time(nullptr)));
 
         State state;
 
-        Game game(config.get(), tiny5.get(), difficulty.get());
+        Game game(config, tiny5, difficulty);
 
-        Menu menu(state, State::MENU, config.get());
+        Menu menu(state, State::MENU, config);
 
-        menu.addItem("Snake Game", *tiny5, 96);
+        menu.addItem("Snake Game", tiny5, 96);
 
-        menu.addItem("Start", *tiny5, 84)
+        menu.addItem("Start", tiny5, 80)
             .setCallback([&](auto& self) { state = State::GAME; });
 
-        menu.addItem("Settings", *tiny5, 84)
+        menu.addItem("Settings", tiny5, 80)
             .setCallback([&](auto& self) { state = State::SETTINGS; });
 
-        menu.addItem("Exit", *tiny5, 84)
+        menu.addItem("Exit", tiny5, 80)
             .setCallback([&](auto& self) { state = State::EXIT; });
 
         menu.build();
 
-        Menu settings(state, State::SETTINGS, config.get());
+        Menu settings(state, State::SETTINGS, config);
 
-        settings.addItem("Settings", *tiny5, 96);
+        settings.addItem("Settings", tiny5, 96);
 
-        settings.addItem(config->getCurrentSpeedLabel(), *tiny5, 72)
+        settings.addItem(config.getCurrentSpeedLabel(), tiny5, 72)
             .setCallback([&](auto& self) {
-                config->cycleSpeed();
-                self.setLabel(config->getCurrentSpeedLabel());
+                config.cycleSpeed();
+                self.setString(config.getCurrentSpeedLabel());
             });
 
-        settings.addItem(config->getCurrentGridLabel(), *tiny5, 72)
+        settings.addItem(config.getCurrentGridLabel(), tiny5, 72)
             .setCallback([&](auto& self) {
-                config->cycleGridSize();
-                self.setLabel(config->getCurrentGridLabel());
+                config.cycleGridSize();
+                self.setString(config.getCurrentGridLabel());
             });
 
-        settings.addItem(config->getCurrentObstaclesLabel(), *tiny5, 72)
+        settings.addItem(config.getCurrentObstaclesLabel(), tiny5, 72)
             .setCallback([&](auto& self) {
-                config->toggleObstacles();
-                self.setLabel(config->getCurrentObstaclesLabel());
+                config.toggleObstacles();
+                self.setString(config.getCurrentObstaclesLabel());
             });
 
-        settings.addItem("Next", *tiny5, 72)
+        settings.addItem("Next", tiny5, 72)
             .setCallback([&](auto& self) { state = State::SETTINGS_SECOND; });
 
-        settings.addItem("Go back", *tiny5, 72)
+        settings.addItem("Go back", tiny5, 72)
             .setCallback([&](auto& self) { state = State::MENU; });
 
         settings.build();
 
-        Menu settingsSecond(state, State::SETTINGS_SECOND, config.get());
+        Menu settingsSecond(state, State::SETTINGS_SECOND, config);
 
-        settingsSecond.addItem("Settings: 2", *tiny5, 96);
+        settingsSecond.addItem("Settings: 2", tiny5, 96);
 
-        settingsSecond.addItem(config->getCurrentSoundLabel(), *tiny5, 72)
+        settingsSecond.addItem(config.getCurrentSoundLabel(), tiny5, 72)
             .setCallback([&](auto& self) {
-                config->toggleSound();
-                const float listenerValue = config->isSoundEnabled() ? 100.f : 0.f;
+                config.toggleSound();
+                const float listenerValue = config.isSoundEnabled() ? 100.f : 0.f;
                 sf::Listener::setGlobalVolume(listenerValue);
-                self.setLabel(config->getCurrentSoundLabel());
+                self.setString(config.getCurrentSoundLabel());
             });
 
-        settingsSecond.addItem(config->getCurrentShakeLabel(), *tiny5, 72)
+        settingsSecond.addItem(config.getCurrentShakeLabel(), tiny5, 72)
             .setCallback([&](auto& self) {
-                config->toggleShake();
-                self.setLabel(config->getCurrentShakeLabel());
+                config.toggleShake();
+                self.setString(config.getCurrentShakeLabel());
             });
 
-        settingsSecond.addItem("Change theme", *tiny5, 72)
+        settingsSecond.addItem("Change theme", tiny5, 72)
             .setCallback([&](auto& self) {
-                config->cycleTheme();
+                config.cycleTheme();
             });
 
-        settingsSecond.addItem("Go back", *tiny5, 72)
+        settingsSecond.addItem("Go back", tiny5, 72)
             .setCallback([&](auto& self) { state = State::SETTINGS; });
 
         settingsSecond.build();

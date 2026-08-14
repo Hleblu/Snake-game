@@ -2,7 +2,7 @@
 #include "menu.hpp"
 #include "viewUtils.hpp"
 
-Menu::Menu(State& curr, State self, Configuration* config) : 
+Menu::Menu(State& curr, State self, Configuration& config) : 
     currentState(curr),
     thisState(self),
     config(config)
@@ -24,9 +24,9 @@ MenuItem* Menu::updateHover(const sf::Vector2f& mousePos)
 
             if (isHovered) {
                 hoveredItem = item.get();
-                item->setColor(config->getCurrentTheme().secondColor);
+                item->setColor(config.getCurrentTheme().secondColor);
             }
-            else item->setColor(config->textBaseColor);
+            else item->setColor(config.textBaseColor);
         }
     }
     return hoveredItem;
@@ -35,8 +35,8 @@ MenuItem* Menu::updateHover(const sf::Vector2f& mousePos)
 MenuItem& Menu::addItem(std::unique_ptr<MenuItem> item)
 {
     MenuItem* self = item.get();
-    self->setColor(config->textBaseColor);
-    self->setOutlineColor(config->textOutlineColor);
+    self->setColor(config.textBaseColor);
+    self->setOutlineColor(config.textOutlineColor);
     items.push_back(std::move(item));
     return *self;
 }
@@ -44,17 +44,13 @@ MenuItem& Menu::addItem(std::unique_ptr<MenuItem> item)
 MenuItem& Menu::addItem(const std::string& label, sf::Font& font, unsigned int fontSize)
 {
     auto item = std::make_unique<MenuItem>(label, font, fontSize);
-    MenuItem* self = item.get();
-    self->setColor(config->textBaseColor);
-    self->setOutlineColor(config->textOutlineColor);
-    items.push_back(std::move(item));
-    return *self;
+    return addItem(std::move(item));
 }
 
 void Menu::build()
 {
-    sf::Vector2f position = { 50, 10 };
-    const float offset = 5;
+    sf::Vector2f position = { 50.f, 10.f };
+    const float offset = 5.f;
     for (auto& item : items) {
         item->setPosition(position);
         position.y += item->getSpacing() + offset;
@@ -63,7 +59,7 @@ void Menu::build()
 
 void Menu::show(sf::RenderWindow& window)
 {
-    ViewUtils::normalizeView(menuView, sf::Vector2f(window.getSize()));
+    ViewUtils::normalizeView(menuView, config.getFieldDimensions<float>(), sf::Vector2f(window.getSize()));
     window.setView(menuView);
 
     sf::Vector2f mousePos;
@@ -75,30 +71,41 @@ void Menu::show(sf::RenderWindow& window)
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) window.close();
 
+            if (const auto* resized = event->getIf<sf::Event::Resized>()) {
+                ViewUtils::normalizeView(
+                    menuView,
+                    config.getFieldDimensions<float>(),
+                    sf::Vector2f(resized->size)
+                );
+            }
+
             const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>();
             const bool isClicked = mouseButtonPressed && mouseButtonPressed->button == sf::Mouse::Button::Left;
             const bool isTouched = event->is<sf::Event::TouchBegan>();
 
             if (hovered && (isClicked || isTouched)) {
                 hovered->callFunction();
+
+                if (currentState != thisState) break;
             }
         }
+        window.setView(menuView);
 
-        window.clear(config->getCurrentTheme().mainColor);
+        window.clear(config.getCurrentTheme().mainColor);
         draw(window);
         window.display();
     }
 }
 
-MenuItem::MenuItem(const std::string& label, sf::Font& font, unsigned int fontSize) : text(font, label, fontSize)
+MenuItem::MenuItem(const sf::String& string, sf::Font& font, unsigned int fontSize) : text(font, string, fontSize)
 {
-    const float thickness = fontSize * 0.07f;
+    const float thickness = fontSize * 0.075f;
     text.setOutlineThickness(thickness);
 }
 
-void MenuItem::setLabel(const std::string& label)
+void MenuItem::setString(const sf::String& string)
 {
-    text.setString(label);
+    text.setString(string);
 }
 
 void MenuItem::setColor(const sf::Color& color)
@@ -114,7 +121,7 @@ void MenuItem::setOutlineColor(const sf::Color& color)
 void MenuItem::setCallback(std::function<void(MenuItem&)> newCallback)
 {
     if (newCallback) {
-        callback = newCallback;
+        callback = std::move(newCallback);
         interactive = true;
     }
 }

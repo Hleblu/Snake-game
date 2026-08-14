@@ -9,16 +9,15 @@ class FloatingText : public sf::Drawable
 	static constexpr float defaultLifeTime = 0.8f;
 
 	sf::Text label;
-	sf::Font* font;
-	Configuration* config;
+	Configuration& config;
 	sf::Shader* shader;
 	float currentAge;
 	float lifeTime;
 
 public:
-	FloatingText(Configuration* config, sf::Shader* shader, sf::Font* font);
+	FloatingText(Configuration& config, sf::Shader* shader, sf::Font& font);
 	void initAppearence();
-	void updateLabel(const std::string& str, sf::Vector2f pos, float lifeTime = defaultLifeTime);
+	void updateLabel(const sf::String& str, sf::Vector2f pos, float lifeTime = defaultLifeTime);
 	void updateShader(float dt);
 	void hide();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

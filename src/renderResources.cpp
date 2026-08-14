@@ -1,7 +1,7 @@
 ﻿#include "renderResources.hpp"
+#include "textures/appleTexture.hpp"
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
-#include "textures/appleTexture.hpp"
 
 void RenderResources::loadSnakeShader()
 {
@@ -28,25 +28,41 @@ void RenderResources::loadSnakeShader()
         throw std::runtime_error("couldn't load gradient shader");
 }
 
-void RenderResources::createBackgroundTexture()
+sf::Texture RenderResources::createCheckerboardTexture()
 {
-    if (!backgroundTexture.resize({ 2u, 2u }))
+    sf::Texture texture;
+    if (!texture.resize({ 2u, 2u }))
         throw std::runtime_error("couldn't create background texture");
 
-    std::uint8_t pixels[] = { 
-        255, 255, 255, 0,    255, 255, 255, 255,
-        255, 255, 255, 255,     255, 255, 255, 0 
-    };
+	texture.setRepeated(true);
+    texture.setSmooth(false);
 
-    backgroundTexture.update(pixels);
-	backgroundTexture.setRepeated(true);
-    backgroundTexture.setSmooth(false);
+    return texture;
+}
+
+void RenderResources::updateCheckerboardTexture(sf::Texture& texture, sf::Color first, sf::Color second)
+{
+    std::uint8_t pixels[16];
+    for (std::size_t i = 0; i < 4; ++i)
+    {
+        sf::Color current = (i == 0 || i == 3) ? first : second;
+
+        std::size_t offset = i * 4;
+        pixels[offset + 0] = current.r;
+        pixels[offset + 1] = current.g;
+        pixels[offset + 2] = current.b;
+        pixels[offset + 3] = current.a;
+    }
+
+    texture.update(pixels);
 }
 
 void RenderResources::loadAppleTexture()
 {
     if (!appleTexture.loadFromMemory(appleTextureAtlas, appleTextureAtlas_len))
         throw std::runtime_error("couldn't load apple texture");
+
+    appleTexture.setSmooth(false);
 }
 
 void RenderResources::loadFadeShader()
@@ -101,5 +117,25 @@ void RenderResources::loadFloatingTextFadeShader()
             gl_FragColor = color;
         }
 )", sf::Shader::Type::Fragment))
-    throw std::runtime_error("couldn't load fragment part of floating text fade shader");
+    throw std::runtime_error("couldn't load floating text fade shader");
 }
+
+/*
+void RenderResources::loadCheckerboardPatternShader()
+{
+    if (!checkerboardPatternShader.loadFromMemory(R"(
+        uniform vec4 firstColor;
+        uniform vec4 secondColor;
+        uniform float size;
+
+        void main() 
+        {
+            vec2 pos = floor(gl_TexCoord[0].xy / size);
+            float patternMask = mod(pos.x + pos.y, 2.0);
+
+            gl_FragColor = mix(firstColor, secondColor, patternMask);
+        }
+)", sf::Shader::Type::Fragment))
+    throw std::runtime_error("couldn't load checkerboard pattern shader");
+}
+*/

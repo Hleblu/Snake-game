@@ -2,8 +2,10 @@
 #include <cmath>
 #include <algorithm>
 
-constexpr float PATHING_BIAS = 1.25f;
-constexpr int SESSION_COUNT = 10;
+namespace {
+	constexpr float PATHING_BIAS = 1.4f;
+	constexpr int SESSION_COUNT = 10;
+}
 
 void SessionResults::reset()
 {
@@ -49,6 +51,12 @@ void SessionResults::serialize(Archive& archive)
 		& timeExpected;
 }
 
+void SessionResults::setDefaults()
+{
+	timeExpected = 0.f;
+	timeActual = 0.f;
+}
+
 void DifficultyManager::onStart()
 {
 	currentSession.reset();
@@ -69,7 +77,7 @@ void DifficultyManager::onEnd()
 	}
 }
 
-void DifficultyManager::updateExpected(const Cell& p, const Cell& g, float occupancy, float delay)
+void DifficultyManager::updateExpected(const sf::Vector2i& p, const sf::Vector2i& g, float occupancy, float delay)
 {
 	int distance = std::abs(p.x - g.x) + std::abs(p.y - g.y);
 	float expected = (distance * delay) * (1 + occupancy) * PATHING_BIAS;
@@ -98,4 +106,12 @@ void DifficultyManager::serialize(Archive& archive)
 		& modifier;
 
 	unifiedResults.serialize(archive);
+}
+
+void DifficultyManager::setDefaults()
+{
+	unifiedResults.reset();
+	currentSession.reset();
+	sessionCounter = 0.f;
+	modifier = 1.f;
 }

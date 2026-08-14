@@ -8,8 +8,8 @@
 #include <vector>
 
 Apple::Apple(
-    Configuration* config,
-    CollisionManager* collision,
+    Configuration& config,
+    CollisionManager& collision,
     sf::Texture& texture,
     sf::Shader* shader,
     std::unique_ptr<IAppleEffect> eff,
@@ -23,10 +23,10 @@ Apple::Apple(
     spawnTime(spawnTime)
 {
     sprite.setTextureRect(effect->getTextureRect());
-    const float scaleX = config->getCellSize() / sprite.getLocalBounds().size.x;
-    const float scaleY = config->getCellSize() / sprite.getLocalBounds().size.y;
+    const float scaleX = config.getCellSize() / sprite.getLocalBounds().size.x;
+    const float scaleY = config.getCellSize() / sprite.getLocalBounds().size.y;
     sprite.setScale({ scaleX, scaleY });
-    sprite.setColor(config->getCurrentTheme().appleColor);
+    sprite.setColor(config.getCurrentTheme().appleColor);
 
     coords = { -1, -1 };
 
@@ -38,16 +38,16 @@ float Apple::getSpeedBonus() const
     return effect->getSpeedBonus();
 }
 
-const Cell Apple::getPosition() const 
+const sf::Vector2i Apple::getPosition() const
 {
     return coords;
 }
 
 void Apple::generateNewPosition()
 {
-    if (collision->getOccupancyRate() < 1.f) {
-        const std::int16_t xMax = config->getColumns();
-        const std::int16_t totalCells = config->getTotalSize();
+    if (collision.getOccupancyRate() < 1.f) {
+        const std::int16_t xMax = config.getColumns();
+        const std::int16_t totalCells = config.getTotalSize();
         const int startingIndex = RandomGenerator::getInt(0, totalCells);
 
         for (std::size_t i = 0; i < totalCells; ++i) {
@@ -56,21 +56,21 @@ void Apple::generateNewPosition()
             const int x = currentIndex % xMax;
             const int y = currentIndex / xMax;
 
-            const Cell candidate{ x,y };
-            if (!collision->isCellOccupied(candidate)) {
+            const sf::Vector2i candidate{ x,y };
+            if (!collision.isCellOccupied(candidate)) {
                 coords = candidate;
-                collision->setOccupied(candidate, ObjectType::APPLE);
+                collision.setOccupied(candidate, ObjectType::APPLE);
                 break;
             }
         }
     }
-    sprite.setPosition(sf::Vector2f(coords.x * config->getCellSize(), coords.y * config->getCellSize()));
+    sprite.setPosition(sf::Vector2f(coords * static_cast<int>(config.getCellSize())));
 }
 
 bool Apple::isEaten() const
 {
-    return !collision->isOutOfBorders(coords)
-        && collision->checkCellType(coords, ObjectType::SNAKE_HEAD);
+    return !collision.isOutOfBorders(coords)
+        && collision.checkCellType(coords, ObjectType::SNAKE_HEAD);
 }
 
 void Apple::applyEffect(Snake& snake) const 
@@ -80,7 +80,7 @@ void Apple::applyEffect(Snake& snake) const
 
 void Apple::updateShader(float currentTime)
 {
-    alpha = (currentTime - spawnTime) / config->getStartDelay();
+    alpha = (currentTime - spawnTime) / config.getStartDelay();
 }
 
 void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -94,12 +94,12 @@ void Apple::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 Apple::~Apple()
 {
-    collision->setFree(coords, ObjectType::APPLE);
+    collision.setFree(coords, ObjectType::APPLE);
 }
 
 std::unique_ptr<Apple> AppleFactory::createRandomApple(
-    Configuration* config,
-    CollisionManager* collision,
+    Configuration& config,
+    CollisionManager& collision,
     sf::Texture& texture,
     sf::Shader* shader,
     float spawnTime

@@ -1,6 +1,6 @@
-#include "configuration.hpp"
-#include "floatingText.hpp"
-#include "randomGenerator.hpp"
+#include "core/configuration.hpp"
+#include "graphics/floatingText.hpp"
+#include "utils/randomGenerator.hpp"
 #include <algorithm>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Shader.hpp>

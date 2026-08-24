@@ -2,7 +2,7 @@
 #include <fstream>
 #include <map>
 #include <string>
-#include "serializable.hpp"
+#include "core/serializable.hpp"
 
 namespace {
 	constexpr char VERSION = 'B';

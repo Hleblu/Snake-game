@@ -1,29 +1,32 @@
 # SnakeGame (SFML 3.1.X)
-## Modern C++17 implementation of classic Snake game, lightweight, configurable & portable.
+Modern C++17 implementation of classic Snake arcade game. Lightweight, configurable & portable.
 
 <div align = "center"><img src="assets/icons/game_icon.ico" width = "50%"></div>
 
 ## Features
-- Standalone executable (No external DLL requirements due to static linking and SFML 3.1.X);
-- Embedded directly into binary assets via xxd-generated headers;
+- Standalone executable: No runtime DLLs/shared library dependencies due to static linking;
+- Assets embedded directly into the binary via xxd-generated headers;
 - Visual effects made using simple shaders, particle system and more;
-- Sound effects which make the exprience more enjoyable;
+- Sound effects which make the expirience more enjoyable;
+- Difficulty modifier based on player's efficiency;
+- Save and Restore system;
 
 ## Requirements
-- CMake 3.16 or higher;
+- CMake >= 3.22;
 - Compiler with C++17 support;
-- ***Linux only*** Core system dependencies required to build SFML 3.1.X;
+- ***Linux only*** System development libraries for windowing and audio;
 
->[!NOTE]
->Check the list of dependencies on [official SFML website](https://www.sfml-dev.org/tutorials/3.0/getting-started/build-from-source/#installing-dependencies).
->This is not required if you build for Windows, since it uses static libraries.
+> [!NOTE]
+> All platform SDKs are included with your compiler toolchain on Windows.
+> On linux, install the required development packages listed in the [official SFML documentation](https://www.sfml-dev.org/tutorials/3.1/getting-started/build-from-source/#installing-dependencies).
 
 ## Build 
 The project uses CMake's `FetchContent`, SFML 3.1.X and its dependencies will be downloaded on build. User needs only to clone the repository.
 ```bash
 git clone https://github.com/Hleblu/Snake-game.git sfmlSnake
+cd sfmlSnake
 ```
-After cloning repository go inside the project folder and start the CMake build process.
+Start the CMake build process.
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 ```
@@ -31,7 +34,9 @@ Compile the executable.
 ```bash
 cmake --build build --config Release
 ```
-Compiled executable will be located in <ins>build/Release<ins> directory. Enjoy!
+Compiled executable will be located in <ins>build/Release</ins> directory. Enjoy!
+> [!NOTE]
+> Output location depends on the generator. Please check the final destination for yourself.
 
 ## Preview
 <div align="center">
@@ -47,4 +52,4 @@ Compiled executable will be located in <ins>build/Release<ins> directory. Enjoy!
 
 ## Important notes
 - **Learning project:** This project was developed primarily for learning C++ and SFML.
-- **Broken Commit History:** Please do not build commits prior to `[0944915]`. To release this repository publicly, all originally assets were scraped and replaced with CC0 alternatives (which I found better). Therefore older commits miss the resources and won't compile.
+- **Broken Commit History:** Please do not build commits prior to `[0944915]`. To release this repository publicly, all original assets were scrapped and replaced with CC0 alternatives (which I found better). Therefore older commits are missing the required resources and won't compile.

@@ -1,5 +1,5 @@
-#include "particleManager.hpp"
-#include "randomGenerator.hpp"
+#include "graphics/particleManager.hpp"
+#include "utils/randomGenerator.hpp"
 #include <cmath>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

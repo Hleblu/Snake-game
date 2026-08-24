@@ -1,5 +1,5 @@
 #pragma once
-#include "serializable.hpp"
+#include "core/serializable.hpp"
 #include <SFML/System/Vector2.hpp>
 
 class SessionResults : public Serializable

@@ -1,6 +1,6 @@
-#include "configuration.hpp"
-#include "menu.hpp"
-#include "viewUtils.hpp"
+#include "core/configuration.hpp"
+#include "core/menu.hpp"
+#include "utils/viewUtils.hpp"
 
 Menu::Menu(State& curr, State self, Configuration& config) : 
     currentState(curr),

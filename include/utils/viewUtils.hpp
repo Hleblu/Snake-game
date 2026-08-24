@@ -1,6 +1,6 @@
 #pragma once
-#include "direction.hpp"
-#include "randomGenerator.hpp"
+#include "core/direction.hpp"
+#include "utils/randomGenerator.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 

@@ -1,7 +1,7 @@
-#include "collisionManager.hpp"
-#include "configuration.hpp"
-#include "randomGenerator.hpp"
-#include "snake.hpp"
+#include "core/collisionManager.hpp"
+#include "core/configuration.hpp"
+#include "utils/randomGenerator.hpp"
+#include "entities/snake.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Shader.hpp>
 

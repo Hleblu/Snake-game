@@ -1,7 +1,7 @@
-#include "collisionManager.hpp"
-#include "configuration.hpp"
-#include "obstacle.hpp"
-#include "randomGenerator.hpp"
+#include "core/collisionManager.hpp"
+#include "core/configuration.hpp"
+#include "entities/obstacle.hpp"
+#include "utils/randomGenerator.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Shader.hpp>
 

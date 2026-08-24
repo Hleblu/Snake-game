@@ -1,4 +1,4 @@
-#include "soundManager.hpp"
+#include "core/soundManager.hpp"
 
 void SoundManager::addSound(const std::string& name, const void* data, std::size_t dataSize) {
     sf::SoundBuffer dummyBuffer;

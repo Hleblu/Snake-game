@@ -1,12 +1,12 @@
-#include "collisionManager.hpp"
-#include "configuration.hpp"
-#include "game.hpp"
-#include "randomGenerator.hpp"
-#include "renderResources.hpp"
+#include "core/collisionManager.hpp"
+#include "core/configuration.hpp"
+#include "core/game.hpp"
+#include "utils/randomGenerator.hpp"
+#include "graphics/renderResources.hpp"
 #include "sounds/sound_eat.hpp"
 #include "sounds/sound_gameover.hpp"
 #include "sounds/sound_move.hpp"
-#include "viewUtils.hpp"
+#include "utils/viewUtils.hpp"
 #include <cmath>
 #include <map>
 

@@ -1,4 +1,4 @@
-#include "collisionManager.hpp"
+#include "core/collisionManager.hpp"
 
 void CollisionManager::init(int rows, int columns)
 {

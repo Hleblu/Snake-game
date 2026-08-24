@@ -1,5 +1,5 @@
-#include "flash.hpp"
-#include "configuration.hpp"
+#include "graphics/flash.hpp"
+#include "core/configuration.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace {

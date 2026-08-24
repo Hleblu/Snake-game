@@ -1,5 +1,5 @@
 #pragma once
-#include "serializable.hpp"
+#include "core/serializable.hpp"
 #include <algorithm>
 #include <array>
 #include <SFML/Graphics/Color.hpp>

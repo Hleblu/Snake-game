@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.22)
 project(SnakeGame LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -25,26 +25,26 @@ set(SFML_BUILD_TEST_SUITE OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(SFML)
 
 add_executable(Snake
-    src/main.cpp 
-    src/game.cpp
-    src/apple.cpp
-    src/collisionManager.cpp
-    src/flash.cpp
-    src/floatingText.cpp
-    src/menu.cpp
-    src/obstacle.cpp
-    src/particleManager.cpp
-    src/pathUtils.cpp
-    src/renderResources.cpp
-    src/serializable.cpp
-    src/snake.cpp
-    src/soundManager.cpp
-    src/difficultyManager.cpp
-    src/checkeredBG.cpp
+    "src/main.cpp" 
+    "src/core/game.cpp"
+    "src/entities/apple.cpp"
+    "src/core/collisionManager.cpp"
+    "src/graphics/flash.cpp"
+    "src/graphics/floatingText.cpp"
+    "src/core/menu.cpp"
+    "src/entities/obstacle.cpp"
+    "src/graphics/particleManager.cpp"
+    "src/utils/pathUtils.cpp"
+    "src/graphics/renderResources.cpp"
+    "src/core/serializable.cpp"
+    "src/entities/snake.cpp"
+    "src/core/soundManager.cpp"
+    "src/core/difficultyManager.cpp"
+    "src/graphics/checkeredBG.cpp"
 )
 
 if (WIN32)
-    target_sources(Snake PRIVATE src/Resources.rc)
+    target_sources(Snake PRIVATE src/winRes/Resources.rc)
 endif()
 
 target_include_directories(Snake PRIVATE

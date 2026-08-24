@@ -1,4 +1,4 @@
-#include "difficultyManager.hpp"
+#include "core/difficultyManager.hpp"
 #include <cmath>
 #include <algorithm>
 

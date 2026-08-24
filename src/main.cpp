@@ -1,13 +1,4 @@
-#include "configuration.hpp"
-#include "difficultyManager.hpp"
-#include "game.hpp"
-#include "menu.hpp"
-#include "pathUtils.hpp"
-#include "randomGenerator.hpp"
-#include "icons/game_icon.hpp"
-#include "fonts/tiny5_regular.hpp"
-#include "saveManager.hpp"  
-#include "state.hpp"
+#include "main.hpp"
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Audio/Listener.hpp>

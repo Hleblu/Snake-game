@@ -1,5 +1,5 @@
 #pragma once
-#include "direction.hpp"
+#include "core/direction.hpp"
 #include <deque>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Drawable.hpp>

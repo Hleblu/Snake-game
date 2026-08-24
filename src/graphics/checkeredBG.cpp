@@ -1,4 +1,4 @@
-#include "checkeredBG.hpp"
+#include "graphics/checkeredBG.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 ChekeredBG::ChekeredBG(sf::Texture texture)

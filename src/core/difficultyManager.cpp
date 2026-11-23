@@ -112,6 +112,6 @@ void DifficultyManager::setDefaults()
 {
 	unifiedResults.reset();
 	currentSession.reset();
-	sessionCounter = 0.f;
+	sessionCounter = 0;
 	modifier = 1.f;
 }

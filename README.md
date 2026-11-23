@@ -7,7 +7,7 @@ Modern C++17 implementation of classic Snake arcade game. Lightweight, configura
 - Standalone executable: No runtime DLLs/shared library dependencies due to static linking;
 - Assets embedded directly into the binary via xxd-generated headers;
 - Visual effects made using simple shaders, particle system and more;
-- Sound effects which make the expirience more enjoyable;
+- Sound effects which make the experience more enjoyable;
 - Difficulty modifier based on player's efficiency;
 - Save and Restore system;
 

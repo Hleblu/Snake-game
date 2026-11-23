@@ -6,7 +6,7 @@ class Direction
 public:
 	enum class Val
 	{
-		NONE = -1,
+		NONE = -1, // to make sure isOpposite() will work since -1 % wont be neither 0 or 1 (see below)
 		LEFT = 1,
 		UP = 2,
 		RIGHT = 3,

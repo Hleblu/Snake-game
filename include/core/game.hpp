@@ -38,7 +38,7 @@ class Game
     RenderResources resources;
     GameContext context;
     sf::Clock clock;
-    ChekeredBG background;
+    CheckeredBG background;
     SoundManager sounds;
     Snake snake;
     Obstacle obstacle;

@@ -35,11 +35,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             libxrandr-dev libxcursor-dev libxi-dev libudev-dev \
-            libfreetype-dev libflac-dev libvorbis-dev \
-            libgl1-mesa-dev libegl1-mesa-dev libfontconfig1-dev
+            libgl1-mesa-dev
 
       - name: Configure
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_BUILD_NETWORK=OFF
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_USE_SYSTEM_DEPS=OFF -DSFML_BUILD_EXAMPLES=OFF -DSFML_BUILD_NETWORK=OFF
 
       - name: Build
         run: cmake --build build --config Release

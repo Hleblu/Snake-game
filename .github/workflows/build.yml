@@ -27,7 +27,7 @@ jobs:
           binary: build/Snake
           asset: Snake-linux-x64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Linux SFML dependencies
         if: runner.os == 'Linux'
@@ -39,7 +39,7 @@ jobs:
             libgl1-mesa-dev libegl1-mesa-dev libfontconfig1-dev
 
       - name: Configure
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_BUILD_NETWORK=OFF
 
       - name: Build
         run: cmake --build build --config Release
@@ -50,7 +50,7 @@ jobs:
           mkdir dist
           cp "${{ matrix.binary }}" "dist/${{ matrix.asset }}"
       
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.asset }}
           path: dist/${{ matrix.asset }}
